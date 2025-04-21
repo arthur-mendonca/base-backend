@@ -1,0 +1,79 @@
+# CRIANCA
+
+id_crianca (PK)
+id_responsavel (FK)
+nome
+data_nascimento
+rg
+cpf
+autorizacoes
+documentos
+historico_escolar
+frequencia_total
+
+
+# RESPONSAVEL
+
+id_responsavel (PK)
+nome
+cpf
+rg
+parentesco_com_crianca
+telefone
+email
+ocupacao
+endereco
+
+# VOLUNTARIO
+
+id_voluntario (PK)
+nome
+cpf
+email
+telefone
+disponibilidade
+area_atuacao
+respondeu_questionario (boolean)
+aceitou_termos (boolean)
+
+
+# PARCEIRO
+
+id_parceiro (PK)
+nome
+tipo (parceiro ou patrocinador)
+email
+telefone
+contribuicao (financeira, material etc.)
+
+# USUARIO
+
+id_usuario (PK)
+
+nome
+email
+senha
+perfil (admin ou usuario)
+
+# FREQUENCIA
+id_frequencia (PK)
+id_crianca (FK)
+atividade (reforço, balé, judô etc.)
+data
+presenca (boolean)
+
+# CESTA_BASICA
+id_cesta (PK)
+id_responsavel (FK)
+data_entrega
+quantidade
+observacoes
+
+
+RELACIONAMENTOS
+
+Criança (N) - (1) Responsável
+Criança (1) - (N) Frequência
+
+Responsavel (1) - (N) Criança
+Responsavel (1) - (N) Cesta Básica
