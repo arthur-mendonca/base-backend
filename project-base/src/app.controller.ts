@@ -9,4 +9,8 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  @Get()
+  getRoot() {
+    return { message: 'API is running. Use /api for API endpoints.' };
+  }
 }
