@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Crianca } from '../crianca/crianca.entity';
-import { CestaBasica } from '../cesta-basica/cesta-basica.entity';
+import { CestaBasica } from '../cesta-basica/cestabasica.entity';
 
 @Entity('Responsavel')
 export class Responsavel {
