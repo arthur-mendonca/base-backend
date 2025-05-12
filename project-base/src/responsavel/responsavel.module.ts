@@ -8,5 +8,6 @@ import { ResponsavelController } from './responsavel.controller';
   imports: [TypeOrmModule.forFeature([Responsavel])],
   providers: [ResponsavelService],
   controllers: [ResponsavelController],
+  exports: [TypeOrmModule],
 })
 export class ResponsavelModule {}
