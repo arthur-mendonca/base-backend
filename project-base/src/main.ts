@@ -2,10 +2,12 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from "@nestjs/common";
+import bodyParser from "body-parser";
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
+    app.use(bodyParser.json());
     app.enableCors(); // Habilita CORS para todas as rotas
     app.setGlobalPrefix('api'); // Define um prefixo global para todas as rotas
     app.enableShutdownHooks(); // Habilita os hooks de desligamento

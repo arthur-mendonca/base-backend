@@ -4,30 +4,30 @@ import { CestaBasica } from './cestabasica.entity';
 
 @Controller('cesta-basica')
 export class CestaBasicaController {
-  constructor(private readonly cestaBasicaService: CestaBasicaService) {}
+  constructor(private readonly cestaBasicaService: CestaBasicaService) { }
 
   @Post()
-  create(@Body() cestaBasica: CestaBasica): Promise<CestaBasica> {
+  async create(@Body() cestaBasica: CestaBasica): Promise<CestaBasica> {
     return this.cestaBasicaService.create(cestaBasica);
   }
 
   @Get()
-  findAll(): Promise<CestaBasica[]> {
+  async findAll(): Promise<CestaBasica[]> {
     return this.cestaBasicaService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<CestaBasica | null> {
+  async findOne(@Param('id') id: number): Promise<CestaBasica | null> {
     return this.cestaBasicaService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() cestaBasica: CestaBasica): Promise<CestaBasica | null> {
+  async update(@Param('id') id: number, @Body() cestaBasica: CestaBasica): Promise<CestaBasica | null> {
     return this.cestaBasicaService.update(id, cestaBasica);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
     return this.cestaBasicaService.remove(id);
   }
 }
