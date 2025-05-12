@@ -1,33 +1,32 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { CriancaService } from './crianca.service';
 import { Crianca } from './crianca.entity';
-
+import { CriancaDto } from './crianca.dto';
 @Controller('crianca')
 export class CriancaController {
-  constructor(private readonly criancaService: CriancaService) {}
+  constructor(private readonly criancaService: CriancaService) { }
 
-  @Post()
-  create(@Body() crianca: Crianca): Promise<Crianca> {
-    return this.criancaService.create(crianca);
-  }
-
+    @Post()
+    async create(@Body() criancaData: CriancaDto): Promise<Crianca> {
+      return this.criancaService.create(criancaData);
+    }
   @Get()
-  findAll(): Promise<Crianca[]> {
+  async findAll(): Promise<CriancaDto[]> {
     return this.criancaService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Crianca | null> {
+  async findOne(@Param('id') id: number): Promise<CriancaDto | null> {
     return this.criancaService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() crianca: Crianca): Promise<Crianca | null> {
+  async update(@Param('id') id: number, @Body() crianca: CriancaDto): Promise<CriancaDto | null> {
     return this.criancaService.update(id, crianca);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: number): Promise<void> {
     return this.criancaService.remove(id);
   }
 }
