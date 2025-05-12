@@ -3,7 +3,7 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from "@nestjs/common";
 import bodyParser from "body-parser";
-
+import { HttpExceptionFilter } from './common/http-exception.filter';
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
@@ -11,6 +11,7 @@ async function bootstrap() {
     app.enableCors(); // Habilita CORS para todas as rotas
     app.setGlobalPrefix('api'); // Define um prefixo global para todas as rotas
     app.enableShutdownHooks(); // Habilita os hooks de desligamento
+    app.useGlobalFilters(new HttpExceptionFilter());// Usando os filtros de exceção globais
     app.useGlobalPipes(new ValidationPipe({
       whitelist: true, // Remove propriedades não validadas
       forbidNonWhitelisted: true, // Lança erro se propriedades não validadas forem encontradas
