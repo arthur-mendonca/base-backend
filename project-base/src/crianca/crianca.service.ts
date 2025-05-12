@@ -63,4 +63,10 @@ export class CriancaService {
     const crianca = await this.findOne(id);
     await this.criancaRepository.remove(crianca);
   }
+   async findCriancaWithResponsavel(id: number) {
+    return this.criancaRepository.findOne({
+      where: { id_crianca: id },
+      relations: ['responsavel'], // Relaciona com o Responsavel
+    });
+  }
 }
