@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "./../user/user.service";
+import { LoginResponse } from "./interfaces/auth.interface";
 
 @Injectable()
 export class AuthService {
@@ -9,7 +10,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(email: string, pass: string): Promise<any> {
+  async login(email: string, pass: string): Promise<LoginResponse> {
     const user = await this.userService.findByEmail(email);
     if (user?.senha !== pass) {
       // A validação da senha ocorre aqui
