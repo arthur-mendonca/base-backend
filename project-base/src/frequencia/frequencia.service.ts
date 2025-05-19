@@ -1,36 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Frequencia } from './frequencia.entity';
+import { Injectable } from "@nestjs/common";
+import { FrequenciaRepository } from "./repositories/frequencia.repository";
+import { CreateFrequenciaDto } from "./dto/create-frequencia-dto";
+import { UpdateFrequenciaDto } from "./dto/update-frequencia-dto";
 
 @Injectable()
 export class FrequenciaService {
-  constructor(
-    @InjectRepository(Frequencia)
-    private frequenciaRepository: Repository<Frequencia>,
-  ) {}
+  constructor(private readonly repository: FrequenciaRepository) {}
 
-  async create(frequencia: Frequencia): Promise<Frequencia> {
-    return this.frequenciaRepository.save(frequencia);
+  async findAll() {
+    return this.repository.findAll();
   }
 
-  async findAll(): Promise<Frequencia[]> {
-    return this.frequenciaRepository.find({ relations: ['crianca'] });
+  async findOne(id: number) {
+    return this.repository.findOne(id);
   }
 
-  async findOne(id: number): Promise<Frequencia | null> {
-    return this.frequenciaRepository.findOne({
-      where: { id_frequencia: id },
-      relations: ['crianca'],
-    });
+  async create(createFrequenciaDto: CreateFrequenciaDto) {
+    return this.repository.create(createFrequenciaDto);
   }
 
-  async update(id: number, frequencia: Frequencia): Promise<Frequencia | null> {
-    await this.frequenciaRepository.update(id, frequencia);
-    return this.findOne(id);
+  async update(id: number, updateFrequenciaDto: UpdateFrequenciaDto) {
+    return this.repository.update(id, updateFrequenciaDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.frequenciaRepository.delete(id);
+  async remove(id: number) {
+    return this.repository.remove(id);
+  }
+
+  async findByChildId(id_crianca: number) {
+    return this.repository.findByChildId(id_crianca);
   }
 }
