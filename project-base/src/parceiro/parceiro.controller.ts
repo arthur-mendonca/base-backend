@@ -3,7 +3,6 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ParceiroService } from "./parceiro.service";
 import { CreateParceiroDto } from "./dto/create-parceiro.dto";
 import { UpdateParceiroDto } from "./dto/update-parceiro.dto";
-import { JwtAuthGuard } from "../autenticacao/jwt-auth.guard";
 
 @ApiTags("parceiros")
 @Controller("parceiro")

@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FrequenciaService } from "./frequencia.service";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
-import { JwtAuthGuard } from "../autenticacao/jwt-auth.guard";
+import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 
 @ApiTags("frequencias")
 @Controller("frequencia")
