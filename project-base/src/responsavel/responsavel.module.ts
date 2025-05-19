@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Responsavel } from './responsavel.entity';
-import { ResponsavelService } from './responsavel.service';
-import { ResponsavelController } from './responsavel.controller';
+import { Module } from "@nestjs/common";
+import { ResponsavelService } from "./responsavel.service";
+import { ResponsavelController } from "./responsavel.controller";
+import { ResponsavelRepository } from "./repositories/responsavel.repository";
+import { PrismaModule } from "../prisma/prisma.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Responsavel])],
-  providers: [ResponsavelService],
+  imports: [PrismaModule],
+  providers: [ResponsavelService, ResponsavelRepository],
   controllers: [ResponsavelController],
-  exports: [TypeOrmModule],
+  exports: [ResponsavelService],
 })
 export class ResponsavelModule {}

@@ -1,33 +1,42 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { ResponsavelService } from './responsavel.service';
-import { Responsavel } from './responsavel.entity';
+import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ResponsavelService } from "./responsavel.service";
+import { CreateResponsavelDto } from "./dto/create-responsavel-dto";
+import { UpdateResponsavelDto } from "./dto/update-responsavel-dto";
 
-@Controller('responsavel')
+@ApiTags("responsaveis")
+@Controller("responsavel")
 export class ResponsavelController {
-  constructor(private readonly responsavelService: ResponsavelService) { }
+  constructor(private readonly responsavelService: ResponsavelService) {}
 
   @Post()
-  async create(@Body() responsavel: Responsavel): Promise<Responsavel> {
-    return this.responsavelService.create(responsavel);
+  @ApiOperation({ summary: "Cadastrar novo responsável" })
+  @ApiResponse({ status: 201, description: "Responsável cadastrado com sucesso" })
+  async create(@Body() createResponsavelDto: CreateResponsavelDto) {
+    return this.responsavelService.create(createResponsavelDto);
   }
 
   @Get()
-  async findAll(): Promise<Responsavel[]> {
+  @ApiOperation({ summary: "Listar todos os responsáveis" })
+  async findAll() {
     return this.responsavelService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Responsavel | null> {
+  @Get(":id")
+  @ApiOperation({ summary: "Obter um responsável pelo ID" })
+  async findOne(@Param("id") id: number) {
     return this.responsavelService.findOne(id);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() responsavel: Responsavel): Promise<Responsavel | null> {
-    return this.responsavelService.update(id, responsavel);
+  @Put(":id")
+  @ApiOperation({ summary: "Atualizar um responsável" })
+  async update(@Param("id") id: number, @Body() updateResponsavelDto: UpdateResponsavelDto) {
+    return this.responsavelService.update(id, updateResponsavelDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: number): Promise<void> {
+  @Delete(":id")
+  @ApiOperation({ summary: "Remover um responsável" })
+  async remove(@Param("id") id: number) {
     return this.responsavelService.remove(id);
   }
 }

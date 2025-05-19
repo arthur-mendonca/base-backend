@@ -1,33 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Responsavel } from './responsavel.entity';
+import { Injectable } from "@nestjs/common";
+import { ResponsavelRepository } from "./repositories/responsavel.repository";
+import { CreateResponsavelDto } from "./dto/create-responsavel-dto";
+import { UpdateResponsavelDto } from "./dto/update-responsavel-dto";
 
 @Injectable()
 export class ResponsavelService {
-  constructor(
-    @InjectRepository(Responsavel)
-    private responsavelRepository: Repository<Responsavel>,
-  ) {}
+  constructor(private readonly repository: ResponsavelRepository) {}
 
-  async create(responsavel: Responsavel): Promise<Responsavel> {
-    return this.responsavelRepository.save(responsavel);
+  async create(createResponsavelDto: CreateResponsavelDto) {
+    return this.repository.create(createResponsavelDto);
   }
 
-  async findAll(): Promise<Responsavel[]> {
-    return this.responsavelRepository.find();
+  async findAll() {
+    return this.repository.findAll();
   }
 
-  async findOne(id: number): Promise<Responsavel | null> {
-    return this.responsavelRepository.findOne({ where: { id_responsavel: id } });
+  async findOne(id: number) {
+    return this.repository.findOne(id);
   }
 
-  async update(id: number, responsavel: Responsavel): Promise<Responsavel | null> {
-    await this.responsavelRepository.update(id, responsavel);
-    return this.findOne(id);
+  async update(id: number, updateResponsavelDto: UpdateResponsavelDto) {
+    return this.repository.update(id, updateResponsavelDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.responsavelRepository.delete(id);
+  async remove(id: number) {
+    return this.repository.remove(id);
   }
 }
