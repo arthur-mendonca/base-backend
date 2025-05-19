@@ -1,33 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Parceiro } from './parceiro.entity';
+import { Injectable } from "@nestjs/common";
+import { ParceiroRepository } from "./repositories/parceiro.repository";
+import { CreateParceiroDto } from "./dto/create-parceiro.dto";
+import { UpdateParceiroDto } from "./dto/update-parceiro.dto";
 
 @Injectable()
 export class ParceiroService {
-  constructor(
-    @InjectRepository(Parceiro)
-    private parceiroRepository: Repository<Parceiro>,
-  ) {}
+  constructor(private readonly repository: ParceiroRepository) {}
 
-  async create(parceiro: Parceiro): Promise<Parceiro> {
-    return this.parceiroRepository.save(parceiro);
+  async create(createParceiroDto: CreateParceiroDto) {
+    return this.repository.create(createParceiroDto);
   }
 
-  async findAll(): Promise<Parceiro[]> {
-    return this.parceiroRepository.find();
+  async findAll() {
+    return this.repository.findAll();
   }
 
-  async findOne(id: number): Promise<Parceiro | null> {
-    return this.parceiroRepository.findOne({ where: { id_parceiro: id } });
+  async findOne(id: number) {
+    return this.repository.findOne(id);
   }
 
-  async update(id: number, parceiro: Parceiro): Promise<Parceiro | null> {
-    await this.parceiroRepository.update(id, parceiro);
-    return this.findOne(id);
+  async update(id: number, updateParceiroDto: UpdateParceiroDto) {
+    return this.repository.update(id, updateParceiroDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.parceiroRepository.delete(id);
+  async remove(id: number) {
+    return this.repository.remove(id);
   }
 }

@@ -1,33 +1,43 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { ParceiroService } from './parceiro.service';
-import { Parceiro } from './parceiro.entity';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ParceiroService } from "./parceiro.service";
+import { CreateParceiroDto } from "./dto/create-parceiro.dto";
+import { UpdateParceiroDto } from "./dto/update-parceiro.dto";
+import { JwtAuthGuard } from "../autenticacao/jwt-auth.guard";
 
-@Controller('parceiro')
+@ApiTags("parceiros")
+@Controller("parceiro")
 export class ParceiroController {
-  constructor(private readonly parceiroService: ParceiroService) { }
+  constructor(private readonly parceiroService: ParceiroService) {}
 
   @Post()
-  async create(@Body() parceiro: Parceiro): Promise<Parceiro> {
-    return this.parceiroService.create(parceiro);
+  @ApiOperation({ summary: "Cadastrar novo parceiro" })
+  @ApiResponse({ status: 201, description: "Parceiro cadastrado com sucesso" })
+  async create(@Body() createParceiroDto: CreateParceiroDto) {
+    return this.parceiroService.create(createParceiroDto);
   }
 
   @Get()
-  async findAll(): Promise<Parceiro[]> {
+  @ApiOperation({ summary: "Listar todos os parceiros" })
+  async findAll() {
     return this.parceiroService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Parceiro | null> {
+  @Get(":id")
+  @ApiOperation({ summary: "Obter um parceiro pelo ID" })
+  async findOne(@Param("id") id: number) {
     return this.parceiroService.findOne(id);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() parceiro: Parceiro): Promise<Parceiro | null> {
-    return this.parceiroService.update(id, parceiro);
+  @Put(":id")
+  @ApiOperation({ summary: "Atualizar um parceiro" })
+  async update(@Param("id") id: number, @Body() updateParceiroDto: UpdateParceiroDto) {
+    return this.parceiroService.update(id, updateParceiroDto);
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: number): Promise<void> {
+  @Delete(":id")
+  @ApiOperation({ summary: "Remover um parceiro" })
+  async remove(@Param("id") id: number) {
     return this.parceiroService.remove(id);
   }
 }
