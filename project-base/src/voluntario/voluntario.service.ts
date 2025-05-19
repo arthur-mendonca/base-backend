@@ -1,35 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Voluntario } from './voluntario.entity';
+import { Injectable } from "@nestjs/common";
+import { VoluntarioRepository } from "./repositories/voluntario.repository";
+import { CreateVoluntarioDto } from "./dto/create-voluntario-dto";
+import { UpdateVoluntarioDto } from "./dto/update-voluntario-dto";
 
 @Injectable()
 export class VoluntarioService {
-    constructor(
-        @InjectRepository(Voluntario)
-        private voluntarioRepository: Repository<Voluntario>,
-    ) { }
+  constructor(private readonly repository: VoluntarioRepository) {}
 
-    async create(voluntario: Voluntario): Promise<Voluntario> {
-        return this.voluntarioRepository.save(voluntario);
-    }
+  async create(createVoluntarioDto: CreateVoluntarioDto) {
+    return this.repository.create(createVoluntarioDto);
+  }
 
-    async findAll(): Promise<Voluntario[]> {
-        return this.voluntarioRepository.find();
-    }
+  async findAll() {
+    return this.repository.findAll();
+  }
 
-    async findOne(id: number): Promise<Voluntario | null> {
-        return this.voluntarioRepository.findOne({
-            where: { id_voluntario: id },
-        });
-    }
+  async findOne(id: number) {
+    return this.repository.findOne(id);
+  }
 
-    async update(id: number, voluntario: Voluntario): Promise<Voluntario | null> {
-        await this.voluntarioRepository.update(id, voluntario);
-        return this.findOne(id);
-    }
+  async update(id: number, updateVoluntarioDto: UpdateVoluntarioDto) {
+    return this.repository.update(id, updateVoluntarioDto);
+  }
 
-    async remove(id: number): Promise<void> {
-        await this.voluntarioRepository.delete(id);
-    }
+  async remove(id: number) {
+    return this.repository.remove(id);
+  }
 }

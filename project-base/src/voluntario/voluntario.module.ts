@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Voluntario } from './voluntario.entity';
-import { VoluntarioService } from './voluntario.service';
-import { VoluntarioController} from './voluntario.controller';
+import { Module } from "@nestjs/common";
+import { VoluntarioService } from "./voluntario.service";
+import { VoluntarioController } from "./voluntario.controller";
+import { VoluntarioRepository } from "./repositories/voluntario.repository";
+import { PrismaModule } from "../prisma/prisma.module";
+
 @Module({
-    imports: [TypeOrmModule.forFeature([Voluntario])],
-    providers: [VoluntarioService],
-    controllers: [VoluntarioController],
-  })
-  export class VoluntarioModule {}
+  imports: [PrismaModule],
+  providers: [VoluntarioService, VoluntarioRepository],
+  controllers: [VoluntarioController],
+  exports: [VoluntarioService],
+})
+export class VoluntarioModule {}
