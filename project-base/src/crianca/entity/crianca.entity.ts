@@ -1,4 +1,4 @@
-import { Crianca } from "generated/prisma";
+import { Crianca } from "@prisma/client";
 
 export class CriancaEntity implements Crianca {
   id_crianca: number;

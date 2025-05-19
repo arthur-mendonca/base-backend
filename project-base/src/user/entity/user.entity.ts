@@ -1,4 +1,4 @@
-import { Usuario } from "generated/prisma";
+import { Usuario } from "@prisma/client";
 
 export class UserEntity implements Usuario {
   id_usuario: number;

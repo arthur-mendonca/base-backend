@@ -1,4 +1,4 @@
-import { CestaBasica } from "generated/prisma";
+import { CestaBasica } from "@prisma/client";
 
 export class CestaBasicaEntity implements CestaBasica {
   id_cesta: number;

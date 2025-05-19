@@ -1,4 +1,4 @@
-import { Frequencia } from "generated/prisma";
+import { Frequencia } from "@prisma/client";
 
 export class FrequenciaEntity implements Frequencia {
   id_frequencia: number;

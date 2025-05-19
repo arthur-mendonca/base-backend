@@ -1,4 +1,4 @@
-import { Voluntario } from "generated/prisma";
+import { Voluntario } from "@prisma/client";
 
 export class VoluntarioEntity implements Voluntario {
   id_voluntario: number;
