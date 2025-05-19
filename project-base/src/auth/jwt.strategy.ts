@@ -1,11 +1,11 @@
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PassportStrategy } from "@nestjs/passport";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { AuthService } from "./auth.service";
+import { UserService } from "../user/user.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
+  constructor(private userService: UserService) {
     if (!process.env.SECRET_KEY) {
       throw new Error("SECRET_KEY não definida nas variáveis de ambiente");
     }
@@ -17,14 +17,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { email: string; password: string }): Promise<{ id: number; email: string } | null> {
-    const user = (await this.authService.login(payload.email, payload.password)) as {
-      id: number;
-      email: string;
-    } | null;
+  async validate(payload: { sub: number; email: string }): Promise<any> {
+    const user = await this.userService.findByEmail(payload.email);
     if (!user) {
-      throw new UnauthorizedException("Invalid e-mail or password");
+      throw new UnauthorizedException("Usuario não encontrado");
     }
-    return user;
+
+    return {
+      id_usuario: user.id_usuario,
+      email: user.email,
+      perfil: user.perfil,
+    };
   }
 }
