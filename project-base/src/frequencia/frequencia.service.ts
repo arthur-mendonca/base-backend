@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { FrequenciaRepository } from "./repositories/frequencia.repository";
-import { CreateFrequenciaDto } from "./dto/create-frequencia-dto";
-import { UpdateFrequenciaDto } from "./dto/update-frequencia-dto";
+import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
+import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
 
 @Injectable()
 export class FrequenciaService {

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CriancaRepository } from "./repositories/crianca.repository";
-import { CreateCriancaDto } from "./dto/create-crianca-dto";
-import { UpdateCriancaDto } from "./dto/update-crianca-dto";
+import { CreateCriancaDto } from "./dto/create-crianca.dto";
+import { UpdateCriancaDto } from "./dto/update-crianca.dto";
 
 @Injectable()
 export class CriancaService {

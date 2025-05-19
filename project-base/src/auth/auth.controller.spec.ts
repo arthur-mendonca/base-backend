@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 
-describe('AuthController', () => {
+describe("AuthController", () => {
   let authController: AuthController;
   let authService: AuthService;
 
@@ -13,7 +13,7 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            login: jest.fn().mockResolvedValue({ access_token: 'test_token' }),
+            login: jest.fn().mockResolvedValue({ access_token: "test_token" }),
           },
         },
       ],
@@ -23,9 +23,9 @@ describe('AuthController', () => {
     authService = module.get<AuthService>(AuthService);
   });
 
-  it('should return an access token on login', async () => {
-    const loginDto = { email: 'usuario@exemplo.com', senha: '1234' };
+  it("should return an access token on login", async () => {
+    const loginDto = { email: "usuario@exemplo.com", senha: "1234" };
     const result = await authController.login(loginDto);
-    expect(result).toEqual({ access_token: 'test_token' });
+    expect(result).toEqual({ access_token: "test_token" });
   });
 });

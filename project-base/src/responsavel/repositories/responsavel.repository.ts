@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateResponsavelDto } from "../dto/create-responsavel-dto";
-import { UpdateResponsavelDto } from "../dto/update-responsavel-dto";
+import { CreateResponsavelDto } from "../dto/create-responsavel.dto";
+import { UpdateResponsavelDto } from "../dto/update-responsavel.dto";
 import { ResponsavelEntity } from "../entity/responsaval.entity";
 
 @Injectable()

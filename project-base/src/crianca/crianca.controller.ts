@@ -3,8 +3,8 @@ import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CriancaService } from "./crianca.service";
 
 import { JwtAuthGuard } from "../autenticacao/jwt-auth.guard";
-import { CreateCriancaDto } from "./dto/create-crianca-dto";
-import { UpdateCriancaDto } from "./dto/update-crianca-dto";
+import { CreateCriancaDto } from "./dto/create-crianca.dto";
+import { UpdateCriancaDto } from "./dto/update-crianca.dto";
 
 @ApiTags("criancas")
 @Controller("crianca")

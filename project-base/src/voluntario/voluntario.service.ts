@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { VoluntarioRepository } from "./repositories/voluntario.repository";
-import { CreateVoluntarioDto } from "./dto/create-voluntario-dto";
-import { UpdateVoluntarioDto } from "./dto/update-voluntario-dto";
+import { CreateVoluntarioDto } from "./dto/create-voluntario.dto";
+import { UpdateVoluntarioDto } from "./dto/update-voluntario.dto";
 
 @Injectable()
 export class VoluntarioService {

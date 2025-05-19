@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CestaBasicaService } from "./cestabasica.service";
-import { CreateCestaBasicaDto } from "./dto/create-cestabasica-dto";
-import { UpdateCestaBasicaDto } from "./dto/update-cestabasica-dto";
+import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
+import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
 
 @ApiTags("cesta-basica")
 @Controller("cesta-basica")

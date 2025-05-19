@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ResponsavelService } from "./responsavel.service";
-import { CreateResponsavelDto } from "./dto/create-responsavel-dto";
-import { UpdateResponsavelDto } from "./dto/update-responsavel-dto";
+import { CreateResponsavelDto } from "./dto/create-responsavel.dto";
+import { UpdateResponsavelDto } from "./dto/update-responsavel.dto";
 
 @ApiTags("responsaveis")
 @Controller("responsavel")

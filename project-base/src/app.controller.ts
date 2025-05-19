@@ -1,7 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { AppService } from "./app.service";
 
-@Controller('api')
+@Controller("api")
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
@@ -9,8 +9,8 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  @Get('status')
+  @Get("status")
   getRoot() {
-    return { message: 'API is running. Use /api for API endpoints.' };
+    return { message: "API is running. Use /api for API endpoints." };
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ResponsavelRepository } from "./repositories/responsavel.repository";
-import { CreateResponsavelDto } from "./dto/create-responsavel-dto";
-import { UpdateResponsavelDto } from "./dto/update-responsavel-dto";
+import { CreateResponsavelDto } from "./dto/create-responsavel.dto";
+import { UpdateResponsavelDto } from "./dto/update-responsavel.dto";
 
 @Injectable()
 export class ResponsavelService {

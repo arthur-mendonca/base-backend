@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { VoluntarioService } from "./voluntario.service";
-import { CreateVoluntarioDto } from "./dto/create-voluntario-dto";
-import { UpdateVoluntarioDto } from "./dto/update-voluntario-dto";
+import { CreateVoluntarioDto } from "./dto/create-voluntario.dto";
+import { UpdateVoluntarioDto } from "./dto/update-voluntario.dto";
 
 @ApiTags("voluntarios")
 @Controller("voluntario")

@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FrequenciaService } from "./frequencia.service";
-import { CreateFrequenciaDto } from "./dto/create-frequencia-dto";
-import { UpdateFrequenciaDto } from "./dto/update-frequencia-dto";
+import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
+import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
 import { JwtAuthGuard } from "../autenticacao/jwt-auth.guard";
 
 @ApiTags("frequencias")

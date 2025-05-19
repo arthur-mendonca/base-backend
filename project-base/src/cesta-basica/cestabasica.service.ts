@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CestaBasicaRepository } from "./repositories/cestabasica.repository";
-import { CreateCestaBasicaDto } from "./dto/create-cestabasica-dto";
-import { UpdateCestaBasicaDto } from "./dto/update-cestabasica-dto";
+import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
+import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
 
 @Injectable()
 export class CestaBasicaService {

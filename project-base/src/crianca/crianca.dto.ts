@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsString, IsInt, IsDate, IsNotEmpty } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsString, IsInt, IsDate, IsNotEmpty } from "class-validator";
 
 export class CriancaDto {
   @IsNotEmpty()

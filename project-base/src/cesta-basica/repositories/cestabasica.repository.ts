@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateCestaBasicaDto } from "../dto/create-cestabasica-dto";
-import { UpdateCestaBasicaDto } from "../dto/update-cestabasica-dto";
+import { CreateCestaBasicaDto } from "../dto/create-cestabasica.dto";
+import { UpdateCestaBasicaDto } from "../dto/update-cestabasica.dto";
 import { CestaBasicaEntity } from "../entity/cestabasica.entity";
 
 @Injectable()
