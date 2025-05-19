@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CestaBasica } from './cestabasica.entity';
-import { CestaBasicaService } from './cestabasica.service';
-import { CestaBasicaController } from './cestabasica.controller';
+import { Module } from "@nestjs/common";
+import { CestaBasicaController } from "./cestabasica.controller";
+import { CestaBasicaService } from "./cestabasica.service";
+import { PrismaModule } from "../prisma/prisma.module";
+import { CestaBasicaRepository } from "./repositories/cestabasica.repository";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CestaBasica])],
-  providers: [CestaBasicaService],
+  imports: [PrismaModule],
   controllers: [CestaBasicaController],
+  providers: [CestaBasicaService, CestaBasicaRepository],
+  exports: [CestaBasicaService],
 })
 export class CestaBasicaModule {}

@@ -1,36 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CestaBasica } from './cestabasica.entity';
+import { Injectable } from "@nestjs/common";
+import { CestaBasicaRepository } from "./repositories/cestabasica.repository";
+import { CreateCestaBasicaDto } from "./dto/create-cestabasica-dto";
+import { UpdateCestaBasicaDto } from "./dto/update-cestabasica-dto";
 
 @Injectable()
 export class CestaBasicaService {
-  constructor(
-    @InjectRepository(CestaBasica)
-    private cestaBasicaRepository: Repository<CestaBasica>,
-  ) {}
+  constructor(private readonly repository: CestaBasicaRepository) {}
 
-  async create(cestaBasica: CestaBasica): Promise<CestaBasica> {
-    return this.cestaBasicaRepository.save(cestaBasica);
+  async findAll() {
+    return this.repository.findAll();
   }
 
-  async findAll(): Promise<CestaBasica[]> {
-    return this.cestaBasicaRepository.find({ relations: ['responsavel'] });
+  async findOne(id: number) {
+    return this.repository.findOne(id);
   }
 
-  async findOne(id: number): Promise<CestaBasica | null> {
-    return this.cestaBasicaRepository.findOne({
-      where: { id_cesta: id },
-      relations: ['responsavel'],
-    });
+  async create(createCestaBasicaDto: CreateCestaBasicaDto) {
+    return this.repository.create(createCestaBasicaDto);
   }
 
-  async update(id: number, cestaBasica: CestaBasica): Promise<CestaBasica | null> {
-    await this.cestaBasicaRepository.update(id, cestaBasica);
-    return this.findOne(id);
+  async update(id: number, updateCestaBasicaDto: UpdateCestaBasicaDto) {
+    return this.repository.update(id, updateCestaBasicaDto);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.cestaBasicaRepository.delete(id);
+  async remove(id: number) {
+    return this.repository.remove(id);
   }
 }
