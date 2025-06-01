@@ -3,17 +3,21 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-
+import * as bcrypt from "bcrypt";
 @ApiTags("usuarios")
 @Controller("usuario")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @ApiOperation({ summary: "Criar novo usuário" })
   @ApiResponse({ status: 201, description: "Usuário criado com sucesso" })
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+    const saltOrRounds = 10; //Criptografia senha
+    const hashedPassword = await bcrypt.hash(createUserDto.senha, saltOrRounds);
+
+    const userToSave = { ...createUserDto, senha: hashedPassword };
+    return this.userService.create(userToSave);
   }
 
   @Get()
@@ -31,7 +35,13 @@ export class UserController {
   @Put(":id")
   @ApiOperation({ summary: "Atualizar um usuário" })
   async update(@Param("id") id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+    let userToUpdate = updateUserDto;
+    if (updateUserDto.senha) {
+      const saltOrRounds = 10;
+      const hashedPassword = await bcrypt.hash(updateUserDto.senha, saltOrRounds);
+      userToUpdate = { ...updateUserDto, senha: hashedPassword };
+    }
+    return this.userService.update(id, userToUpdate); 
   }
 
   @Delete(":id")
