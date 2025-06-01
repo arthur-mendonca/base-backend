@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
+import { AuthGuard } from "@nestjs/passport";
+
 @ApiTags("usuarios")
 @Controller("usuario")
 export class UserController {
@@ -21,11 +23,12 @@ export class UserController {
   }
 
   @Get()
+  @UseGuards(AuthGuard("jwt"))
   @ApiOperation({ summary: "Listar todos os usuários" })
   async findAll() {
     return this.userService.findAll();
   }
-
+  @UseGuards(AuthGuard("jwt"))
   @Get(":id")
   @ApiOperation({ summary: "Obter um usuário pelo ID" })
   async findOne(@Param("id") id: number) {

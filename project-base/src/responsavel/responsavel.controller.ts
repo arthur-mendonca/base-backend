@@ -8,7 +8,7 @@ import { UpdateResponsavelDto } from "./dto/update-responsavel.dto";
 @Controller("responsavel")
 export class ResponsavelController {
   constructor(private readonly responsavelService: ResponsavelService) {}
-
+  
   @Post()
   @ApiOperation({ summary: "Cadastrar novo responsável" })
   @ApiResponse({ status: 201, description: "Responsável cadastrado com sucesso" })
