@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query,Request, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Request, Req } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ParceiroService } from "./parceiro.service";
 import { CreateParceiroDto } from "./dto/create-parceiro.dto";
@@ -45,7 +45,7 @@ export class ParceiroController {
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
   async findByProfile(@Req() req: any) {
-    const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
+    const perfil = (req.user as any).perfil; // Supondo que o perfil do usuário esteja no token JWT
     return this.parceiroService.findByProfile(perfil);
   }
 

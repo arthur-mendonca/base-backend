@@ -45,10 +45,10 @@ export class CestaBasicaController {
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
   async findByProfile(@Req() req: any) {
-    const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
+    const perfil = (req.user as any).perfil; // Supondo que o perfil do usuário esteja no token JWT
     return this.cestaBasicaService.findByProfile(perfil);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Get("relatorio")
   @ApiOperation({ summary: "Gerar relatórios de cestas básicas" })

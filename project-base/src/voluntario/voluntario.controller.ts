@@ -8,7 +8,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("voluntarios")
 @Controller("voluntario")
 export class VoluntarioController {
-  constructor(private readonly voluntarioService: VoluntarioService) {}
+  constructor(private readonly voluntarioService: VoluntarioService) { }
 
   @Post()
   @ApiOperation({ summary: "Cadastrar novo voluntário" })
@@ -40,12 +40,12 @@ export class VoluntarioController {
   async remove(@Param("id") id: number) {
     return this.voluntarioService.remove(id);
   }
-  
- @UseGuards(JwtAuthGuard)
+
+  @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
   async findByProfile(@Req() req: any) {
-    const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
+    const perfil = (req.user as any).perfil; // Supondo que o perfil do usuário esteja no token JWT
     return this.voluntarioService.findByProfile(perfil);
   }
   @UseGuards(JwtAuthGuard)
