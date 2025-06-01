@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query,Request } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ResponsavelService } from "./responsavel.service";
 import { CreateResponsavelDto } from "./dto/create-responsavel.dto";
@@ -8,8 +8,8 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("responsaveis")
 @Controller("responsavel")
 export class ResponsavelController {
-  constructor(private readonly responsavelService: ResponsavelService) { }
-
+  constructor(private readonly responsavelService: ResponsavelService) {}
+  
   @Post()
   @ApiOperation({ summary: "Cadastrar novo responsável" })
   @ApiResponse({ status: 201, description: "Responsável cadastrado com sucesso" })
@@ -40,11 +40,11 @@ export class ResponsavelController {
   async remove(@Param("id") id: number) {
     return this.responsavelService.remove(id);
   }
-  
-  @UseGuards(JwtAuthGuard)
+ @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
-  async findByProfile(@Query('perfil') perfil: string) {
+  async findByProfile(@Request() req) {
+    const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
     return this.responsavelService.findByProfile(perfil);
   }
   // Nova rota para gerar relatórios
