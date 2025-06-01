@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CriancaService } from "./crianca.service";
 
@@ -45,5 +45,19 @@ export class CriancaController {
   @ApiOperation({ summary: "Remover uma criança do cadastro" })
   async remove(@Param("id") id: number) {
     return this.criancaService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("perfil")
+  @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
+  async findByProfile(@Query('perfil') perfil: string) {
+    return this.criancaService.findByProfile(perfil);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio")
+  @ApiOperation({ summary: "Gerar relatórios de crianças" })
+  async generateReport(@Query() filter: any) {
+    return this.criancaService.generateReport(filter);
   }
 }
