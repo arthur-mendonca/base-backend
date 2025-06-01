@@ -6,6 +6,7 @@ import { VoluntarioEntity } from "../entity/voluntario.entity";
 
 @Injectable()
 export class VoluntarioRepository {
+  
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<VoluntarioEntity[]> {
