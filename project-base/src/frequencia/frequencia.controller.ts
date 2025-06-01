@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { FrequenciaService } from "./frequencia.service";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
@@ -51,5 +51,18 @@ export class FrequenciaController {
   @ApiOperation({ summary: "Remover uma frequência" })
   async remove(@Param("id") id: number) {
     return this.frequenciaService.remove(id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get("perfil")
+  @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
+  async findByProfile(@Query('perfil') perfil: string) {
+    return this.frequenciaService.findByProfile(perfil);
+  }
+  // Nova rota para gerar relatórios
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio")
+  @ApiOperation({ summary: "Gerar relatórios de frequência" })
+  async generateReport(@Query() filter: any) {
+    return this.frequenciaService.generateReport(filter);
   }
 }
