@@ -27,6 +27,7 @@ export class ResponsavelService {
   async remove(id: number) {
     return this.repository.remove(id);
   }
+
   async findByProfile(perfil: string) {
     // Implementar lógica de filtragem conforme o perfil
     return this.prisma.responsavel.findMany({
@@ -35,6 +36,7 @@ export class ResponsavelService {
       },
     });
   }
+  
   async generateReport(filter: any) {
     // Implementar lógica para gerar relatórios
     return this.prisma.responsavel.findMany({

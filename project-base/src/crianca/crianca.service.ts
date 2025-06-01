@@ -23,17 +23,18 @@ export class CriancaService {
   async update(id: number, updateCriancaDto: UpdateCriancaDto) {
     return this.repository.update(id, updateCriancaDto);
   }
-  async findByProfile(perfil: string) {
-    // Aqui você pode implementar a lógica para filtrar as crianças com base no perfil
-    return this.prisma.crianca.findMany({
-      where: {
-        // Exemplo de filtro, ajuste conforme sua lógica
-        // Se o perfil for "admin", retorna todas as crianças
-        // Se for "usuario", retorna apenas as crianças associadas ao usuário
-        // Adapte conforme sua lógica de negócios
-        // Exemplo: { /* condição baseada no perfil */ }
-      },
-    });
+  async findByProfile(perfil: string, userId: number) {
+    if (perfil === 'admin') {
+      // Admin pode ver todas as crianças
+      return this.prisma.crianca.findMany();
+    } else {
+      // Usuário comum só pode ver suas próprias crianças
+      return this.prisma.crianca.findMany({
+        where: {
+          id_responsavel: userId, // Supondo que você tenha um campo que relaciona a criança ao responsável
+        },
+      });
+    }
   }
   async remove(id: number) {
     return this.repository.remove(id);
@@ -44,12 +45,18 @@ export class CriancaService {
   }
   // Função para gerar relatórios
   async generateReport(filter: any) {
-    // Aqui você pode implementar a lógica para gerar relatórios
-    // Por exemplo, filtrar por data, presença, etc.
+    const { data_nascimento, status_presenca } = filter;
+    const whereConditions: any = {};
+    if (data_nascimento) {
+      whereConditions.data_nascimento = {
+        gte: new Date(data_nascimento), // Filtra por data de nascimento maior ou igual
+      };
+    }
+    if (status_presenca) {
+      whereConditions.status_presenca = status_presenca; // Filtra por status de presença
+    }
     return this.prisma.crianca.findMany({
-      where: {
-        // Adicione suas condições de filtro aqui
-      },
+      where: whereConditions,
     });
   }
 }
