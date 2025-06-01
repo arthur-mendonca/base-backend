@@ -30,20 +30,30 @@ export class ParceiroService {
   }
 
   async findByProfile(perfil: string) {
-    // Implementar lógica de filtragem conforme o perfil
-    return this.prisma.parceiro.findMany({
-      where: {
-        // Condições baseadas no perfil
-      },
-    });
+   if (perfil === 'admin') {
+      return this.prisma.parceiro.findMany();
+    } else {
+      return this.prisma.parceiro.findMany({
+        where: {
+          // Adicione condições específicas para outros perfis, se necessário
+          // Exemplo: tipo: 'patrocinador' (ou qualquer outra lógica que faça sentido)
+        },
+      });
+    }
   }
-  
+
   async generateReport(filter: any) {
-    // Implementar lógica para gerar relatórios
+    const { tipo, contribuicao } = filter;
+    const whereConditions: any = {};
+    if (tipo) {
+      whereConditions.tipo = tipo; // Filtra por tipo de parceiro
+    }
+    if (contribuicao) {
+      whereConditions.contribuicao = contribuicao; // Filtra por tipo de contribuição
+    }
     return this.prisma.parceiro.findMany({
-      where: {
-        // Condições de filtro
-      },
+      where: whereConditions,
     });
+
   }
 }

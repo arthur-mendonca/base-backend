@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req ,Request} from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CriancaService } from "./crianca.service";
 
@@ -50,7 +50,7 @@ export class CriancaController {
   @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
-  async findByProfile(@Req() req) {
+  async findByProfile(@Request() req) {
     const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
     const userId = req.user.id; // Supondo que o ID do usuário esteja no token JWT
     return this.criancaService.findByProfile(perfil, userId);
