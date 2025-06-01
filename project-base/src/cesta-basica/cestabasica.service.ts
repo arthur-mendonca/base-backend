@@ -6,8 +6,8 @@ import { PrismaClient } from "@prisma/client";
 
 @Injectable()
 export class CestaBasicaService {
-   private prisma = new PrismaClient();
-  constructor(private readonly repository: CestaBasicaRepository) {}
+  private prisma = new PrismaClient();
+  constructor(private readonly repository: CestaBasicaRepository) { }
 
   async findAll() {
     return this.repository.findAll();
@@ -28,20 +28,33 @@ export class CestaBasicaService {
   async remove(id: number) {
     return this.repository.remove(id);
   }
+
   async findByProfile(perfil: string) {
-    // Implementar lógica de filtragem conforme o perfil
-    return this.prisma.cestaBasica.findMany({
-      where: {
-        // Condições baseadas no perfil
-      },
-    });
+    if (perfil === 'admin') {
+      return this.prisma.cestaBasica.findMany();
+    } else {
+      return this.prisma.cestaBasica.findMany({
+        where: {
+          // Adicione condições específicas para outros perfis, se necessário
+          // Exemplo: id_responsavel: userId
+        },
+      });
+    }
   }
+  
   async generateReport(filter: any) {
-    // Implementar lógica para gerar relatórios
+    const { data_entrega, quantidade } = filter;
+    const whereConditions: any = {};
+    if (data_entrega) {
+      whereConditions.data_entrega = {
+        gte: new Date(data_entrega), // Filtra por data de entrega maior ou igual
+      };
+    }
+    if (quantidade) {
+      whereConditions.quantidade = quantidade; // Filtra por quantidade
+    }
     return this.prisma.cestaBasica.findMany({
-      where: {
-        // Condições de filtro
-      },
+      where: whereConditions,
     });
   }
 }

@@ -29,7 +29,7 @@ export class VoluntarioService {
     return this.repository.remove(id);
   }
 
-   async findByProfile(perfil: string, userId: number) {
+   async findByProfile(perfil: string) {
    if (perfil === 'admin') {
       // Admin pode ver todos os voluntários
       return this.prisma.voluntario.findMany();
