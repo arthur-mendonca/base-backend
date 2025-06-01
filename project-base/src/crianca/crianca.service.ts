@@ -23,6 +23,11 @@ export class CriancaService {
   async update(id: number, updateCriancaDto: UpdateCriancaDto) {
     return this.repository.update(id, updateCriancaDto);
   }
+
+  async remove(id: number) {
+    return this.repository.remove(id);
+  }
+
   async findByProfile(perfil: string, userId: number) {
     if (perfil === 'admin') {
       // Admin pode ver todas as crianças
@@ -36,10 +41,6 @@ export class CriancaService {
       });
     }
   }
-  async remove(id: number) {
-    return this.repository.remove(id);
-  }
-
   async findCriancaWithResponsavel(id: number) {
     return this.repository.findCriancaWithResponsavel(id);
   }
