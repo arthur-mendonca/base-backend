@@ -9,7 +9,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("criancas")
 @Controller("crianca")
 export class CriancaController {
-  constructor(private readonly criancaService: CriancaService) {}
+  constructor(private readonly criancaService: CriancaService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -53,7 +53,7 @@ export class CriancaController {
   async findByProfile(@Query('perfil') perfil: string) {
     return this.criancaService.findByProfile(perfil);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Get("relatorio")
   @ApiOperation({ summary: "Gerar relatórios de crianças" })

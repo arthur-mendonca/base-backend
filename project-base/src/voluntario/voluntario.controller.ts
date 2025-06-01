@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { VoluntarioService } from "./voluntario.service";
 import { CreateVoluntarioDto } from "./dto/create-voluntario.dto";
 import { UpdateVoluntarioDto } from "./dto/update-voluntario.dto";
+import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 
 @ApiTags("voluntarios")
 @Controller("voluntario")
@@ -38,5 +39,18 @@ export class VoluntarioController {
   @ApiOperation({ summary: "Remover um voluntário" })
   async remove(@Param("id") id: number) {
     return this.voluntarioService.remove(id);
+  }
+  // Nova rota para visualizar dados conforme perfil
+  @UseGuards(JwtAuthGuard)
+  @Get("perfil")
+  @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
+  async findByProfile(@Query('perfil') perfil: string) {
+    return this.voluntarioService.findByProfile(perfil);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio")
+  @ApiOperation({ summary: "Gerar relatórios de voluntarios" })
+  async generateReport(@Query() filter: any) {
+    return this.voluntarioService.generateReport(filter);
   }
 }
