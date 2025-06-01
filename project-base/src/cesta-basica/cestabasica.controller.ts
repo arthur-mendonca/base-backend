@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, Query, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CestaBasicaService } from "./cestabasica.service";
 import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
 import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
+import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 
 @ApiTags("cesta-basica")
 @Controller("cesta-basica")
@@ -38,5 +39,17 @@ export class CestaBasicaController {
   @ApiOperation({ summary: "Remover uma cesta básica" })
   async remove(@Param("id") id: number) {
     return this.cestaBasicaService.remove(id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get("perfil")
+  @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
+  async findByProfile(@Query('perfil') perfil: string) {
+    return this.cestaBasicaService.findByProfile(perfil);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio")
+  @ApiOperation({ summary: "Gerar relatórios de cestas básicas" })
+  async generateReport(@Query() filter: any) {
+    return this.cestaBasicaService.generateReport(filter);
   }
 }
