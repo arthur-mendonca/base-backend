@@ -29,23 +29,35 @@ export class VoluntarioService {
     return this.repository.remove(id);
   }
 
-   async findByProfile(perfil: string) {
-    // Implementar lógica de filtragem conforme o perfil
-    return this.prisma.voluntario.findMany({
-      where: {
-        // Condições baseadas no perfil
-      },
-    });
+   async findByProfile(perfil: string, userId: number) {
+   if (perfil === 'admin') {
+      // Admin pode ver todos os voluntários
+      return this.prisma.voluntario.findMany();
+    } else {
+      // Para outros perfis, você pode definir uma lógica de filtragem
+      // Exemplo: retornar apenas voluntários que estão ativos ou que têm uma área de atuação específica
+      return this.prisma.voluntario.findMany({
+        where: {
+          // Adicione condições específicas para outros perfis, se necessário
+          // Exemplo: area_atuacao: 'Educação' (ou qualquer outra lógica que faça sentido)
+          // Aqui, você pode filtrar por área de atuação ou por disponibilidade
+          disponibilidade: 'Ativo', // Supondo que você tenha um campo de disponibilidade
+        },
+      });
+    }
   }
 
-  // Função para gerar relatórios
-  async generateReport(filter: any) {
-    // Aqui você pode implementar a lógica para gerar relatórios
-    // Por exemplo, filtrar por data, presença, etc.
+ async generateReport(filter: any) {
+   const { area_atuacao, disponibilidade } = filter;
+    const whereConditions: any = {};
+    if (area_atuacao) {
+      whereConditions.area_atuacao = area_atuacao;
+    }
+    if (disponibilidade) {
+      whereConditions.disponibilidade = disponibilidade;
+    }
     return this.prisma.voluntario.findMany({
-      where: {
-        // Adicione suas condições de filtro aqui
-      },
+      where: whereConditions,
     });
   }
 }

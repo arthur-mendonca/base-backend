@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { VoluntarioService } from "./voluntario.service";
 import { CreateVoluntarioDto } from "./dto/create-voluntario.dto";
@@ -40,16 +40,18 @@ export class VoluntarioController {
   async remove(@Param("id") id: number) {
     return this.voluntarioService.remove(id);
   }
-  // Nova rota para visualizar dados conforme perfil
-  @UseGuards(JwtAuthGuard)
+  
+ @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
-  async findByProfile(@Query('perfil') perfil: string) {
-    return this.voluntarioService.findByProfile(perfil);
+  async findByProfile(@Req() req) {
+    const perfil = req.user.perfil; // Supondo que o perfil do usuário esteja no token JWT
+    const userId = req.user.userId; // Supondo que o userId do usuário esteja no token JWT
+    return this.voluntarioService.findByProfile(perfil, userId);
   }
   @UseGuards(JwtAuthGuard)
   @Get("relatorio")
-  @ApiOperation({ summary: "Gerar relatórios de voluntarios" })
+  @ApiOperation({ summary: "Gerar relatórios de voluntários" })
   async generateReport(@Query() filter: any) {
     return this.voluntarioService.generateReport(filter);
   }
