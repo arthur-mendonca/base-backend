@@ -3,7 +3,8 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "./common/http-exception.filter";
-
+import * as dotenv from 'dotenv';
+dotenv.config(); 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
