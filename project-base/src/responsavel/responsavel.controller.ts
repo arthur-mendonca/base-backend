@@ -40,7 +40,7 @@ export class ResponsavelController {
   async remove(@Param("id") id: number) {
     return this.responsavelService.remove(id);
   }
-  @UseGuards(JwtAuthGuard)
+  
   @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
