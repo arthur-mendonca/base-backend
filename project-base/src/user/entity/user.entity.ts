@@ -6,4 +6,5 @@ export class UserEntity implements Usuario {
   email: string;
   senha: string;
   perfil: "admin" | "usuario";
+  ativo: any;
 }

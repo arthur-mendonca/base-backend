@@ -5,6 +5,9 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
+  findById(sub: number) {
+    throw new Error("Method not implemented.");
+  }
   constructor(private readonly repository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto) {
