@@ -14,7 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      if (user == null) {
        throw new UnauthorizedException();
      }
-     return user;
+     // Map 'perfil' from string to UserRole enum
+     const mappedUser: User = {
+       ...user,
+       perfil: UserRole[user.perfil.toUpperCase() as keyof typeof UserRole]
+     };
+     return mappedUser;
    }
   private readonly logger = new Logger(JwtStrategy.name);
 
