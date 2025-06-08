@@ -4,7 +4,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { UserService } from "../user/user.service";
-import { JwtPayload, UserRole, isValidUserRole, User } from "./interfaces/auth.interface";
+import { JwtPayload, UserRole, User } from "./interfaces/auth.interface";
 
 
 @Injectable()
@@ -22,11 +22,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     };
     return mappedUser;
   }
-  private readonly logger = new Logger(JwtStrategy.name);
+  protected readonly logger = new Logger(JwtStrategy.name);
 
   constructor(
-    private userService: UserService,
-    private configService: ConfigService
+    protected userService: UserService,
+    protected configService: ConfigService
   ) {
     // Obtém chave secreta do config service
     const secretKey = configService.get<string>("SECRET_KEY");
