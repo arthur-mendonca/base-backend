@@ -1,64 +1,72 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+// auth.service.ts - Simplified version
+import { Injectable, UnauthorizedException, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { UserService } from "../user/user.service";
-import { LoginResponse } from "./interfaces/auth.interface";
-import * as bcrypt from "bcrypt";
+import { UserService } from "src/user/user.service";
+import * as bcrypt from 'bcrypt';
+import { JwtPayload, LoginResponse, User, UserRole } from "./interfaces/auth.interface";
+import { DatabaseUser, convertDatabaseUserToAppUser } from "./interfaces/database.interface";
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
-
-  async validateUser(email: string, password: string): Promise<any> {
-    console.log('AuthService validateUser called with:', { email, password }); // Debug
-    
+  ) { }
+  // Método que valida o usuário pelo email e senha recebidos
+  async validateUser(email: string, password: string): Promise<Omit<User, 'senha'>> {
     try {
-      const user = await this.userService.findByEmail(email);
-      console.log('User found:', user ? 'Yes' : 'No'); // Debug
-      
-      if (!user) {
-        throw new UnauthorizedException('Email não encontrado');
+      // Busca usuário no banco pelo email
+      const dbUser = await this.userService.findByEmail(email) as DatabaseUser;
+
+      if (!dbUser) {
+        throw new UnauthorizedException('Usuário não encontrado');
       }
-      
-      console.log('Comparing passwords...'); // Debug
-      const senhaValida = await bcrypt.compare(password, user.senha);
-      console.log('Password valid:', senhaValida); // Debug
-      
+
+      // Verificar se usuário está ativo
+      if (!dbUser.ativo) {
+        throw new UnauthorizedException('Usuário inativo. Contate o administrador.');
+      }
+      // Compara senha fornecida com senha hash do banco
+      const senhaValida = await bcrypt.compare(password, dbUser.senha);
+
       if (!senhaValida) {
         throw new UnauthorizedException('Senha incorreta');
       }
-      
-      // Retorna o usuário sem a senha para segurança
-      const { senha, ...result } = user;
-      console.log('Returning user:', result); // Debug
-      return result;
+
+      // Converte usuário do banco para formato da aplicação sem senha
+      const appUser = convertDatabaseUserToAppUser(dbUser);
+      // Loga login bem-sucedido
+      this.logger.log(`Login bem-sucedido: ${email} (${appUser.perfil})`);
+      return appUser;
     } catch (error) {
-      console.log('Error in validateUser:', error.message); // Debug
+      // Loga erro no login
+      this.logger.error(`Falha no login para ${email}: ${error.message}`);
       throw error;
     }
   }
 
-  async generateToken(user: any): Promise<LoginResponse> {
-    console.log('Generating token for user:', user); // Debug
-    
-    const payload = { 
-      sub: user.id_usuario, 
-      email: user.email, 
-      perfil: user.perfil 
+  // Gera o token JWT para o usuário autenticado
+  async generateToken(user: Omit<User, 'senha'>): Promise<LoginResponse> {
+    const payload: JwtPayload = {
+      sub: user.id_usuario,
+      email: user.email,
+      perfil: user.perfil
     };
-    
-    const token = await this.jwtService.signAsync(payload);
-    console.log('Token generated successfully'); // Debug
-    
-    return {
-      accessToken: token,
-    };
-  }
 
-  async login(email: string, pass: string): Promise<LoginResponse> {
-    const user = await this.validateUser(email, pass);
-    return this.generateToken(user);
+    // Gera o token assinando o payload
+    const accessToken = await this.jwtService.signAsync(payload);
+    
+    // Retorna o token e dados públicos do usuário
+    return {
+      accessToken,
+      user: {
+        id: user.id_usuario,
+        email: user.email,
+        perfil: user.perfil,
+        nome: user.nome
+      }
+    };
   }
 }
