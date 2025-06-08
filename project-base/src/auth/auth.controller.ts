@@ -76,7 +76,7 @@ export class AuthController {
 
   // Endpoint para voluntários, protegido e com permissões específicas
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.USUARIO, UserRole.ADMIN) // Permite tanto voluntários quanto administradores
   @Get("voluntario-area")
   voluntarioArea(@Request() req: any) {
     return {
@@ -88,7 +88,7 @@ export class AuthController {
 
   // Endpoint para responsáveis/famílias
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.USUARIO)
+  @Roles(UserRole.USUARIO, UserRole.ADMIN) // Permite tanto famílias quanto administradores
   @Get("familia-area")
   familiaArea(@Request() req: any) {
     return {
