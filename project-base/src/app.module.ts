@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 import { AppController } from "./app.controller";
@@ -12,6 +12,7 @@ import { ParceiroModule } from "./parceiro/parceiro.module";
 import { CestaBasicaModule } from "./cesta-basica/cestabasica.module";
 import { FrequenciaModule } from "./frequencia/frequencia.module";
 import { AuthModule } from "./auth/auth.module";
+import { AuditMiddleware } from "./auth/auditMiddleware";
 
 @Module({
   imports: [
@@ -31,4 +32,10 @@ import { AuthModule } from "./auth/auth.module";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuditMiddleware)
+      .forRoutes('*'); // Aplica o middleware em todas as rotas
+  }
+}
