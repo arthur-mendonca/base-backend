@@ -10,7 +10,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors(); // Habilita CORS para todas as rotas
-    app.setGlobalPrefix("api"); // Define um prefixo global para todas as rotas
+    app.setGlobalPrefix(""); // Define um prefixo global para todas as rotas
     app.enableShutdownHooks(); // Habilita os hooks de desligamento
     app.useGlobalFilters(new HttpExceptionFilter()); // Usando os filtros de exceção globais
     app.useGlobalPipes(

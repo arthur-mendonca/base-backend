@@ -46,7 +46,8 @@ export class UserController {
     }
     return this.userService.update(id, userToUpdate);
   }
-
+  
+  @UseGuards(AuthGuard("jwt"))
   @Delete(":id")
   @ApiOperation({ summary: "Remover um usuário" })
   async remove(@Param("id") id: number) {
