@@ -9,18 +9,19 @@ import { JwtPayload, UserRole, isValidUserRole, User } from "./interfaces/auth.i
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-   async validate(payload: JwtPayload): Promise<User> {
-     const user = await this.userService.findById(payload.sub);
-     if (user == null) {
-       throw new UnauthorizedException();
-     }
-     // Map 'perfil' from string to UserRole enum
-     const mappedUser: User = {
-       ...user,
-       perfil: UserRole[user.perfil.toUpperCase() as keyof typeof UserRole]
-     };
-     return mappedUser;
-   }
+
+  async validate(payload: JwtPayload): Promise<User> {
+    const user = await this.userService.findById(payload.sub);
+    if (user == null) {
+      throw new UnauthorizedException();
+    }
+    // Mapear 'perfil' de string para enum UserRole
+    const mappedUser: User = {
+      ...user,
+      perfil: UserRole[user.perfil.toUpperCase() as keyof typeof UserRole]
+    };
+    return mappedUser;
+  }
   private readonly logger = new Logger(JwtStrategy.name);
 
   constructor(
@@ -40,5 +41,5 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: secretKey,
     });
   }
-  
+
 }
