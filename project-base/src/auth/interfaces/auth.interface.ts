@@ -1,14 +1,13 @@
 // interfaces/auth.interfaces.ts
+// interfaces/auth.interfaces.ts
 export interface User {
-  id_usuario: number;
-  email: string;
-  perfil: UserRole;
-  nome?: string;
-  telefone?: string;
-  ativo: boolean;
-  data_cadastro: Date;
-  senha?: string;
+  id_usuario: number; // ID do usuário
+  nome: string;       // Nome do usuário
+  email: string;      // Email do usuário (único)
+  senha?: string;     // Senha do usuário (opcional, não deve ser exposta)
+  perfil: UserRole;   // Perfil do usuário (admin ou usuario)
 }
+
 
 export interface JwtPayload {
   sub: number;  // ID do usuário, usado como subject no token
@@ -20,20 +19,18 @@ export interface LoginResponse {
   accessToken: string;  // Token JWT de acesso
   user: { // Dados do usuário retornados no login
     id: number;
+    nome?: string;
     email: string;
     perfil: UserRole;
-    nome?: string;
   };
 }
 // Interface para uso das informações do usuário na requisição HTTP
 export interface RequestWithUser extends Request {
   user: {
     id_usuario: number;
+    nome?: string;
     email: string;
     perfil: UserRole; 
-    nome?: string;
-    ativo: boolean;
-    data_cadastro: Date;
   };
 }
 
