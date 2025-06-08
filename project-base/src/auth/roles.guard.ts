@@ -26,10 +26,8 @@ export class RolesGuard implements CanActivate {
     
     // Define a hierarquia de permissões da ONG
     const roleHierarchy = {
-      [UserRole.ADMIN]: [UserRole.ADMIN, UserRole.COORDENADOR, UserRole.VOLUNTARIO, UserRole.RESPONSAVEL],
-      [UserRole.COORDENADOR]: [UserRole.COORDENADOR, UserRole.VOLUNTARIO],
-      [UserRole.VOLUNTARIO]: [UserRole.VOLUNTARIO],
-      [UserRole.RESPONSAVEL]: [UserRole.RESPONSAVEL]
+      [UserRole.ADMIN]: [UserRole.ADMIN],
+      [UserRole.USUARIO]: [UserRole.USUARIO]
     };
 
     // Obtém as permissões do perfil do usuário

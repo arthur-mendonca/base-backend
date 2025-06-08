@@ -37,9 +37,6 @@ export interface RequestWithUser extends Request {
 // Enum com os perfis de usuário da aplicação
 export enum UserRole {
   ADMIN = 'ADMIN',
-  COORDENADOR = 'COORDENADOR',
-  VOLUNTARIO = 'VOLUNTARIO',
-  RESPONSAVEL = 'RESPONSAVEL',
   USUARIO = "USUARIO",
 }
 // Função para validar se uma string é um valor válido do enum UserRole

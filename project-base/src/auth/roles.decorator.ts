@@ -7,9 +7,7 @@ export const Roles = (...roles: string[]) => SetMetadata(ROLES_KEY, roles);
 // Enum para definir os perfis usados na aplicação
 export enum UserRole {
   ADMIN = 'ADMIN',
-  COORDENADOR = 'COORDENADOR', 
-  VOLUNTARIO = 'VOLUNTARIO',
-  RESPONSAVEL = "RESPONSAVEL",
+  USUARIO = "USUARIO",
 }
 
 // Exemplos de uso do decorador:

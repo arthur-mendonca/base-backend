@@ -64,7 +64,7 @@ export class AuthController {
 
   // Endpoint para coordenadores, com múltiplos perfis permitidos
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.COORDENADOR)
+  @Roles(UserRole.ADMIN)
   @Get("coordenador-dashboard")
   coordenadorDashboard(@Request() req: any) {
     return {
@@ -76,7 +76,7 @@ export class AuthController {
 
   // Endpoint para voluntários, protegido e com permissões específicas
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN, UserRole.COORDENADOR, UserRole.VOLUNTARIO)
+  @Roles(UserRole.ADMIN)
   @Get("voluntario-area")
   voluntarioArea(@Request() req: any) {
     return {
@@ -88,7 +88,7 @@ export class AuthController {
 
   // Endpoint para responsáveis/famílias
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.RESPONSAVEL)
+  @Roles(UserRole.USUARIO)
   @Get("familia-area")
   familiaArea(@Request() req: any) {
     return {
