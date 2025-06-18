@@ -7,7 +7,7 @@ import * as bcrypt from "bcrypt";
 @ApiTags("usuarios")
 @Controller("usuario")
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({ summary: "Criar novo usuário" })
@@ -41,7 +41,7 @@ export class UserController {
       const hashedPassword = await bcrypt.hash(updateUserDto.senha, saltOrRounds);
       userToUpdate = { ...updateUserDto, senha: hashedPassword };
     }
-    return this.userService.update(id, userToUpdate); 
+    return this.userService.update(id, userToUpdate);
   }
 
   @Delete(":id")
