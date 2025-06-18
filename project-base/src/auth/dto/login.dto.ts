@@ -1,9 +1,9 @@
-import { IsEmail, IsString } from "class-validator";
+import { IsEmail, IsString, MinLength } from "class-validator";
 
 export class LoginDto {
-  @IsEmail()
-  email: string; // Campo para o email do usuário
+  @IsEmail({}, { message: 'Email deve ter um formato válido' })
+  email: string;
 
-  @IsString()
-  senha: string; // Campo para a senha do usuário
+  @IsString({ message: 'Senha é obrigatória' })
+  senha: string;
 }

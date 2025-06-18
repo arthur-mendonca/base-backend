@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from "@nestjs/common";
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query, Req, Request } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { CriancaService } from "./crianca.service";
 
@@ -9,7 +9,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("criancas")
 @Controller("crianca")
 export class CriancaController {
-  constructor(private readonly criancaService: CriancaService) {}
+  constructor(private readonly criancaService: CriancaService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -45,5 +45,21 @@ export class CriancaController {
   @ApiOperation({ summary: "Remover uma criança do cadastro" })
   async remove(@Param("id") id: number) {
     return this.criancaService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("perfil")
+  @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
+  async findByProfile(@Req() req: any) {
+    const perfil = (req.user as any).perfil; // Supondo que o perfil do usuário esteja no token JWT
+    const userId = (req.user.id as any).id_usuario // Supondo que o ID do usuário esteja no token JWT
+    return this.criancaService.findByProfile(perfil, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio")
+  @ApiOperation({ summary: "Gerar relatórios de crianças" })
+  async generateReport(@Query() filter: any) {
+    return this.criancaService.generateReport(filter);
   }
 }

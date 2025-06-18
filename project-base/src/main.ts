@@ -3,13 +3,14 @@ import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "./common/http-exception.filter";
-
+import * as dotenv from 'dotenv';
+dotenv.config(); 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
 
     app.enableCors(); // Habilita CORS para todas as rotas
-    app.setGlobalPrefix("api"); // Define um prefixo global para todas as rotas
+    app.setGlobalPrefix(""); // Define um prefixo global para todas as rotas
     app.enableShutdownHooks(); // Habilita os hooks de desligamento
     app.useGlobalFilters(new HttpExceptionFilter()); // Usando os filtros de exceção globais
     app.useGlobalPipes(

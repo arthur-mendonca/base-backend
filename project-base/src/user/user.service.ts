@@ -5,6 +5,13 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
+ async findById(sub: number) {
+  const user = await this.repository.findOne(sub);
+  if (!user) {
+    throw new NotFoundException(`Usuário com ID ${sub} não encontrado`);
+  }
+  return user;
+}
   constructor(private readonly repository: UserRepository) {}
 
   async create(createUserDto: CreateUserDto) {
