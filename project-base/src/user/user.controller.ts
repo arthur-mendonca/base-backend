@@ -6,6 +6,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { AuthGuard } from "@nestjs/passport";
 
+
 @ApiTags("usuarios")
 @Controller("usuario")
 export class UserController {
