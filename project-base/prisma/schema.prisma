@@ -15,8 +15,8 @@ datasource db {
 }
 
 model Crianca {
-  id_crianca      Int      @id @default(autoincrement())
-  id_responsavel  Int
+  id_crianca      BigInt   @id
+  id_responsavel  BigInt
   nome            String
   data_nascimento DateTime
   rg              String
@@ -27,7 +27,7 @@ model Crianca {
 }
 
 model Responsavel {
-  id_responsavel         Int    @id @default(autoincrement())
+  id_responsavel         BigInt @id
   nome                   String
   cpf                    String @unique
   rg                     String
@@ -42,7 +42,7 @@ model Responsavel {
 }
 
 model Voluntario {
-  id_voluntario          Int     @id @default(autoincrement())
+  id_voluntario          BigInt  @id
   nome                   String
   cpf                    String  @unique
   email                  String
@@ -54,7 +54,7 @@ model Voluntario {
 }
 
 model Parceiro {
-  id_parceiro  Int    @id @default(autoincrement())
+  id_parceiro  BigInt @id
   nome         String
   tipo         String // "parceiro" ou "patrocinador"
   email        String
@@ -63,7 +63,7 @@ model Parceiro {
 }
 
 model Usuario {
-  id_usuario Int         @id @default(autoincrement())
+  id_usuario BigInt      @id
   nome       String
   email      String      @unique
   senha      String
@@ -71,8 +71,8 @@ model Usuario {
 }
 
 model Frequencia {
-  id_frequencia Int      @id @default(autoincrement())
-  id_crianca    Int
+  id_frequencia BigInt   @id
+  id_crianca    BigInt
   atividade     String
   data          DateTime
   presenca      Boolean
@@ -81,8 +81,8 @@ model Frequencia {
 }
 
 model CestaBasica {
-  id_cesta       Int      @id @default(autoincrement())
-  id_responsavel Int
+  id_cesta       BigInt   @id
+  id_responsavel BigInt
   data_entrega   DateTime
   quantidade     Int
   observacoes    String

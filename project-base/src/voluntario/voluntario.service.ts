@@ -2,62 +2,63 @@ import { Injectable } from "@nestjs/common";
 import { VoluntarioRepository } from "./repositories/voluntario.repository";
 import { CreateVoluntarioDto } from "./dto/create-voluntario.dto";
 import { UpdateVoluntarioDto } from "./dto/update-voluntario.dto";
-import { PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { SnowflakeService } from "src/snowflake/snowflake.service";
 
 @Injectable()
 export class VoluntarioService {
-   private prisma = new PrismaClient();
-  constructor(private readonly repository: VoluntarioRepository) {}
+  constructor(
+    private readonly repository: VoluntarioRepository,
+    private readonly snowflakeService: SnowflakeService,
+  ) {}
 
   async create(createVoluntarioDto: CreateVoluntarioDto) {
-    return this.repository.create(createVoluntarioDto);
+    const id = this.snowflakeService.generate();
+
+    const voluntarioData: Prisma.VoluntarioCreateInput = {
+      ...createVoluntarioDto,
+      id_voluntario: id,
+    };
+    return this.repository.create(voluntarioData);
   }
 
   async findAll() {
     return this.repository.findAll();
   }
 
-  async findOne(id: number) {
+  async findOne(id: bigint) {
     return this.repository.findOne(id);
   }
 
-  async update(id: number, updateVoluntarioDto: UpdateVoluntarioDto) {
+  async update(id: bigint, updateVoluntarioDto: UpdateVoluntarioDto) {
     return this.repository.update(id, updateVoluntarioDto);
   }
 
-  async remove(id: number) {
+  async remove(id: bigint) {
     return this.repository.remove(id);
   }
 
-   async findByProfile(perfil: string) {
-   if (perfil === 'admin') {
-      // Admin pode ver todos os voluntários
-      return this.prisma.voluntario.findMany();
-    } else {
+  async findByProfile(perfil: string) {
+    const where: Prisma.VoluntarioWhereInput = {};
+
+    if (perfil !== "admin") {
       // Para outros perfis, você pode definir uma lógica de filtragem
-      // Exemplo: retornar apenas voluntários que estão ativos ou que têm uma área de atuação específica
-      return this.prisma.voluntario.findMany({
-        where: {
-          // Adicione condições específicas para outros perfis, se necessário
-          // Exemplo: area_atuacao: 'Educação' (ou qualquer outra lógica que faça sentido)
-          // Aqui, você pode filtrar por área de atuação ou por disponibilidade
-          disponibilidade: 'Ativo', // Supondo que você tenha um campo de disponibilidade
-        },
-      });
+      // Exemplo: retornar apenas voluntários que estão ativos
+      where.disponibilidade = "Ativo"; // Supondo que você tenha um campo de disponibilidade
     }
+    // Se for admin, o 'where' fica vazio, buscando todos.
+    return this.repository.findManyByFilter(where);
   }
 
- async generateReport(filter: any) {
-   const { area_atuacao, disponibilidade } = filter;
-    const whereConditions: any = {};
+  async generateReport(filter: { area_atuacao?: string; disponibilidade?: string }) {
+    const { area_atuacao, disponibilidade } = filter;
+    const whereConditions: Prisma.VoluntarioWhereInput = {};
     if (area_atuacao) {
       whereConditions.area_atuacao = area_atuacao;
     }
     if (disponibilidade) {
       whereConditions.disponibilidade = disponibilidade;
     }
-    return this.prisma.voluntario.findMany({
-      where: whereConditions,
-    });
+    return this.repository.findManyByFilter(whereConditions);
   }
 }

@@ -6,11 +6,10 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { AuthGuard } from "@nestjs/passport";
 
-
 @ApiTags("usuarios")
 @Controller("usuario")
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiOperation({ summary: "Criar novo usuário" })
@@ -32,13 +31,13 @@ export class UserController {
   @UseGuards(AuthGuard("jwt"))
   @Get(":id")
   @ApiOperation({ summary: "Obter um usuário pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.userService.findOne(id);
   }
 
   @Put(":id")
   @ApiOperation({ summary: "Atualizar um usuário" })
-  async update(@Param("id") id: number, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param("id") id: bigint, @Body() updateUserDto: UpdateUserDto) {
     let userToUpdate = updateUserDto;
     if (updateUserDto.senha) {
       const saltOrRounds = 10;
@@ -47,11 +46,11 @@ export class UserController {
     }
     return this.userService.update(id, userToUpdate);
   }
-  
+
   @UseGuards(AuthGuard("jwt"))
   @Delete(":id")
   @ApiOperation({ summary: "Remover um usuário" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.userService.remove(id);
   }
 }

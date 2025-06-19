@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateCestaBasicaDto } from "../dto/create-cestabasica.dto";
 import { UpdateCestaBasicaDto } from "../dto/update-cestabasica.dto";
 import { CestaBasicaEntity } from "../entity/cestabasica.entity";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class CestaBasicaRepository {
@@ -16,7 +16,7 @@ export class CestaBasicaRepository {
     });
   }
 
-  async findOne(id: number): Promise<CestaBasicaEntity> {
+  async findOne(id: bigint): Promise<CestaBasicaEntity> {
     const cestaBasica = await this.prisma.cestaBasica.findUnique({
       where: { id_cesta: id },
       include: {
@@ -31,30 +31,13 @@ export class CestaBasicaRepository {
     return cestaBasica;
   }
 
-  async create(createCestaBasicaDto: CreateCestaBasicaDto): Promise<CestaBasicaEntity> {
-    // Verificar se o responsável existe
-    const responsavelExiste = await this.prisma.responsavel.findUnique({
-      where: { id_responsavel: createCestaBasicaDto.id_responsavel },
-    });
-
-    if (!responsavelExiste) {
-      throw new NotFoundException(`Responsável com ID ${createCestaBasicaDto.id_responsavel} não encontrado`);
-    }
-
+  async create(cestaBasicaData: Prisma.CestaBasicaCreateInput): Promise<CestaBasicaEntity> {
     return this.prisma.cestaBasica.create({
-      data: {
-        id_responsavel: createCestaBasicaDto.id_responsavel,
-        data_entrega: createCestaBasicaDto.data_entrega,
-        quantidade: createCestaBasicaDto.quantidade,
-        observacoes: createCestaBasicaDto.observacoes,
-      },
-      include: {
-        responsavel: true,
-      },
+      data: cestaBasicaData,
     });
   }
 
-  async update(id: number, updateCestaBasicaDto: UpdateCestaBasicaDto): Promise<CestaBasicaEntity> {
+  async update(id: bigint, updateCestaBasicaDto: UpdateCestaBasicaDto): Promise<CestaBasicaEntity> {
     // Verificar se a cesta básica existe
     await this.findOne(id);
 
@@ -67,7 +50,7 @@ export class CestaBasicaRepository {
     });
   }
 
-  async remove(id: number): Promise<CestaBasicaEntity> {
+  async remove(id: bigint): Promise<CestaBasicaEntity> {
     // Verificar se a cesta básica existe
     await this.findOne(id);
 

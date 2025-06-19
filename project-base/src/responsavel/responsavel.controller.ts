@@ -8,7 +8,7 @@ import { Request as ExpressRequest } from "express";
 @ApiTags("responsaveis")
 @Controller("responsavel")
 export class ResponsavelController {
-  constructor(private readonly responsavelService: ResponsavelService) { }
+  constructor(private readonly responsavelService: ResponsavelService) {}
 
   @Post()
   @ApiOperation({ summary: "Cadastrar novo responsável" })
@@ -25,22 +25,22 @@ export class ResponsavelController {
 
   @Get(":id")
   @ApiOperation({ summary: "Obter um responsável pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.responsavelService.findOne(id);
   }
 
   @Put(":id")
   @ApiOperation({ summary: "Atualizar um responsável" })
-  async update(@Param("id") id: number, @Body() updateResponsavelDto: UpdateResponsavelDto) {
+  async update(@Param("id") id: bigint, @Body() updateResponsavelDto: UpdateResponsavelDto) {
     return this.responsavelService.update(id, updateResponsavelDto);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Remover um responsável" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.responsavelService.remove(id);
   }
-  
+
   @UseGuards(JwtAuthGuard)
   @Get("perfil")
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })

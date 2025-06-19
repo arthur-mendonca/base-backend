@@ -3,9 +3,10 @@ import { ParceiroService } from "./parceiro.service";
 import { ParceiroController } from "./parceiro.controller";
 import { ParceiroRepository } from "./repositories/parceiro.repository";
 import { PrismaModule } from "../prisma/prisma.module";
+import { SnowflakeModule } from "src/snowflake/snowflake.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, SnowflakeModule],
   providers: [ParceiroService, ParceiroRepository],
   controllers: [ParceiroController],
   exports: [ParceiroService],

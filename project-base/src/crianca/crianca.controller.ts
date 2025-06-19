@@ -9,7 +9,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("criancas")
 @Controller("crianca")
 export class CriancaController {
-  constructor(private readonly criancaService: CriancaService) { }
+  constructor(private readonly criancaService: CriancaService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -29,21 +29,21 @@ export class CriancaController {
   @UseGuards(JwtAuthGuard)
   @Get(":id")
   @ApiOperation({ summary: "Obter uma criança pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.criancaService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(":id")
   @ApiOperation({ summary: "Atualizar dados de uma criança" })
-  async update(@Param("id") id: number, @Body() updateCriancaDto: UpdateCriancaDto) {
+  async update(@Param("id") id: bigint, @Body() updateCriancaDto: UpdateCriancaDto) {
     return this.criancaService.update(id, updateCriancaDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   @ApiOperation({ summary: "Remover uma criança do cadastro" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.criancaService.remove(id);
   }
 
@@ -52,7 +52,7 @@ export class CriancaController {
   @ApiOperation({ summary: "Visualizar dados conforme perfil do usuário" })
   async findByProfile(@Req() req: any) {
     const perfil = (req.user as any).perfil; // Supondo que o perfil do usuário esteja no token JWT
-    const userId = (req.user.id as any).id_usuario // Supondo que o ID do usuário esteja no token JWT
+    const userId = (req.user.id as any).id_usuario; // Supondo que o ID do usuário esteja no token JWT
     return this.criancaService.findByProfile(perfil, userId);
   }
 

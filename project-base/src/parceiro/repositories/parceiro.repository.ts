@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateParceiroDto } from "../dto/create-parceiro.dto";
 import { UpdateParceiroDto } from "../dto/update-parceiro.dto";
 import { ParceiroEntity } from "../entity/parceiro.entity";
+import { Prisma } from ".prisma/client/default";
 
 @Injectable()
 export class ParceiroRepository {
@@ -12,7 +12,7 @@ export class ParceiroRepository {
     return this.prisma.parceiro.findMany();
   }
 
-  async findOne(id: number): Promise<ParceiroEntity> {
+  async findOne(id: bigint): Promise<ParceiroEntity> {
     const parceiro = await this.prisma.parceiro.findUnique({
       where: { id_parceiro: id },
     });
@@ -24,13 +24,13 @@ export class ParceiroRepository {
     return parceiro;
   }
 
-  async create(createParceiroDto: CreateParceiroDto): Promise<ParceiroEntity> {
+  async create(parceiroData: Prisma.ParceiroCreateInput): Promise<ParceiroEntity> {
     return this.prisma.parceiro.create({
-      data: createParceiroDto,
+      data: parceiroData,
     });
   }
 
-  async update(id: number, updateParceiroDto: UpdateParceiroDto): Promise<ParceiroEntity> {
+  async update(id: bigint, updateParceiroDto: UpdateParceiroDto): Promise<ParceiroEntity> {
     // Verificar se o parceiro existe
     await this.findOne(id);
 
@@ -40,7 +40,7 @@ export class ParceiroRepository {
     });
   }
 
-  async remove(id: number): Promise<ParceiroEntity> {
+  async remove(id: bigint): Promise<ParceiroEntity> {
     // Verificar se o parceiro existe
     await this.findOne(id);
 

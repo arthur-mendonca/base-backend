@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateResponsavelDto } from "../dto/create-responsavel.dto";
 import { UpdateResponsavelDto } from "../dto/update-responsavel.dto";
 import { ResponsavelEntity } from "../entity/responsaval.entity";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class ResponsavelRepository {
@@ -17,7 +17,7 @@ export class ResponsavelRepository {
     });
   }
 
-  async findOne(id: number): Promise<ResponsavelEntity> {
+  async findOne(id: bigint): Promise<ResponsavelEntity> {
     const responsavel = await this.prisma.responsavel.findUnique({
       where: { id_responsavel: id },
       include: {
@@ -33,17 +33,13 @@ export class ResponsavelRepository {
     return responsavel;
   }
 
-  async create(createResponsavelDto: CreateResponsavelDto): Promise<ResponsavelEntity> {
+  async create(responsavelData: Prisma.ResponsavelCreateInput): Promise<ResponsavelEntity> {
     return this.prisma.responsavel.create({
-      data: createResponsavelDto,
-      include: {
-        criancas: true,
-        cestasBasicas: true,
-      },
+      data: responsavelData,
     });
   }
 
-  async update(id: number, updateResponsavelDto: UpdateResponsavelDto): Promise<ResponsavelEntity> {
+  async update(id: bigint, updateResponsavelDto: UpdateResponsavelDto): Promise<ResponsavelEntity> {
     // Verificar se o responsável existe
     await this.findOne(id);
 
@@ -57,7 +53,7 @@ export class ResponsavelRepository {
     });
   }
 
-  async remove(id: number): Promise<ResponsavelEntity> {
+  async remove(id: bigint): Promise<ResponsavelEntity> {
     // Verificar se o responsável existe
     await this.findOne(id);
 

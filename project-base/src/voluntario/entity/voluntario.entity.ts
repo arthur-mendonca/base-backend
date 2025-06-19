@@ -1,7 +1,7 @@
 import { Voluntario } from "@prisma/client";
 
 export class VoluntarioEntity implements Voluntario {
-  id_voluntario: number;
+  id_voluntario: bigint;
   nome: string;
   cpf: string;
   email: string;

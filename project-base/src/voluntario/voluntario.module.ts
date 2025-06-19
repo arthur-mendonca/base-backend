@@ -3,9 +3,10 @@ import { VoluntarioService } from "./voluntario.service";
 import { VoluntarioController } from "./voluntario.controller";
 import { VoluntarioRepository } from "./repositories/voluntario.repository";
 import { PrismaModule } from "../prisma/prisma.module";
+import { SnowflakeModule } from "src/snowflake/snowflake.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModule, SnowflakeModule],
   providers: [VoluntarioService, VoluntarioRepository],
   controllers: [VoluntarioController],
   exports: [VoluntarioService],

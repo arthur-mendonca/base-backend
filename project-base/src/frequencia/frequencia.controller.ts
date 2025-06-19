@@ -8,7 +8,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("frequencias")
 @Controller("frequencia")
 export class FrequenciaController {
-  constructor(private readonly frequenciaService: FrequenciaService) { }
+  constructor(private readonly frequenciaService: FrequenciaService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -28,28 +28,28 @@ export class FrequenciaController {
   @UseGuards(JwtAuthGuard)
   @Get(":id")
   @ApiOperation({ summary: "Obter uma frequência pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.frequenciaService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get("crianca/:id")
   @ApiOperation({ summary: "Listar todas as frequências de uma criança" })
-  async findByChildId(@Param("id") id: number) {
+  async findByChildId(@Param("id") id: bigint) {
     return this.frequenciaService.findByChildId(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(":id")
   @ApiOperation({ summary: "Atualizar uma frequência" })
-  async update(@Param("id") id: number, @Body() updateFrequenciaDto: UpdateFrequenciaDto) {
+  async update(@Param("id") id: bigint, @Body() updateFrequenciaDto: UpdateFrequenciaDto) {
     return this.frequenciaService.update(id, updateFrequenciaDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   @ApiOperation({ summary: "Remover uma frequência" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.frequenciaService.remove(id);
   }
 

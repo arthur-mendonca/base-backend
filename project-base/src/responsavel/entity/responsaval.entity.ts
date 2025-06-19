@@ -1,7 +1,7 @@
 import { Responsavel } from "@prisma/client";
 
 export class ResponsavelEntity implements Responsavel {
-  id_responsavel: number;
+  id_responsavel: bigint;
   nome: string;
   cpf: string;
   rg: string;

@@ -1,7 +1,7 @@
 import { Parceiro } from "@prisma/client";
 
 export class ParceiroEntity implements Parceiro {
-  id_parceiro: number;
+  id_parceiro: bigint;
   nome: string;
   tipo: string;
   email: string;

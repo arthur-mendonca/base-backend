@@ -8,7 +8,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("voluntarios")
 @Controller("voluntario")
 export class VoluntarioController {
-  constructor(private readonly voluntarioService: VoluntarioService) { }
+  constructor(private readonly voluntarioService: VoluntarioService) {}
 
   @Post()
   @ApiOperation({ summary: "Cadastrar novo voluntário" })
@@ -25,19 +25,19 @@ export class VoluntarioController {
 
   @Get(":id")
   @ApiOperation({ summary: "Obter um voluntário pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.voluntarioService.findOne(id);
   }
 
   @Put(":id")
   @ApiOperation({ summary: "Atualizar um voluntário" })
-  async update(@Param("id") id: number, @Body() updateVoluntarioDto: UpdateVoluntarioDto) {
+  async update(@Param("id") id: bigint, @Body() updateVoluntarioDto: UpdateVoluntarioDto) {
     return this.voluntarioService.update(id, updateVoluntarioDto);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Remover um voluntário" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.voluntarioService.remove(id);
   }
 

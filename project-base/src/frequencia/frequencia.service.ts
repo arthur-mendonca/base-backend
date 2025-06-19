@@ -2,39 +2,57 @@ import { Injectable } from "@nestjs/common";
 import { FrequenciaRepository } from "./repositories/frequencia.repository";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { SnowflakeService } from "src/snowflake/snowflake.service";
 
 @Injectable()
 export class FrequenciaService {
   private prisma = new PrismaClient();
-  constructor(private readonly repository: FrequenciaRepository) { }
+  constructor(
+    private readonly repository: FrequenciaRepository,
+    private readonly snowflakeService: SnowflakeService,
+  ) {}
 
   async findAll() {
     return this.repository.findAll();
   }
 
-  async findOne(id: number) {
+  async findOne(id: bigint) {
     return this.repository.findOne(id);
   }
 
   async create(createFrequenciaDto: CreateFrequenciaDto) {
-    return this.repository.create(createFrequenciaDto);
+    const id = this.snowflakeService.generate();
+
+    const frequenciaData: Prisma.FrequenciaCreateInput = {
+      id_frequencia: id,
+      atividade: createFrequenciaDto.atividade,
+      data: createFrequenciaDto.data,
+      presenca: createFrequenciaDto.presenca,
+      crianca: {
+        connect: {
+          id_crianca: BigInt(createFrequenciaDto.id_crianca),
+        },
+      },
+    };
+
+    return this.repository.create(frequenciaData);
   }
 
-  async update(id: number, updateFrequenciaDto: UpdateFrequenciaDto) {
+  async update(id: bigint, updateFrequenciaDto: UpdateFrequenciaDto) {
     return this.repository.update(id, updateFrequenciaDto);
   }
 
-  async remove(id: number) {
+  async remove(id: bigint) {
     return this.repository.remove(id);
   }
 
-  async findByChildId(id_crianca: number) {
+  async findByChildId(id_crianca: bigint) {
     return this.repository.findByChildId(id_crianca);
   }
 
   async findByProfile(perfil: string) {
-    if (perfil === 'admin') {
+    if (perfil === "admin") {
       return this.prisma.frequencia.findMany();
     } else {
       return this.prisma.frequencia.findMany({
@@ -45,7 +63,7 @@ export class FrequenciaService {
       });
     }
   }
-  
+
   async generateReport(filter: any) {
     const { atividade, data } = filter;
     const whereConditions: any = {};

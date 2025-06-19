@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateFrequenciaDto } from "../dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "../dto/update-frequencia.dto";
 import { FrequenciaEntity } from "../entity/frequencia.entity";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class FrequenciaRepository {
@@ -16,7 +16,7 @@ export class FrequenciaRepository {
     });
   }
 
-  async findOne(id: number): Promise<FrequenciaEntity> {
+  async findOne(id: bigint): Promise<FrequenciaEntity> {
     const frequencia = await this.prisma.frequencia.findUnique({
       where: { id_frequencia: id },
       include: {
@@ -31,30 +31,13 @@ export class FrequenciaRepository {
     return frequencia;
   }
 
-  async create(createFrequenciaDto: CreateFrequenciaDto): Promise<FrequenciaEntity> {
-    // Verificar se a criança existe
-    const criancaExiste = await this.prisma.crianca.findUnique({
-      where: { id_crianca: createFrequenciaDto.id_crianca },
-    });
-
-    if (!criancaExiste) {
-      throw new NotFoundException(`Criança com ID ${createFrequenciaDto.id_crianca} não encontrada`);
-    }
-
+  async create(frequenciaData: Prisma.FrequenciaCreateInput): Promise<FrequenciaEntity> {
     return this.prisma.frequencia.create({
-      data: {
-        id_crianca: createFrequenciaDto.id_crianca,
-        atividade: createFrequenciaDto.atividade,
-        data: createFrequenciaDto.data,
-        presenca: createFrequenciaDto.presenca,
-      },
-      include: {
-        crianca: true,
-      },
+      data: frequenciaData,
     });
   }
 
-  async update(id: number, updateFrequenciaDto: UpdateFrequenciaDto): Promise<FrequenciaEntity> {
+  async update(id: bigint, updateFrequenciaDto: UpdateFrequenciaDto): Promise<FrequenciaEntity> {
     // Verificar se a frequência existe
     await this.findOne(id);
 
@@ -67,7 +50,7 @@ export class FrequenciaRepository {
     });
   }
 
-  async remove(id: number): Promise<FrequenciaEntity> {
+  async remove(id: bigint): Promise<FrequenciaEntity> {
     // Verificar se a frequência existe
     await this.findOne(id);
 
@@ -76,7 +59,7 @@ export class FrequenciaRepository {
     });
   }
 
-  async findByChildId(id_crianca: number): Promise<FrequenciaEntity[]> {
+  async findByChildId(id_crianca: bigint): Promise<FrequenciaEntity[]> {
     const criancaExiste = await this.prisma.crianca.findUnique({
       where: { id_crianca },
     });

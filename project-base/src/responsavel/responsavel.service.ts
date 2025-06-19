@@ -2,34 +2,47 @@ import { Injectable } from "@nestjs/common";
 import { ResponsavelRepository } from "./repositories/responsavel.repository";
 import { CreateResponsavelDto } from "./dto/create-responsavel.dto";
 import { UpdateResponsavelDto } from "./dto/update-responsavel.dto";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { SnowflakeService } from "src/snowflake/snowflake.service";
 
 @Injectable()
 export class ResponsavelService {
-  constructor(private readonly repository: ResponsavelRepository) { }
+  constructor(
+    private readonly repository: ResponsavelRepository,
+    private readonly snowflakeService: SnowflakeService,
+  ) {}
+
   private prisma = new PrismaClient();
+
   async create(createResponsavelDto: CreateResponsavelDto) {
-    return this.repository.create(createResponsavelDto);
+    const id = this.snowflakeService.generate();
+
+    const responsavelData: Prisma.ResponsavelCreateInput = {
+      ...createResponsavelDto,
+      id_responsavel: id,
+    };
+
+    return this.repository.create(responsavelData);
   }
 
   async findAll() {
     return this.repository.findAll();
   }
 
-  async findOne(id: number) {
+  async findOne(id: bigint) {
     return this.repository.findOne(id);
   }
 
-  async update(id: number, updateResponsavelDto: UpdateResponsavelDto) {
+  async update(id: bigint, updateResponsavelDto: UpdateResponsavelDto) {
     return this.repository.update(id, updateResponsavelDto);
   }
 
-  async remove(id: number) {
+  async remove(id: bigint) {
     return this.repository.remove(id);
   }
 
   async findByProfile(perfil: string) {
-    if (perfil === 'admin') {
+    if (perfil === "admin") {
       return this.prisma.responsavel.findMany();
     } else {
       return this.prisma.responsavel.findMany({

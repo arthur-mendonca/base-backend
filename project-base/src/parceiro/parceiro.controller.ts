@@ -8,7 +8,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("parceiros")
 @Controller("parceiro")
 export class ParceiroController {
-  constructor(private readonly parceiroService: ParceiroService) { }
+  constructor(private readonly parceiroService: ParceiroService) {}
 
   @Post()
   @ApiOperation({ summary: "Cadastrar novo parceiro" })
@@ -25,19 +25,19 @@ export class ParceiroController {
 
   @Get(":id")
   @ApiOperation({ summary: "Obter um parceiro pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.parceiroService.findOne(id);
   }
 
   @Put(":id")
   @ApiOperation({ summary: "Atualizar um parceiro" })
-  async update(@Param("id") id: number, @Body() updateParceiroDto: UpdateParceiroDto) {
+  async update(@Param("id") id: bigint, @Body() updateParceiroDto: UpdateParceiroDto) {
     return this.parceiroService.update(id, updateParceiroDto);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Remover um parceiro" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.parceiroService.remove(id);
   }
 

@@ -8,7 +8,7 @@ import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 @ApiTags("cesta-basica")
 @Controller("cesta-basica")
 export class CestaBasicaController {
-  constructor(private readonly cestaBasicaService: CestaBasicaService) { }
+  constructor(private readonly cestaBasicaService: CestaBasicaService) {}
 
   @Post()
   @ApiOperation({ summary: "Criar nova cesta básica" })
@@ -25,19 +25,19 @@ export class CestaBasicaController {
 
   @Get(":id")
   @ApiOperation({ summary: "Obter uma cesta básica pelo ID" })
-  async findOne(@Param("id") id: number) {
+  async findOne(@Param("id") id: bigint) {
     return this.cestaBasicaService.findOne(id);
   }
 
   @Put(":id")
   @ApiOperation({ summary: "Atualizar uma cesta básica" })
-  async update(@Param("id") id: number, @Body() updateCestaBasicaDto: UpdateCestaBasicaDto) {
+  async update(@Param("id") id: bigint, @Body() updateCestaBasicaDto: UpdateCestaBasicaDto) {
     return this.cestaBasicaService.update(id, updateCestaBasicaDto);
   }
 
   @Delete(":id")
   @ApiOperation({ summary: "Remover uma cesta básica" })
-  async remove(@Param("id") id: number) {
+  async remove(@Param("id") id: bigint) {
     return this.cestaBasicaService.remove(id);
   }
 

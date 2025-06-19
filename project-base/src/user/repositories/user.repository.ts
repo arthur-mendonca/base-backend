@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
 import { UserEntity } from "../entity/user.entity";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class UserRepository {
@@ -12,7 +12,7 @@ export class UserRepository {
     return this.prisma.usuario.findMany();
   }
 
-  async findOne(id: number): Promise<UserEntity> {
+  async findOne(id: bigint): Promise<UserEntity> {
     const user = await this.prisma.usuario.findUnique({
       where: { id_usuario: id },
     });
@@ -24,13 +24,13 @@ export class UserRepository {
     return user;
   }
 
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+  async create(data: Prisma.UsuarioCreateInput): Promise<UserEntity> {
     return this.prisma.usuario.create({
-      data: createUserDto,
+      data,
     });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(id: bigint, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     // Verificar se o usuário existe
     await this.findOne(id);
 
@@ -40,7 +40,7 @@ export class UserRepository {
     });
   }
 
-  async remove(id: number): Promise<UserEntity> {
+  async remove(id: bigint): Promise<UserEntity> {
     // Verificar se o usuário existe
     await this.findOne(id);
 

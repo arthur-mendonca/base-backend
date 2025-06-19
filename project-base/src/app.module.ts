@@ -34,8 +34,6 @@ import { AuditMiddleware } from "./auth/auditMiddleware";
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuditMiddleware)
-      .forRoutes('*'); // Aplica o middleware em todas as rotas
+    consumer.apply(AuditMiddleware).forRoutes("*"); // Aplica o middleware em todas as rotas
   }
 }

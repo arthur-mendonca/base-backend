@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
-import { CreateCriancaDto } from "../dto/create-crianca.dto";
 import { UpdateCriancaDto } from "../dto/update-crianca.dto";
 import { CriancaEntity } from "../entity/crianca.entity";
+import { Prisma } from "@prisma/client";
 
 @Injectable()
 export class CriancaRepository {
@@ -17,7 +17,7 @@ export class CriancaRepository {
     });
   }
 
-  async findOne(id: number): Promise<CriancaEntity> {
+  async findOne(id: bigint): Promise<CriancaEntity> {
     const crianca = await this.prisma.crianca.findUnique({
       where: { id_crianca: id },
       include: {
@@ -33,32 +33,13 @@ export class CriancaRepository {
     return crianca;
   }
 
-  async create(createCriancaDto: CreateCriancaDto): Promise<CriancaEntity> {
-    // Verificar se o responsável existe
-    const responsavelExiste = await this.prisma.responsavel.findUnique({
-      where: { id_responsavel: createCriancaDto.id_responsavel },
-    });
-
-    if (!responsavelExiste) {
-      throw new NotFoundException(`Responsável com ID ${createCriancaDto.id_responsavel} não encontrado`);
-    }
-
+  async create(criancaData: Prisma.CriancaCreateInput): Promise<CriancaEntity> {
     return this.prisma.crianca.create({
-      data: {
-        id_responsavel: createCriancaDto.id_responsavel,
-        nome: createCriancaDto.nome,
-        data_nascimento: createCriancaDto.data_nascimento,
-        rg: createCriancaDto.rg,
-        cpf: createCriancaDto.cpf,
-      },
-      include: {
-        responsavel: true,
-        frequencias: true,
-      },
+      data: criancaData,
     });
   }
 
-  async update(id: number, updateCriancaDto: UpdateCriancaDto): Promise<CriancaEntity> {
+  async update(id: bigint, updateCriancaDto: UpdateCriancaDto): Promise<CriancaEntity> {
     // Verificar se a criança existe
     await this.findOne(id);
 
@@ -72,7 +53,7 @@ export class CriancaRepository {
     });
   }
 
-  async remove(id: number): Promise<CriancaEntity> {
+  async remove(id: bigint): Promise<CriancaEntity> {
     // Verificar se a criança existe
     await this.findOne(id);
 
@@ -81,7 +62,7 @@ export class CriancaRepository {
     });
   }
 
-  async findCriancaWithResponsavel(id: number): Promise<CriancaEntity> {
+  async findCriancaWithResponsavel(id: bigint): Promise<CriancaEntity> {
     return this.findOne(id);
   }
 }
