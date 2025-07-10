@@ -1,9 +1,12 @@
+import type { JSX } from "react";
+
 interface ButtonProps {
   text: string;
   variant?: "primary" | "secondary" | "danger" | "success";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: () => void | (() => Promise<void>) | JSX.Element;
+  type?: "button" | "submit" | "reset";
 }
 
 const buttonVariants = {
@@ -29,10 +32,11 @@ export const Button = ({
   size = "md",
   disabled = false,
   onClick,
+  type = "button",
 }: ButtonProps) => {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`

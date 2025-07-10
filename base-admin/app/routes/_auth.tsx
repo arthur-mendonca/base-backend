@@ -1,10 +1,13 @@
 import { Outlet } from "react-router";
 import { AuthLayout } from "~/components/layout/AuthLayout";
+import { ToastProvider } from "~/contexts/ToastContext";
 
 export default function AuthLayoutRoute() {
   return (
-    <AuthLayout>
-      <Outlet />
-    </AuthLayout>
+    <ToastProvider>
+      <AuthLayout>
+        <Outlet />
+      </AuthLayout>
+    </ToastProvider>
   );
 }
