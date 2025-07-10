@@ -3,7 +3,7 @@ import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { UserRepository } from "./repositories/user.repository";
 import { PrismaModule } from "../prisma/prisma.module";
-import { SnowflakeModule } from "src/snowflake/snowflake.module";
+import { SnowflakeModule } from "../snowflake/snowflake.module";
 
 @Module({
   imports: [PrismaModule, SnowflakeModule],
@@ -11,4 +11,4 @@ import { SnowflakeModule } from "src/snowflake/snowflake.module";
   controllers: [UserController],
   exports: [UserService],
 })
-export class UsuarioModule {}
+export class UserModule {}

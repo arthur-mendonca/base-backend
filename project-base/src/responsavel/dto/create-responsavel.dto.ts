@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateResponsavelDto {
   @ApiProperty({
@@ -27,12 +27,12 @@ export class CreateResponsavelDto {
   rg: string;
 
   @ApiProperty({
-    description: "Parentesco com a criança",
-    example: "Pai",
+    description: "Data de nascimento",
+    example: "1980-05-15",
   })
   @IsNotEmpty()
-  @IsString()
-  parentesco_com_crianca: string;
+  @IsDateString()
+  data_nascimento: Date;
 
   @ApiProperty({
     description: "Telefone de contato",
@@ -42,21 +42,23 @@ export class CreateResponsavelDto {
   @IsString()
   telefone: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: "E-mail de contato",
     example: "joao.silva@example.com",
+    required: false,
   })
+  @IsOptional()
   @IsEmail()
-  @IsNotEmpty()
-  email: string;
+  email?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: "Ocupação profissional",
     example: "Professor",
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  ocupacao: string;
+  ocupacao?: string;
 
   @ApiProperty({
     description: "Endereço completo",
@@ -65,4 +67,13 @@ export class CreateResponsavelDto {
   @IsNotEmpty()
   @IsString()
   endereco: string;
+
+  @ApiPropertyOptional({
+    description: "URL da foto do responsável",
+    example: "https://storage.example.com/fotos/joao-silva.jpg",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  foto_url?: string;
 }

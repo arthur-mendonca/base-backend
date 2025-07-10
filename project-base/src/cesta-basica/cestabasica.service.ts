@@ -1,13 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CestaBasicaRepository } from "./repositories/cestabasica.repository";
 import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
 import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { SnowflakeService } from "src/snowflake/snowflake.service";
 
 @Injectable()
 export class CestaBasicaService {
-  private prisma = new PrismaClient();
   constructor(
     private readonly repository: CestaBasicaRepository,
     private readonly snowflakeService: SnowflakeService,
@@ -22,21 +21,49 @@ export class CestaBasicaService {
   }
 
   async create(createCestaBasicaDto: CreateCestaBasicaDto) {
-    const id = this.snowflakeService.generate();
+    // Validação: pelo menos um dos IDs (responsável ou beneficiário) deve ser preenchido
+    if (!createCestaBasicaDto.id_responsavel && !createCestaBasicaDto.id_beneficiario) {
+      throw new BadRequestException(
+        "É necessário informar um responsável ou um beneficiário externo para a cesta básica",
+      );
+    }
 
+    const id = this.snowflakeService.generate();
+    const { produtos, ...cestaData } = createCestaBasicaDto;
+
+    // Prepara os dados para criação
     const cestaBasicaData: Prisma.CestaBasicaCreateInput = {
       id_cesta: id,
-      data_entrega: createCestaBasicaDto.data_entrega,
-      quantidade: createCestaBasicaDto.quantidade,
-      observacoes: createCestaBasicaDto.observacoes,
-      responsavel: {
-        connect: {
-          id_responsavel: BigInt(createCestaBasicaDto.id_responsavel),
-        },
-      },
+      data_entrega: cestaData.data_entrega,
+      observacoes: cestaData.observacoes || null,
     };
 
-    return this.repository.create(cestaBasicaData);
+    // Adiciona relações conforme os dados informados
+    if (cestaData.id_responsavel) {
+      cestaBasicaData.responsavel = {
+        connect: {
+          id_responsavel: BigInt(cestaData.id_responsavel),
+        },
+      };
+    }
+
+    if (cestaData.id_beneficiario) {
+      cestaBasicaData.beneficiario_externo = {
+        connect: {
+          id_beneficiario: BigInt(cestaData.id_beneficiario),
+        },
+      };
+    }
+
+    if (cestaData.id_doacao) {
+      cestaBasicaData.doacao_origem = {
+        connect: {
+          id_doacao: BigInt(cestaData.id_doacao),
+        },
+      };
+    }
+
+    return this.repository.create(cestaBasicaData, produtos);
   }
 
   async update(id: bigint, updateCestaBasicaDto: UpdateCestaBasicaDto) {
@@ -47,32 +74,51 @@ export class CestaBasicaService {
     return this.repository.remove(id);
   }
 
-  async findByProfile(perfil: string) {
+  async findByResponsavel(id_responsavel: bigint) {
+    return this.repository.findByResponsavel(id_responsavel);
+  }
+
+  async findByBeneficiario(id_beneficiario: bigint) {
+    return this.repository.findByBeneficiario(id_beneficiario);
+  }
+
+  async findByDoacao(id_doacao: bigint) {
+    return this.repository.findByDoacao(id_doacao);
+  }
+
+  async findByPeriodo(dataInicio: Date, dataFim: Date) {
+    return this.repository.findByPeriodo(dataInicio, dataFim);
+  }
+
+  async findByProfile(perfil: string, userId: bigint) {
     if (perfil === "admin") {
-      return this.prisma.cestaBasica.findMany();
+      // Admin pode ver todas as cestas
+      return this.findAll();
     } else {
-      return this.prisma.cestaBasica.findMany({
-        where: {
-          // Adicione condições específicas para outros perfis, se necessário
-          // Exemplo: id_responsavel: userId
-        },
-      });
+      // Usuário comum só pode ver suas próprias cestas
+      return this.findByResponsavel(userId);
     }
   }
 
   async generateReport(filter: any) {
-    const { data_entrega, quantidade } = filter;
-    const whereConditions: any = {};
-    if (data_entrega) {
-      whereConditions.data_entrega = {
-        gte: new Date(data_entrega), // Filtra por data de entrega maior ou igual
-      };
+    const { dataInicio, dataFim, idResponsavel, idBeneficiario, idDoacao } = filter;
+
+    if (dataInicio && dataFim) {
+      return this.findByPeriodo(new Date(dataInicio), new Date(dataFim));
     }
-    if (quantidade) {
-      whereConditions.quantidade = quantidade; // Filtra por quantidade
+
+    if (idResponsavel) {
+      return this.findByResponsavel(BigInt(idResponsavel));
     }
-    return this.prisma.cestaBasica.findMany({
-      where: whereConditions,
-    });
+
+    if (idBeneficiario) {
+      return this.findByBeneficiario(BigInt(idBeneficiario));
+    }
+
+    if (idDoacao) {
+      return this.findByDoacao(BigInt(idDoacao));
+    }
+
+    return this.findAll();
   }
 }

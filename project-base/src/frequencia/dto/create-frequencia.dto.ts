@@ -1,31 +1,29 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsDate, IsInt, IsNotEmpty, IsString } from "class-validator";
-import { Type } from "class-transformer";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateFrequenciaDto {
   @ApiProperty({
-    description: "ID da criança associada à frequência",
-    example: 1,
+    description: "ID da pessoa associada à frequência",
+    example: "1234567890",
   })
   @IsNotEmpty()
-  @IsInt()
-  id_crianca: number;
+  @IsNumber()
+  id_pessoa: bigint;
 
   @ApiProperty({
-    description: "Atividade realizada",
-    example: "Aula de Matemática",
+    description: "ID da atividade associada à frequência",
+    example: "1234567890",
   })
   @IsNotEmpty()
-  @IsString()
-  atividade: string;
+  @IsNumber()
+  id_atividade: bigint;
 
   @ApiProperty({
-    description: "Data da atividade",
-    example: "2025-05-19",
+    description: "Data da frequência",
+    example: "2023-05-19T14:00:00Z",
   })
   @IsNotEmpty()
-  @Type(() => Date)
-  @IsDate()
+  @IsDateString()
   data: Date;
 
   @ApiProperty({
@@ -35,4 +33,13 @@ export class CreateFrequenciaDto {
   @IsNotEmpty()
   @IsBoolean()
   presenca: boolean;
+
+  @ApiPropertyOptional({
+    description: "Justificativa em caso de falta",
+    example: "Atestado médico",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  justificativa?: string;
 }

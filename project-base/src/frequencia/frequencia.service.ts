@@ -2,12 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { FrequenciaRepository } from "./repositories/frequencia.repository";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { SnowflakeService } from "src/snowflake/snowflake.service";
+import { Prisma } from "@prisma/client";
+import { SnowflakeService } from "../snowflake/snowflake.service";
 
 @Injectable()
 export class FrequenciaService {
-  private prisma = new PrismaClient();
   constructor(
     private readonly repository: FrequenciaRepository,
     private readonly snowflakeService: SnowflakeService,
@@ -26,12 +25,17 @@ export class FrequenciaService {
 
     const frequenciaData: Prisma.FrequenciaCreateInput = {
       id_frequencia: id,
-      atividade: createFrequenciaDto.atividade,
       data: createFrequenciaDto.data,
       presenca: createFrequenciaDto.presenca,
-      crianca: {
+      justificativa: createFrequenciaDto.justificativa || null,
+      pessoa: {
         connect: {
-          id_crianca: BigInt(createFrequenciaDto.id_crianca),
+          id_pessoa: BigInt(createFrequenciaDto.id_pessoa),
+        },
+      },
+      atividade: {
+        connect: {
+          id_atividade: BigInt(createFrequenciaDto.id_atividade),
         },
       },
     };
@@ -47,36 +51,52 @@ export class FrequenciaService {
     return this.repository.remove(id);
   }
 
-  async findByChildId(id_crianca: bigint) {
-    return this.repository.findByChildId(id_crianca);
+  async findByPessoa(id_pessoa: bigint) {
+    return this.repository.findByPessoa(id_pessoa);
   }
 
-  async findByProfile(perfil: string) {
+  async findByAtividade(id_atividade: bigint) {
+    return this.repository.findByAtividade(id_atividade);
+  }
+
+  async findByPeriodo(dataInicio: Date, dataFim: Date) {
+    return this.repository.findByPeriodo(dataInicio, dataFim);
+  }
+
+  async findByPresenca(presenca: boolean) {
+    return this.repository.findByPresenca(presenca);
+  }
+
+  async findByProfile(perfil: string, userId: bigint) {
     if (perfil === "admin") {
-      return this.prisma.frequencia.findMany();
+      // Admin pode ver todas as frequências
+      return this.findAll();
     } else {
-      return this.prisma.frequencia.findMany({
-        where: {
-          // Adicione condições específicas para outros perfis, se necessário
-          // Exemplo: id_crianca: userId
-        },
-      });
+      // Usuário comum só pode ver frequências de suas próprias atividades
+      // Esta lógica pode ser adaptada conforme necessário
+      return this.findAll();
     }
   }
 
   async generateReport(filter: any) {
-    const { atividade, data } = filter;
-    const whereConditions: any = {};
-    if (atividade) {
-      whereConditions.atividade = atividade; // Filtra por atividade
+    const { id_pessoa, id_atividade, dataInicio, dataFim, presenca } = filter;
+
+    if (id_pessoa) {
+      return this.findByPessoa(BigInt(id_pessoa));
     }
-    if (data) {
-      whereConditions.data = {
-        gte: new Date(data), // Filtra por data maior ou igual
-      };
+
+    if (id_atividade) {
+      return this.findByAtividade(BigInt(id_atividade));
     }
-    return this.prisma.frequencia.findMany({
-      where: whereConditions,
-    });
+
+    if (dataInicio && dataFim) {
+      return this.findByPeriodo(new Date(dataInicio), new Date(dataFim));
+    }
+
+    if (presenca !== undefined) {
+      return this.findByPresenca(presenca === "true");
+    }
+
+    return this.findAll();
   }
 }

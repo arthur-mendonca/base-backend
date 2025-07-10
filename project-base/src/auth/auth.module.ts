@@ -4,15 +4,16 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtModule } from "@nestjs/jwt";
 import { JwtStrategy } from "./jwt.strategy";
-import { UsuarioModule } from "src/user/user.module";
+
 import { LocalStrategy } from "./Localstrategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
+import { UserModule } from "src/user/user.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // Configuração global de variáveis de ambiente
-    UsuarioModule, // Módulo do usuário para acesso a dados
+    UserModule, // Módulo do usuário para acesso a dados
     PassportModule, // Módulo de autenticação Passport
     JwtModule.registerAsync({
       imports: [ConfigModule], // Importa módulo de configuração
