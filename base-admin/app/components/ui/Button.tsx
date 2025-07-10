@@ -1,11 +1,11 @@
 import type { JSX } from "react";
 
 interface ButtonProps {
-  text: string;
+  text: string | JSX.Element;
   variant?: "primary" | "secondary" | "danger" | "success";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
-  onClick?: () => void | (() => Promise<void>) | JSX.Element;
+  onClick?: () => void | (() => Promise<void>);
   type?: "button" | "submit" | "reset";
 }
 
