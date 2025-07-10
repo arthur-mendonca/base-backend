@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { eraseCookie, getCookie, setCookie } from "~/utils/cookies";
 import { useToast } from "~/contexts/ToastContext";
 
 interface LoginCredentials {
@@ -41,9 +42,9 @@ export function useAuth() {
 
       const data: AuthResponse = await response.json();
 
-      // Salvar token no localStorage (ou use cookies para maior segurança)
-      localStorage.setItem("authToken", data.accessToken);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      // Salvar token e usuário em cookies
+      setCookie("authToken", data.accessToken, 7); // Expira em 7 dias
+      setCookie("user", JSON.stringify(data.user), 7);
 
       showToast("success", "Login realizado com sucesso!");
 
@@ -52,8 +53,6 @@ export function useAuth() {
 
       return data;
     } catch (error) {
-      console.log("Login error:", error);
-
       showToast(
         "danger",
         error instanceof Error ? error.message : "Erro ao fazer login"
@@ -65,19 +64,25 @@ export function useAuth() {
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
+    eraseCookie("authToken");
+    eraseCookie("user");
     navigate("/login");
   };
 
   const getUser = () => {
-    const userStr = localStorage.getItem("user");
+    const userStr = getCookie("user");
     if (!userStr) return null;
-    return JSON.parse(userStr);
+    try {
+      return JSON.parse(userStr);
+    } catch (error) {
+      console.error("Erro ao parsear o cookie do usuário:", error);
+      eraseCookie("user");
+      return null;
+    }
   };
 
   const isAuthenticated = () => {
-    return !!localStorage.getItem("authToken");
+    return !!getCookie("authToken");
   };
 
   return { login, logout, getUser, isAuthenticated, isLoading };

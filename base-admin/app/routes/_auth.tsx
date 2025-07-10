@@ -1,8 +1,24 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import {
+  Outlet,
+  redirect,
+  useNavigate,
+  type LoaderFunctionArgs,
+} from "react-router";
 import { AuthLayout } from "~/components/layout/AuthLayout";
-import { ToastProvider } from "~/contexts/ToastContext";
 import { useAuth } from "~/hooks/useAuth";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookies = new URLSearchParams(cookieHeader?.replace(/; /g, "&"));
+  const authToken = cookies.get("authToken");
+
+  if (!authToken) {
+    throw redirect("/login");
+  }
+
+  return null;
+}
 
 export default function AuthLayoutRoute() {
   const { isAuthenticated } = useAuth();
