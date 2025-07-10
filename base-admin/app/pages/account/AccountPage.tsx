@@ -4,20 +4,20 @@ import { InputField } from "~/components/ui/InputField";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
 
-// Mock de dados do usuário...
-const mockUser = {
-  id_usuario: 123456789n,
-  nome: "Arthur",
-  email: "arthur@example.com",
-  perfil: "admin",
-  data_cadastro: new Date("2025-01-15T10:00:00Z"),
-};
+interface User {
+  id_usuario: number;
+  nome: string;
+  email: string;
+  perfil: string;
+  data_cadastro: string;
+}
 
-export const AccountPage = () => {
+export const AccountPage = ({ user }: { user: User }) => {
   const { showToast } = useToast();
+  // O estado do formulário é inicializado com os dados do usuário carregados pelo loader.
   const [formData, setFormData] = useState({
-    nome: mockUser.nome,
-    email: mockUser.email,
+    nome: user.nome,
+    email: user.email,
     senha_atual: "",
     nova_senha: "",
     confirmar_senha: "",
@@ -110,13 +110,13 @@ export const AccountPage = () => {
           <InputField
             label="Perfil de Usuário"
             id="perfil"
-            value={mockUser.perfil}
+            value={user.perfil}
             disabled
           />
           <InputField
             label="Data de Cadastro"
             id="data_cadastro"
-            value={mockUser.data_cadastro.toLocaleDateString("pt-BR")}
+            value={new Date(user.data_cadastro).toLocaleDateString("pt-BR")}
             disabled
           />
         </div>

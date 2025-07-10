@@ -26,7 +26,6 @@ export function useAuth() {
   const login = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     try {
-      // Substitua esta URL pela sua API real
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: {

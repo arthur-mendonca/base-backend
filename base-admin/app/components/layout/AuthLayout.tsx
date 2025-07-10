@@ -13,7 +13,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <div className="p-4 sm:ml-64">
-        <div className="p-4 rounded-lg mx-auto max-w-7xl dark:border-gray-700">
+        <div className="p-4 rounded-lg mx-auto max-w-6xl dark:border-gray-700">
           {children}
         </div>
       </div>
