@@ -25,6 +25,8 @@ export const AccountPage = ({ user }: { user: User }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form data before submission:", formData);
+
     const { nome, email, senha_atual, nova_senha, confirmar_senha } = formData;
 
     if (nova_senha || confirmar_senha) {
@@ -59,7 +61,7 @@ export const AccountPage = ({ user }: { user: User }) => {
       }
 
       // Requisição para atualizar dados
-      const response = updateUser(user.id_usuario, payload);
+      await updateUser(user.id_usuario, payload);
 
       showToast("success", "Perfil atualizado com sucesso!");
       setFormData((prev) => ({
