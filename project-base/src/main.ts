@@ -11,7 +11,7 @@ BigInt.prototype.toJSON = function (this: bigint): string {
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { BadRequestException, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "./common/http-exception.filter";
 import * as dotenv from "dotenv";
 

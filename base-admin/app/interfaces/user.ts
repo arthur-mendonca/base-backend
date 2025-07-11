@@ -12,3 +12,18 @@ export interface UserUpdatePayload {
   senha_atual?: string;
   nova_senha?: string;
 }
+
+export interface LoginCredentials {
+  email: string;
+  senha: string;
+}
+
+export interface AuthResponse {
+  accessToken: string;
+  user: {
+    id: string;
+    nome: string;
+    email: string;
+    perfil: string;
+  };
+}

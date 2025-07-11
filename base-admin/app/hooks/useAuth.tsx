@@ -2,21 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { eraseCookie, getCookie, setCookie } from "~/utils/cookies";
 import { useToast } from "~/contexts/ToastContext";
-
-interface LoginCredentials {
-  email: string;
-  senha: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-  user: {
-    id: string;
-    nome: string;
-    email: string;
-    perfil: string;
-  };
-}
+import type { AuthResponse, LoginCredentials } from "~/interfaces/user";
+import { userLogin } from "~/api/users/login";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -26,20 +13,7 @@ export function useAuth() {
   const login = async (credentials: LoginCredentials) => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3001/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Falha na autenticação");
-      }
-
-      const data: AuthResponse = await response.json();
+      const data: AuthResponse = await userLogin(credentials);
 
       // Salvar token e usuário em cookies
       setCookie("authToken", data.accessToken, 7); // Expira em 7 dias

@@ -56,8 +56,8 @@ export const AccountPage = ({ user }: { user: User }) => {
         email,
       };
       if (nova_senha) {
-        payload.senha_atual = senha_atual;
-        payload.nova_senha = nova_senha;
+        // payload.senha_atual = senha_atual;
+        payload.senha = nova_senha;
       }
 
       // Requisição para atualizar dados
