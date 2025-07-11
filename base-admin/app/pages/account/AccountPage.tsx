@@ -3,14 +3,7 @@ import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
-
-interface User {
-  id_usuario: number;
-  nome: string;
-  email: string;
-  perfil: string;
-  data_cadastro: string;
-}
+import type { User } from "~/interfaces/user";
 
 export const AccountPage = ({ user }: { user: User }) => {
   const { showToast } = useToast();
