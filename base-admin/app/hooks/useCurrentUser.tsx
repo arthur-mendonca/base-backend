@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
+import { getUserInfo } from "~/api/users/getUserInfo";
 import { useAuth } from "~/hooks/useAuth";
 import type { User } from "~/interfaces/user";
-
-function getCookie(name: string): string | undefined {
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  if (match) {
-    return decodeURIComponent(match[2]);
-  }
-}
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
@@ -26,24 +20,13 @@ export function useCurrentUser() {
       }
 
       try {
-        const authToken = getCookie("authToken");
-        const userCookie = getCookie("user");
+        const userData: User = await getUserInfo();
 
-        if (!authToken || !userCookie) throw new Error("Não autenticado");
-
-        const userFromCookie = JSON.parse(userCookie);
-        const userId = userFromCookie.id;
-
-        const response = await fetch(
-          `http://localhost:3001/usuario/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${authToken}` },
-          }
-        );
-
-        if (!response.ok) throw new Error("Falha ao buscar dados do usuário");
-
-        const userData: User = await response.json();
+        if (!userData) {
+          setError("Usuário não encontrado.");
+          setIsLoading(false);
+          return;
+        }
         setUser(userData);
       } catch (err: any) {
         setError(err.message || "Ocorreu um erro ao carregar os dados.");

@@ -1,13 +1,14 @@
 import { useState } from "react";
+import { updateUser } from "~/api/users/updateUser";
 import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
 import type { User } from "~/interfaces/user";
+import { getCookie } from "~/utils/cookies";
 
 export const AccountPage = ({ user }: { user: User }) => {
   const { showToast } = useToast();
-  // O estado do formulário é inicializado com os dados do usuário carregados pelo loader.
   const [formData, setFormData] = useState({
     nome: user.nome,
     email: user.email,
@@ -26,7 +27,6 @@ export const AccountPage = ({ user }: { user: User }) => {
     e.preventDefault();
     const { nome, email, senha_atual, nova_senha, confirmar_senha } = formData;
 
-    // Validação da senha, se os campos foram preenchidos
     if (nova_senha || confirmar_senha) {
       if (!senha_atual) {
         showToast(
@@ -43,18 +43,25 @@ export const AccountPage = ({ user }: { user: User }) => {
 
     setIsSubmitting(true);
     try {
-      // Simula chamada de API para atualizar o perfil
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Atualizando perfil:", { nome, email });
-
-      // Simula chamada de API para atualizar a senha, se necessário
+      const authToken = getCookie("authToken");
+      if (!authToken) {
+        showToast("danger", "Usuário não autenticado.");
+        return;
+      }
+      // Monta o payload
+      const payload: any = {
+        nome,
+        email,
+      };
       if (nova_senha) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Atualizando senha...");
+        payload.senha_atual = senha_atual;
+        payload.nova_senha = nova_senha;
       }
 
+      // Requisição para atualizar dados
+      const response = updateUser(user.id_usuario, payload);
+
       showToast("success", "Perfil atualizado com sucesso!");
-      // Limpa os campos de senha após o sucesso
       setFormData((prev) => ({
         ...prev,
         senha_atual: "",
@@ -62,7 +69,10 @@ export const AccountPage = ({ user }: { user: User }) => {
         confirmar_senha: "",
       }));
     } catch (error) {
-      showToast("danger", "Erro ao atualizar o perfil.");
+      showToast(
+        "danger",
+        error instanceof Error ? error.message : "Erro ao atualizar o perfil."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -151,7 +161,7 @@ export const AccountPage = ({ user }: { user: User }) => {
           />
         </div>
 
-        {/* Botão de Submissão */}
+        {/* Botão de envio */}
         <div className="flex justify-end pt-6">
           <Button
             type="submit"
