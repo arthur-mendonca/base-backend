@@ -17,5 +17,5 @@ export async function deleteUser(userId: string | number) {
     throw new Error(errorData.message || "Erro ao remover usuário.");
   }
 
-  return await response.json();
+  return { success: true };
 }

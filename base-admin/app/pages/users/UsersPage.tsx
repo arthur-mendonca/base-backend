@@ -6,13 +6,17 @@ import { useToast } from "~/contexts/ToastContext";
 import type { User } from "~/interfaces/user";
 import { Button } from "~/components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
-import { ModalContent } from "./ModalContent";
+import { UpdateModal } from "./UpdateModal";
 import { updateUser } from "~/api/users/updateUser";
+import { deleteUser } from "~/api/users/deleteUser";
 
 export const UsersPage = ({ user }: { user: User }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState({
+    updateModal: false,
+    createModal: false,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showToast } = useToast();
@@ -56,7 +60,7 @@ export const UsersPage = ({ user }: { user: User }) => {
           size="sm"
           text={"Ver Detalhes"}
           onClick={() => {
-            setModalOpen(true);
+            setModalOpen({ ...modalOpen, updateModal: true });
             setSelectedUser(row);
           }}
         />
@@ -64,13 +68,13 @@ export const UsersPage = ({ user }: { user: User }) => {
     },
   ];
 
-  const handleSave = async (updateUserData: Partial<User>) => {
+  const handleUpdate = async (updateUserData: Partial<User>) => {
     try {
       setIsSubmitting(true);
       if (selectedUser) {
         await updateUser(selectedUser.id_usuario, updateUserData);
         showToast("success", "Usuário atualizado com sucesso!");
-        setModalOpen(false);
+        setModalOpen({ ...modalOpen, updateModal: false });
         await fetchUsers();
       }
     } catch (error) {
@@ -83,9 +87,32 @@ export const UsersPage = ({ user }: { user: User }) => {
     }
   };
 
+  const handleDelete = async () => {
+    try {
+      setIsSubmitting(true);
+      if (selectedUser) {
+        await deleteUser(selectedUser.id_usuario);
+        showToast("success", "Usuário removido com sucesso!");
+        setModalOpen({ ...modalOpen, updateModal: false });
+        await fetchUsers();
+      }
+    } catch (error) {
+      showToast(
+        "danger",
+        error instanceof Error ? error.message : "Erro ao remover usuário."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Usuários</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold mb-4">Usuários</h1>
+        <Button text="Adicionar Usuário" size="sm" />
+      </div>
+
       {isLoading ? (
         <Spinner size="md" />
       ) : (
@@ -93,16 +120,17 @@ export const UsersPage = ({ user }: { user: User }) => {
       )}
 
       <Modal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        isOpen={modalOpen.updateModal}
+        onClose={() => setModalOpen({ ...modalOpen, updateModal: false })}
         title="Detalhes do Usuário"
         showFooter={false}
         children={
-          <ModalContent
+          <UpdateModal
             user={selectedUser!}
-            onSave={handleSave}
+            onSave={handleUpdate}
+            onDelete={handleDelete}
             isDisabled={isSubmitting}
-            onCancel={() => setModalOpen(false)}
+            onCancel={() => setModalOpen({ ...modalOpen, updateModal: false })}
           />
         }></Modal>
     </div>

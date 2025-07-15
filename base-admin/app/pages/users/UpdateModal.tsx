@@ -3,19 +3,21 @@ import { InputField } from "~/components/ui/InputField";
 import { Button } from "~/components/ui/Button";
 import type { User } from "~/interfaces/user";
 
-interface ModalContentProps {
+interface UpdateModalProps {
   user: User;
   onSave: (updatedUser: Partial<User>) => void;
+  onDelete: () => Promise<void>;
   onCancel: () => void;
   isDisabled?: boolean;
 }
 
-export const ModalContent = ({
+export const UpdateModal = ({
   user,
   onSave,
+  onDelete,
   onCancel,
   isDisabled,
-}: ModalContentProps) => {
+}: UpdateModalProps) => {
   const [formData, setFormData] = useState({
     nome: user.nome,
     email: user.email,
@@ -29,6 +31,17 @@ export const ModalContent = ({
 
   const handleSave = () => {
     onSave(formData);
+  };
+
+  const handleRemoveUser = async () => {
+    const confirmed = window.confirm("Deseja realmente remover este usuário?");
+    if (!confirmed) return;
+    try {
+      await onDelete();
+      onCancel();
+    } catch (error) {
+      console.error("Erro ao remover usuário:", error);
+    }
   };
 
   return (
@@ -59,6 +72,14 @@ export const ModalContent = ({
         value={formData.perfil}
       />
       <div className="flex justify-end gap-2 pt-4">
+        <Button
+          disabled={isDisabled}
+          text="Remover usuário"
+          variant="danger"
+          onClick={() => {
+            handleRemoveUser();
+          }}
+        />
         <Button
           disabled={isDisabled}
           text="Cancelar"
