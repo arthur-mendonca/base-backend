@@ -1,30 +1,42 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getAllUsers } from "~/api/users/getAllUsers";
 import { Table } from "~/components/ui/Table";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
+import type { User } from "~/interfaces/user";
+import { Button } from "~/components/ui/Button";
+import { Modal } from "~/components/ui/Modal";
+import { ModalContent } from "./ModalContent";
+import { updateUser } from "~/api/users/updateUser";
 
-export const UsersPage = () => {
+export const UsersPage = ({ user }: { user: User }) => {
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { showToast } = useToast();
 
-  useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const data = await getAllUsers();
-        setUsers(data);
-      } catch (error) {
-        showToast(
-          "danger",
-          error instanceof Error ? error.message : "Erro ao buscar usuários"
-        );
-      } finally {
-        setIsLoading(false);
-      }
+  const fetchUsers = useCallback(async () => {
+    try {
+      const data = await getAllUsers();
+      const filteredUsers = data.filter(
+        (fetchedUser: User) => fetchedUser.id_usuario !== user.id_usuario
+      );
+      setUsers(filteredUsers);
+    } catch (error) {
+      showToast(
+        "danger",
+        error instanceof Error ? error.message : "Erro ao buscar usuários"
+      );
+    } finally {
+      setIsLoading(false);
     }
+  }, [showToast, user.id_usuario]);
+
+  useEffect(() => {
     fetchUsers();
-  }, [showToast]);
+  }, [fetchUsers]);
 
   const columns = [
     { key: "nome", label: "Nome" },
@@ -35,7 +47,41 @@ export const UsersPage = () => {
       label: "Data de Cadastro",
       render: (value: string) => new Date(value).toLocaleDateString("pt-BR"),
     },
+    {
+      key: "button",
+      label: "Ação",
+      render: (_: any, row: User) => (
+        <Button
+          type="button"
+          size="sm"
+          text={"Ver Detalhes"}
+          onClick={() => {
+            setModalOpen(true);
+            setSelectedUser(row);
+          }}
+        />
+      ),
+    },
   ];
+
+  const handleSave = async (updateUserData: Partial<User>) => {
+    try {
+      setIsSubmitting(true);
+      if (selectedUser) {
+        await updateUser(selectedUser.id_usuario, updateUserData);
+        showToast("success", "Usuário atualizado com sucesso!");
+        setModalOpen(false);
+        await fetchUsers();
+      }
+    } catch (error) {
+      showToast(
+        "danger",
+        error instanceof Error ? error.message : "Erro ao atualizar o perfil."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div>
@@ -45,6 +91,20 @@ export const UsersPage = () => {
       ) : (
         <Table columns={columns} data={users} />
       )}
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Detalhes do Usuário"
+        showFooter={false}
+        children={
+          <ModalContent
+            user={selectedUser!}
+            onSave={handleSave}
+            isDisabled={isSubmitting}
+            onCancel={() => setModalOpen(false)}
+          />
+        }></Modal>
     </div>
   );
 };

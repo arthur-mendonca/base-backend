@@ -1,18 +1,4 @@
-interface Column {
-  key: string;
-  label: string;
-  sortable?: boolean;
-  render?: (value: any, row: any) => React.ReactNode;
-}
-
-interface TableProps {
-  columns: Column[];
-  data: any[];
-  onSort?: (key: string) => void;
-  sortKey?: string;
-  sortDirection?: "asc" | "desc";
-  className?: string;
-}
+import type { TableProps } from "~/interfaces/table";
 
 const SortIcon = () => (
   <svg

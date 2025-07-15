@@ -1,17 +1,5 @@
 import { useEffect } from "react";
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  showFooter?: boolean;
-  primaryButtonText?: string;
-  secondaryButtonText?: string;
-  onPrimaryAction?: () => void;
-  onSecondaryAction?: () => void;
-  size?: "sm" | "md" | "lg" | "xl";
-}
+import type { ModalProps } from "~/interfaces/modal";
 
 export const Modal = ({
   isOpen,
@@ -82,7 +70,7 @@ export const Modal = ({
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
+              className="cursor-pointer text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white transition-colors">
               <svg
                 className="w-3 h-3"
                 aria-hidden="true"
@@ -110,13 +98,13 @@ export const Modal = ({
               <button
                 type="button"
                 onClick={handlePrimaryClick}
-                className="text-black bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-primary/30 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">
+                className="cursor-pointer text-black bg-primary hover:bg-primary/80 focus:ring-4 focus:outline-none focus:ring-primary/30 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">
                 {primaryButtonText}
               </button>
               <button
                 type="button"
                 onClick={handleSecondaryClick}
-                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary focus:z-10 focus:ring-4 focus:ring-gray-100 transition-colors">
+                className="cursor-pointer py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary focus:z-10 focus:ring-4 focus:ring-gray-100 transition-colors">
                 {secondaryButtonText}
               </button>
             </div>

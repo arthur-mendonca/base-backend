@@ -118,14 +118,14 @@ export const AccountPage = ({ user }: { user: User }) => {
             label="Perfil de Usuário"
             id="perfil"
             value={user.perfil}
-            disabled
+            readOnly
           />
 
           <InputField
             label="Data de Cadastro"
             id="data_cadastro"
             value={new Date(user.data_cadastro).toLocaleDateString("pt-BR")}
-            disabled
+            readOnly
           />
         </div>
 
