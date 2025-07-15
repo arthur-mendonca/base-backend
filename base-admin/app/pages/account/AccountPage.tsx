@@ -103,6 +103,7 @@ export const AccountPage = ({ user }: { user: User }) => {
             onChange={handleInputChange}
             required
           />
+
           <InputField
             label="Email"
             id="email"
@@ -112,12 +113,14 @@ export const AccountPage = ({ user }: { user: User }) => {
             onChange={handleInputChange}
             required
           />
+
           <InputField
             label="Perfil de Usuário"
             id="perfil"
             value={user.perfil}
             disabled
           />
+
           <InputField
             label="Data de Cadastro"
             id="data_cadastro"
@@ -133,6 +136,7 @@ export const AccountPage = ({ user }: { user: User }) => {
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           Alterar Senha
         </h5>
+
         <p className="mb-4 font-normal text-gray-700 dark:text-gray-400">
           Deixe em branco para manter a senha atual.
         </p>
@@ -145,6 +149,7 @@ export const AccountPage = ({ user }: { user: User }) => {
             value={formData.senha_atual}
             onChange={handleInputChange}
           />
+
           <InputField
             label="Nova Senha"
             id="nova_senha"
@@ -153,6 +158,7 @@ export const AccountPage = ({ user }: { user: User }) => {
             value={formData.nova_senha}
             onChange={handleInputChange}
           />
+
           <InputField
             label="Confirmar Nova Senha"
             id="confirmar_senha"

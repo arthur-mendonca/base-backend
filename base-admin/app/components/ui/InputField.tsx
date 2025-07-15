@@ -5,9 +5,7 @@ export const InputField = ({
   ...props
 }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) => (
   <div>
-    <label
-      htmlFor={id}
-      className="block mb-2 text-sm font-medium text-gray-900">
+    <label htmlFor={id} className="block mb-2 text-sm font-medium text-white">
       {label}
     </label>
     <input
