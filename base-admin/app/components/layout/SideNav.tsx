@@ -8,6 +8,7 @@ import { UsersSVG } from "public/images/UsersSVG";
 import { VolunteersSVG } from "public/images/VolunteersSVG";
 import { useState } from "react";
 import { Link } from "react-router";
+import { useAuth } from "~/hooks/useAuth";
 import type { MenuItem, SideNavProps } from "~/interfaces/sideNav";
 
 const defaultMenuItems: MenuItem[] = [
@@ -64,7 +65,9 @@ export const SideNav = ({
   menuItems = defaultMenuItems,
   className,
 }: SideNavProps) => {
+  const { logout } = useAuth();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [activeItem, setActiveItem] = useState<string | null>(null);
 
   const toggleExpanded = (label: string) => {
     setExpandedItems((prev) =>
@@ -77,7 +80,9 @@ export const SideNav = ({
   const renderMenuItem = (item: MenuItem, level = 0) => {
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedItems.includes(item.label);
-    const baseClasses = `flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors ${
+    const baseClasses = `${
+      activeItem === item.label ? "bg-gray-100 dark:bg-gray-700" : ""
+    } flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group transition-colors ${
       level > 0 ? "pl-6" : ""
     }`;
 
@@ -110,7 +115,7 @@ export const SideNav = ({
     }
 
     return (
-      <li key={item.label}>
+      <li key={item.label} onClick={() => setActiveItem(item.label)}>
         <Link to={item.href || "#"} className={baseClasses}>
           <span className="flex-shrink-0 w-6 h-6 text-gray-400 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
             {item.icon}
@@ -164,8 +169,9 @@ export const SideNav = ({
           <ul className="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
             <li>
               <Link
-                to="/docs"
-                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                to="/login"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                onClick={logout}>
                 <LogoutSVG />
 
                 <span className="ml-3">Sair</span>
