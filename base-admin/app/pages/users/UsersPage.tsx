@@ -3,12 +3,14 @@ import { getAllUsers } from "~/api/users/getAllUsers";
 import { Table } from "~/components/ui/Table";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
-import type { User } from "~/interfaces/user";
+import type { User, UserCreatePayload } from "~/interfaces/user";
 import { Button } from "~/components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
 import { UpdateModal } from "./UpdateModal";
 import { updateUser } from "~/api/users/updateUser";
 import { deleteUser } from "~/api/users/deleteUser";
+import { CreateModal } from "./CreateModal";
+import { createUser } from "~/api/users/createUser";
 
 export const UsersPage = ({ user }: { user: User }) => {
   const [users, setUsers] = useState([]);
@@ -106,11 +108,32 @@ export const UsersPage = ({ user }: { user: User }) => {
     }
   };
 
+  const handleCreate = async (newUserData: UserCreatePayload) => {
+    try {
+      setIsSubmitting(true);
+      await createUser(user.id_usuario, newUserData);
+      showToast("success", "Usuário criado com sucesso!");
+      setModalOpen({ ...modalOpen, createModal: false });
+      await fetchUsers();
+    } catch (error) {
+      showToast(
+        "danger",
+        error instanceof Error ? error.message : "Erro ao criar usuário."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold mb-4">Usuários</h1>
-        <Button text="Adicionar Usuário" size="sm" />
+        <Button
+          text="Adicionar Usuário"
+          size="sm"
+          onClick={() => setModalOpen({ ...modalOpen, createModal: true })}
+        />
       </div>
 
       {isLoading ? (
@@ -119,6 +142,21 @@ export const UsersPage = ({ user }: { user: User }) => {
         <Table columns={columns} data={users} />
       )}
 
+      {/* Modal para criação de usuário */}
+      <Modal
+        title="Criar novo usuário"
+        showFooter={false}
+        isOpen={modalOpen.createModal}
+        onClose={() => setModalOpen({ ...modalOpen, createModal: false })}
+        children={
+          <CreateModal
+            onCreate={handleCreate}
+            onCancel={() => setModalOpen({ ...modalOpen, createModal: false })}
+            isDisabled={isSubmitting}
+          />
+        }></Modal>
+
+      {/* Modal para edição de usuário */}
       <Modal
         isOpen={modalOpen.updateModal}
         onClose={() => setModalOpen({ ...modalOpen, updateModal: false })}

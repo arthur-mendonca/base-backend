@@ -87,6 +87,7 @@ export const UpdateModal = ({
           onClick={onCancel}
         />
         <Button
+          type="submit"
           disabled={isDisabled}
           text="Salvar"
           variant="primary"

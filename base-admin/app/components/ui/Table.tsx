@@ -75,7 +75,7 @@ export const Table = ({
                   <td
                     key={column.key}
                     className={`
-                      px-6 py-4 
+                      px-6 py-4
                       ${
                         colIndex === 0
                           ? "font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -83,7 +83,7 @@ export const Table = ({
                       }
                     `}
                     {...(colIndex === 0 ? { scope: "row" } : {})}>
-                    {cellContent}
+                    <p> {cellContent}</p>
                   </td>
                 );
               })}

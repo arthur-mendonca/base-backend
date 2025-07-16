@@ -13,6 +13,13 @@ export interface UserUpdatePayload {
   nova_senha?: string;
 }
 
+export interface UserCreatePayload {
+  nome: string;
+  email: string;
+  senha: string;
+  perfil: string;
+}
+
 export interface LoginCredentials {
   email: string;
   senha: string;
