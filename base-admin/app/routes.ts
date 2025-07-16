@@ -14,6 +14,7 @@ export default [
     index("routes/home.tsx"),
     route("/account", "routes/account.tsx"),
     route("/users", "routes/users.tsx"),
+    route("/volunteers", "routes/volunteers.tsx"),
     // route("/products", "routes/products.tsx"),
     // route("/settings", "routes/settings.tsx"),
   ]),
