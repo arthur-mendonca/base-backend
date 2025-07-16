@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumberString, IsOptional, IsString, Length } from "class-validator";
 
 export class CreateVoluntarioDto {
   @ApiProperty({
@@ -11,11 +11,14 @@ export class CreateVoluntarioDto {
   nome: string;
 
   @ApiProperty({
-    description: "CPF do voluntário (único)",
-    example: "123.456.789-00",
+    description: "CPF do voluntário (único, somente números)",
+    example: "12345678901",
+    maxLength: 11,
+    minLength: 11,
   })
   @IsNotEmpty()
-  @IsString()
+  @IsNumberString({}, { message: "O CPF deve conter apenas números" })
+  @Length(11, 11, { message: "O CPF deve ter exatamente 11 dígitos" })
   cpf: string;
 
   @ApiProperty({
