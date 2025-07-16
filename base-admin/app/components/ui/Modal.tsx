@@ -12,8 +12,8 @@ export const Modal = ({
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
-  backgroundColor = "bg-white",
-  textColor = "text-gray-900",
+  backgroundColor = "bg-white dark:bg-gray-800",
+  textColor = "text-gray-900 dark:text-white",
 }: ModalProps) => {
   // Fechar modal com ESC
   useEffect(() => {
@@ -63,11 +63,12 @@ export const Modal = ({
     <div
       className="fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-black/80 "
       onClick={handleBackdropClick}>
-      <div className={`relative p-4 w-full ${sizeClasses[size]} max-h-full`}>
+      <div className={`relative p-4 w-full ${sizeClasses[size]}`}>
         {/* Modal content */}
-        <div className={`${backgroundColor} relative  rounded-lg shadow-sm  `}>
+        <div
+          className={`${backgroundColor} relative rounded-lg shadow-sm flex flex-col max-h-[90vh]`}>
           {/* Modal header */}
-          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
+          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200 shrink-0">
             <h3 className={`text-xl font-semibold ${textColor}`}>{title}</h3>
             <button
               type="button"
@@ -92,11 +93,11 @@ export const Modal = ({
           </div>
 
           {/* Modal body */}
-          <div className="p-4 md:p-5 space-y-4">{children}</div>
+          <div className="p-4 md:p-5 space-y-4 overflow-y-auto">{children}</div>
 
           {/* Modal footer */}
           {showFooter && (
-            <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+            <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 shrink-0">
               <button
                 type="button"
                 onClick={handlePrimaryClick}
