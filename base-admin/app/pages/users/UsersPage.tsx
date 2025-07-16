@@ -11,6 +11,7 @@ import { updateUser } from "~/api/users/updateUser";
 import { deleteUser } from "~/api/users/deleteUser";
 import { CreateModal } from "./CreateModal";
 import { createUser } from "~/api/users/createUser";
+import { PageContainer } from "~/components/layout/PageContainer";
 
 export const UsersPage = ({ user }: { user: User }) => {
   const [users, setUsers] = useState([]);
@@ -126,18 +127,19 @@ export const UsersPage = ({ user }: { user: User }) => {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold mb-4">Usuários</h1>
+    <PageContainer
+      title="Usuários"
+      actions={
         <Button
           text="Adicionar Usuário"
           size="sm"
           onClick={() => setModalOpen({ ...modalOpen, createModal: true })}
         />
-      </div>
-
+      }>
       {isLoading ? (
-        <Spinner size="md" />
+        <div className="flex justify-center">
+          <Spinner size="md" />
+        </div>
       ) : (
         <Table columns={columns} data={users} />
       )}
@@ -171,6 +173,6 @@ export const UsersPage = ({ user }: { user: User }) => {
             onCancel={() => setModalOpen({ ...modalOpen, updateModal: false })}
           />
         }></Modal>
-    </div>
+    </PageContainer>
   );
 };

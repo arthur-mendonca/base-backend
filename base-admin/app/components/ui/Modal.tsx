@@ -12,6 +12,8 @@ export const Modal = ({
   onPrimaryAction,
   onSecondaryAction,
   size = "md",
+  backgroundColor = "bg-white",
+  textColor = "text-gray-900",
 }: ModalProps) => {
   // Fechar modal com ESC
   useEffect(() => {
@@ -63,10 +65,10 @@ export const Modal = ({
       onClick={handleBackdropClick}>
       <div className={`relative p-4 w-full ${sizeClasses[size]} max-h-full`}>
         {/* Modal content */}
-        <div className="relative bg-white rounded-lg shadow-sm ">
+        <div className={`${backgroundColor} relative  rounded-lg shadow-sm  `}>
           {/* Modal header */}
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
-            <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+            <h3 className={`text-xl font-semibold ${textColor}`}>{title}</h3>
             <button
               type="button"
               onClick={onClose}

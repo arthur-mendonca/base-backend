@@ -9,4 +9,6 @@ export interface ModalProps {
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
   size?: "sm" | "md" | "lg" | "xl";
+  backgroundColor?: string;
+  textColor?: string;
 }
