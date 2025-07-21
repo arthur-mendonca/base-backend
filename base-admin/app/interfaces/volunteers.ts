@@ -1,5 +1,4 @@
-export interface Voluntario {
-  id_voluntario: string;
+export interface CreateVolunteerPayload {
   nome: string;
   cpf: string;
   rg: string;
@@ -12,6 +11,10 @@ export interface Voluntario {
   url_comprovante: string;
   respondeu_questionario: boolean;
   aceitou_termos: boolean;
-  data_cadastro: string;
+}
+
+export interface Voluntario extends CreateVolunteerPayload {
+  id_voluntario: string;
   atividades_realizadas: any[];
+  data_cadastro: string;
 }

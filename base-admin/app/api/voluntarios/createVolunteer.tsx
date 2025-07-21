@@ -1,9 +1,7 @@
 import { getCookie } from "~/utils/cookies";
-import type { Voluntario } from "~/interfaces/volunteers";
+import type { CreateVolunteerPayload } from "~/interfaces/volunteers";
 
-export async function createVolunteer(
-  payload: Omit<Voluntario, "id_voluntario" | "atividades_realizadas">
-) {
+export async function createVolunteer(payload: CreateVolunteerPayload) {
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 

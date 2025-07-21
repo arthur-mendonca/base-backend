@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
-import type { Voluntario } from "~/interfaces/volunteers";
-
-type VolunteerCreatePayload = Omit<
+import type {
+  CreateVolunteerPayload,
   Voluntario,
-  "id_voluntario" | "data_cadastro" | "atividades_realizadas"
->;
+} from "~/interfaces/volunteers";
 
 interface CreateModalProps {
-  onCreate: (newVolunteer: VolunteerCreatePayload) => void;
+  onCreate: (newVolunteer: CreateVolunteerPayload) => Promise<void>;
   onCancel: () => void;
   isDisabled?: boolean;
 }
@@ -19,7 +17,7 @@ export const CreateModal = ({
   onCreate,
   isDisabled,
 }: CreateModalProps) => {
-  const [formData, setFormData] = useState<VolunteerCreatePayload>({
+  const [formData, setFormData] = useState<CreateVolunteerPayload>({
     nome: "",
     email: "",
     telefone: "",

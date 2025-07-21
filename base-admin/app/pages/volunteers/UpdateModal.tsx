@@ -5,8 +5,8 @@ import type { Voluntario } from "~/interfaces/volunteers";
 
 interface UpdateModalProps {
   volunteer: Voluntario;
-  onSave: (updatedVolunteer: Partial<Voluntario>) => void;
-  onDelete: (volunteerId: string | number) => void;
+  onSave: (updatedVolunteer: Partial<Voluntario>) => Promise<void>;
+  onDelete: (volunteerId: string) => Promise<void>;
   onCancel: () => void;
   isSubmitting?: boolean;
 }

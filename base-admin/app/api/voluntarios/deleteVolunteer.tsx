@@ -1,6 +1,6 @@
 import { getCookie } from "~/utils/cookies";
 
-export async function deleteVolunteer(volunteerId: string | number) {
+export async function deleteVolunteer(volunteerId: string) {
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 

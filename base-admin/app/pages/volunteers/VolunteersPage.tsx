@@ -5,7 +5,10 @@ import { Button } from "~/components/ui/Button";
 import { Spinner } from "~/components/ui/Spinner";
 import { Table } from "~/components/ui/Table";
 import { useToast } from "~/contexts/ToastContext";
-import type { Voluntario } from "~/interfaces/volunteers";
+import type {
+  CreateVolunteerPayload,
+  Voluntario,
+} from "~/interfaces/volunteers";
 import { Modal } from "~/components/ui/Modal";
 import { createVolunteer } from "~/api/voluntarios/createVolunteer";
 import { deleteVolunteer } from "~/api/voluntarios/deleteVolunteer";
@@ -47,9 +50,7 @@ export const VolunteersPage = () => {
     fetchVolunteers();
   }, [fetchVolunteers]);
 
-  const handleCreate = async (
-    payload: Omit<Voluntario, "id_voluntario" | "data_cadastro">
-  ) => {
+  const handleCreate = async (payload: CreateVolunteerPayload) => {
     try {
       setIsSubmitting(true);
       await createVolunteer(payload);
@@ -84,7 +85,7 @@ export const VolunteersPage = () => {
     }
   };
 
-  const handleDelete = async (volunteerId: number) => {
+  const handleDelete = async (volunteerId: string) => {
     try {
       setIsSubmitting(true);
       await deleteVolunteer(volunteerId);
