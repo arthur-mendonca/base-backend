@@ -15,7 +15,7 @@ export default [
     route("/account", "routes/account.tsx"),
     route("/users", "routes/users.tsx"),
     route("/volunteers", "routes/volunteers.tsx"),
-    // route("/products", "routes/products.tsx"),
+    route("/activities", "routes/activities.tsx"),
     // route("/settings", "routes/settings.tsx"),
   ]),
 ] satisfies RouteConfig;
