@@ -119,7 +119,6 @@ export const VolunteersPage = () => {
           <Button
             text="Editar"
             size="sm"
-            variant="secondary"
             disabled={isLoading}
             onClick={() => {
               setSelectedVolunteer(row);
