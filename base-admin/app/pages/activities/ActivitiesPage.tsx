@@ -1,12 +1,12 @@
 import { CardNavTabs } from "~/components/ui/CardNavTabs";
-import { AcitivitiesComponent } from "./ActivitiesComponent";
+import { ActivitiesComponent } from "./ActivitiesComponent";
 
 export const ActivitiesPage: React.FC = () => {
   const tabs = [
     {
       key: "atividades",
       label: "Atividades",
-      content: <AcitivitiesComponent />,
+      content: <ActivitiesComponent />,
     },
     {
       key: "registro",
