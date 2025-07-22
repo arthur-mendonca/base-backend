@@ -7,6 +7,6 @@ export class AtividadeEntity implements Atividade {
   tipo: TipoAtividade;
   publico_alvo: string;
   dias_semana: string;
-  horario_inicio: string;
-  horario_fim: string;
+  horario_inicio: Date;
+  horario_fim: Date;
 }

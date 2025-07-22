@@ -1,16 +1,17 @@
 import { CardNavTabs } from "~/components/ui/CardNavTabs";
+import { AcitivitiesComponent } from "./ActivitiesComponent";
 
 export const ActivitiesPage: React.FC = () => {
   const tabs = [
     {
       key: "atividades",
       label: "Atividades",
-      content: <div>Conteúdo das Atividades</div>, // Substitua pelo componente real
+      content: <AcitivitiesComponent />,
     },
     {
       key: "registro",
       label: "Registro de atividades",
-      content: <div>Conteúdo do Registro de Atividades</div>, // Substitua pelo componente real
+      content: <div>Conteúdo do Registro de Atividades</div>,
     },
   ];
   return (

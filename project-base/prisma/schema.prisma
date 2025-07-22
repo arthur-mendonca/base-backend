@@ -190,8 +190,8 @@ model Atividade {
   tipo           TipoAtividade
   publico_alvo   String // Crianças, adultos, familiares, etc.
   dias_semana    String // Ex: "1,3,5" para segunda, quarta e sexta
-  horario_inicio String
-  horario_fim    String
+  horario_inicio DateTime
+  horario_fim    DateTime
 
   frequencias Frequencia[]
   materias    Materia[]

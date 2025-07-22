@@ -25,6 +25,7 @@ export class VoluntarioController {
   constructor(private readonly voluntarioService: VoluntarioService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Cadastrar novo voluntário" })
   @ApiResponse({
     status: 201,

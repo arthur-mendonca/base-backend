@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDate, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 
 export enum TipoAtividade {
   RODA_TERAPEUTICA = "roda_terapeutica",
@@ -54,18 +55,20 @@ export class CreateAtividadeDto {
   dias_semana: string;
 
   @ApiProperty({
-    description: "Horário de início da atividade",
-    example: "14:00",
+    description: "Horário de início da atividade (formato ISO 8601)",
+    example: "2025-08-20T14:00:00.000Z",
   })
   @IsNotEmpty()
-  @IsString()
-  horario_inicio: string;
+  @Type(() => Date)
+  @IsDate()
+  horario_inicio: Date;
 
   @ApiProperty({
-    description: "Horário de término da atividade",
-    example: "16:00",
+    description: "Horário de término da atividade (formato ISO 8601)",
+    example: "2025-08-20T16:00:00.000Z",
   })
   @IsNotEmpty()
-  @IsString()
-  horario_fim: string;
+  @Type(() => Date)
+  @IsDate()
+  horario_fim: Date;
 }
