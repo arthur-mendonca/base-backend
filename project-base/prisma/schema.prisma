@@ -20,11 +20,11 @@ model Familia {
   id_familia         BigInt   @id
   nome               String // Nome da família
   numero_dependentes Int
-  id_responsavel     BigInt   @unique
+  id_responsavel     BigInt?  @unique
   observacoes        String?
   data_cadastro      DateTime @default(now())
 
-  responsavel Responsavel @relation(fields: [id_responsavel], references: [id_responsavel])
+  responsavel Responsavel? @relation(fields: [id_responsavel], references: [id_responsavel])
   pessoas     Pessoa[]
 }
 

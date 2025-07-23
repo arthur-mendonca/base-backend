@@ -4,6 +4,15 @@ import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
 import { getAllAtividades } from "~/api/atividades/getAllAtividades";
 
+interface Frequencia {
+  id_frequencia: string;
+  id_pessoa: string;
+  id_atividade: string;
+  data: string;
+  presenca: boolean;
+  justificativa: string | null;
+}
+
 interface Atividade {
   id_atividade: string;
   nome: string;
