@@ -8,3 +8,9 @@ export interface Familia {
 }
 
 // export type FamiliaResumo = Pick<Familia, "id_familia" | "nome">;
+
+export interface UpdateFamiliaPayload {
+  nome?: string;
+  observacoes?: string;
+  id_responsavel?: string;
+}
