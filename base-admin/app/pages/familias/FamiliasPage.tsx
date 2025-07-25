@@ -1,6 +1,7 @@
 import { CardNavTabs } from "~/components/ui/CardNavTabs";
 import { FamiliasComponent } from "./familias-detalhes/FamiliasComponent";
 import { PessoasComponent } from "./pessoas/PessoasComponent";
+import { ResponsaveisComponent } from "./responsavel/ResponsaveisComponent";
 
 export const FamiliasPage: React.FC = () => {
   const tabs = [
@@ -13,6 +14,11 @@ export const FamiliasPage: React.FC = () => {
       key: "pessoas",
       label: "Pessoas",
       content: <PessoasComponent />,
+    },
+    {
+      key: "responsaveis",
+      label: "Responsáveis",
+      content: <ResponsaveisComponent />,
     },
   ];
 
