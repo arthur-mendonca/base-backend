@@ -5,6 +5,7 @@ export const InputField = ({
   labelBlack,
   backgroundColor = "bg-gray-50",
   required = false,
+  maxLength,
   ...props
 }: {
   label: string;
@@ -20,6 +21,7 @@ export const InputField = ({
       {label}
     </label>
     <input
+      maxLength={maxLength}
       required={required}
       readOnly={readOnly}
       id={id}

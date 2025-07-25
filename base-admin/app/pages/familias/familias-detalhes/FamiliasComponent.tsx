@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { getAllFamilias } from "~/api/familias/getAllFamilias";
 import { Spinner } from "~/components/ui/Spinner";
 import { Table } from "~/components/ui/Table";
-import { Button } from "./../../components/ui/Button";
+import { Button } from "../../../components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
 import { Modal } from "~/components/ui/Modal";
 import { ModalCriarFamilia } from "./ModalCriarFamilia";

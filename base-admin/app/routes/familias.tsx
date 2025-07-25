@@ -1,6 +1,6 @@
 import { Spinner } from "~/components/ui/Spinner";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
-import { FamiliasPage } from "~/pages/familias/FamiliasPage";
+import { FamiliasPage } from "~/pages/familias/familias-detalhes/FamiliasPage";
 
 export default function FamiliasRoutes() {
   const { user, isLoading, error } = useCurrentUser();

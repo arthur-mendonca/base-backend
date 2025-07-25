@@ -1,6 +1,6 @@
 import { CardNavTabs } from "~/components/ui/CardNavTabs";
 import { FamiliasComponent } from "./FamiliasComponent";
-import { PessoasComponent } from "./PessoasComponent";
+import { PessoasComponent } from "../pessoas/PessoasComponent";
 
 export const FamiliasPage: React.FC = () => {
   const tabs = [
