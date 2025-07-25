@@ -7,12 +7,18 @@ import { useToast } from "~/contexts/ToastContext";
 import { getAllResponsaveis } from "~/api/responsavel/getAllResponsaveis";
 import type { Responsavel } from "~/interfaces/responsavel";
 import { ModalCriarResponsavel } from "./CreateResponsavelModal";
+import { deleteResponsavel } from "~/api/responsavel/deleteResponsavel";
+import { ModalDetalhesResponsavel } from "./DetalhesResponsavelModal";
+import { ModalEditarResponsavel } from "./EditResponsavelModal";
 
 export const ResponsaveisComponent: React.FC = () => {
   const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedResponsavel, setSelectedResponsavel] =
+    useState<Responsavel | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  // Adicione estados para os outros modais (details, edit) e para o item selecionado
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const { showToast } = useToast();
 
@@ -30,6 +36,31 @@ export const ResponsaveisComponent: React.FC = () => {
     fetchResponsaveis().finally(() => setIsLoading(false));
   }, [fetchResponsaveis]);
 
+  const handleOpenDetails = (responsavel: Responsavel) => {
+    setSelectedResponsavel(responsavel);
+    setDetailsModalOpen(true);
+  };
+
+  const handleOpenEdit = (responsavel: Responsavel) => {
+    setSelectedResponsavel(responsavel);
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir este responsável?")) {
+      try {
+        await deleteResponsavel(id);
+        fetchResponsaveis();
+        showToast("success", "Responsável excluído com sucesso.");
+      } catch (error) {
+        showToast(
+          "danger",
+          error instanceof Error ? error.message : "Erro ao excluir."
+        );
+      }
+    }
+  };
+
   const columns = [
     { key: "nome", label: "Nome" },
     { key: "cpf", label: "CPF" },
@@ -39,7 +70,26 @@ export const ResponsaveisComponent: React.FC = () => {
       label: "Ações",
       render: (_: any, row: Responsavel) => (
         <div className="flex gap-2">
-          {/* Adicione botões de Detalhes, Editar, Excluir aqui */}
+          <Button
+            text="Detalhes"
+            size="sm"
+            variant="secondary"
+            onClick={() => handleOpenDetails(row)}
+          />
+          <Button
+            text="Editar"
+            size="sm"
+            variant="primary"
+            onClick={() => handleOpenEdit(row)}
+          />
+          <Button
+            text="Excluir"
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              void handleDelete(row.id_responsavel);
+            }}
+          />
         </div>
       ),
     },
@@ -73,7 +123,29 @@ export const ResponsaveisComponent: React.FC = () => {
         />
       </Modal>
 
-      {/* Adicione os outros modais (Detalhes, Edição) aqui */}
+      {selectedResponsavel && (
+        <>
+          <Modal
+            title="Detalhes do Responsável"
+            isOpen={detailsModalOpen}
+            showFooter={false}
+            onClose={() => setDetailsModalOpen(false)}>
+            <ModalDetalhesResponsavel responsavel={selectedResponsavel} />
+          </Modal>
+
+          <Modal
+            title="Editar Responsável"
+            isOpen={editModalOpen}
+            onClose={() => setEditModalOpen(false)}
+            showFooter={false}>
+            <ModalEditarResponsavel
+              responsavel={selectedResponsavel}
+              setModalOpen={setEditModalOpen}
+              fetchResponsaveis={fetchResponsaveis}
+            />
+          </Modal>
+        </>
+      )}
     </>
   );
 };

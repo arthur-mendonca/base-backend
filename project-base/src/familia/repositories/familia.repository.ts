@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UpdateFamiliaDto } from "../dto/update-familia.dto";
 import { Prisma } from "@prisma/client";
@@ -14,7 +14,11 @@ export class FamiliaRepository {
   }
 
   async findAll() {
-    return this.prisma.familia.findMany();
+    return this.prisma.familia.findMany({
+      include: {
+        responsavel: true,
+      },
+    });
   }
 
   async findOne(id: bigint) {
@@ -24,10 +28,17 @@ export class FamiliaRepository {
   }
 
   async update(id: bigint, updateFamiliaDto: UpdateFamiliaDto) {
-    return this.prisma.familia.update({
-      where: { id_familia: BigInt(id) },
-      data: updateFamiliaDto,
-    });
+    try {
+      return await this.prisma.familia.update({
+        where: { id_familia: BigInt(id) },
+        data: updateFamiliaDto,
+      });
+    } catch (error: any) {
+      if (error.code === "P2002" && error.meta?.target?.includes("id_responsavel")) {
+        throw new ConflictException("Este responsável já está vinculado a outra família.");
+      }
+      throw error;
+    }
   }
 
   async remove(id: bigint) {

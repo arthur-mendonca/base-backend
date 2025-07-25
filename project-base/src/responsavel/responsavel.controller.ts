@@ -4,7 +4,6 @@ import {
   Post,
   Body,
   Param,
-  Put,
   Delete,
   UseGuards,
   Query,
@@ -12,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  Patch,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { ResponsavelService } from "./responsavel.service";
@@ -151,7 +151,7 @@ export class ResponsavelController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(":id")
+  @Patch(":id")
   @ApiOperation({ summary: "Atualizar responsável" })
   @ApiParam({ name: "id", description: "ID do responsável" })
   @ApiResponse({

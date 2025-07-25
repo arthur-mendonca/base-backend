@@ -41,7 +41,11 @@ export const FamiliasComponent: React.FC = () => {
   const columns = [
     { key: "nome", label: "Nome" },
     { key: "numero_dependentes", label: "Número de Dependentes" },
-    { key: "id_responsavel", label: "ID do Responsável" },
+    {
+      key: "id_responsavel",
+      label: "Responsável",
+      render: (value: string, row: Familia) => row.responsavel?.nome || "-",
+    },
     { key: "observacoes", label: "Observações" },
     {
       key: "data_cadastro",

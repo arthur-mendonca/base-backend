@@ -11,17 +11,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = "Internal server error";
+    let message: any = "Internal server error";
     let stack: string | undefined = undefined;
     const error: any = exception;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const responseObj = exception.getResponse();
-      message = typeof responseObj === "object" ? JSON.stringify(responseObj) : responseObj;
+      if (typeof responseObj === "object") {
+        // Se já for objeto, use como está
+        message = responseObj;
+      } else {
+        // Se for string, padronize como objeto
+        message = { message: responseObj, error: exception.name, statusCode: status };
+      }
       stack = exception.stack;
     } else if (exception instanceof Error) {
-      message = exception.message;
+      message = { message: exception.message, error: exception.name, statusCode: status };
       stack = exception.stack;
     }
 
@@ -29,7 +35,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message,
+      ...message,
       stack,
       error,
     });
