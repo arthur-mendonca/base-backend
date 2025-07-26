@@ -19,10 +19,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       status = exception.getStatus();
       const responseObj = exception.getResponse();
       if (typeof responseObj === "object") {
-        // Se já for objeto, use como está
         message = responseObj;
       } else {
-        // Se for string, padronize como objeto
         message = { message: responseObj, error: exception.name, statusCode: status };
       }
       stack = exception.stack;
