@@ -29,6 +29,7 @@ export class CriancaRepository {
 
   async findAll(): Promise<CriancaEntity[]> {
     const pessoas = await this.prisma.pessoa.findMany({
+      where: { ehCrianca: true },
       include: {
         familia: {
           include: {
@@ -44,7 +45,7 @@ export class CriancaRepository {
 
   async findOne(id: bigint): Promise<CriancaEntity> {
     const pessoa = await this.prisma.pessoa.findUnique({
-      where: { id_pessoa: id },
+      where: { id_pessoa: id, ehCrianca: true },
       include: {
         familia: {
           include: {

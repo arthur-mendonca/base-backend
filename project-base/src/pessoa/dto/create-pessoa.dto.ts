@@ -64,5 +64,6 @@ export class CreatePessoaDto {
   observacoes?: string;
 
   @IsBoolean()
+  @IsOptional()
   ehCrianca: boolean;
 }
