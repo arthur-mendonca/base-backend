@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsString, IsDate, IsNotEmpty, IsOptional } from "class-validator";
+import { IsString, IsDate, IsNotEmpty, IsOptional, IsBoolean } from "class-validator";
 
 export class CreatePessoaDto {
   @ApiProperty({
@@ -62,4 +62,7 @@ export class CreatePessoaDto {
   @IsOptional()
   @IsString()
   observacoes?: string;
+
+  @IsBoolean()
+  ehCrianca: boolean;
 }

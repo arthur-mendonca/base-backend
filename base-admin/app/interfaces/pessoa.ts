@@ -17,6 +17,7 @@ export interface Pessoa {
   cpf: string | null;
   foto_url: string | null;
   observacoes: string | null;
+  ehCriança: boolean;
   familia: {
     id_familia: string;
     nome: string;
