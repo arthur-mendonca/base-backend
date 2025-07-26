@@ -6,6 +6,7 @@ export interface UpdatePessoaPayload {
   cpf?: string;
   foto_url?: string;
   observacoes?: string;
+  ehCrianca: boolean;
 }
 
 export interface Pessoa {
@@ -17,7 +18,7 @@ export interface Pessoa {
   cpf: string | null;
   foto_url: string | null;
   observacoes: string | null;
-  ehCriança: boolean;
+  ehCrianca: boolean;
   familia: {
     id_familia: string;
     nome: string;

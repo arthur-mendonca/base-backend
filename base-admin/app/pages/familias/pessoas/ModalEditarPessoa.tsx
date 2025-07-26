@@ -18,10 +18,19 @@ export const ModalEditarPessoa: React.FC<ModalEditarPessoaProps> = ({
 }) => {
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<UpdatePessoaPayload>({});
+  const [formData, setFormData] = useState<UpdatePessoaPayload>({
+    nome: "",
+    data_nascimento: "",
+    cpf: "",
+    rg: "",
+    observacoes: "",
+    ehCrianca: false,
+  });
 
   useEffect(() => {
     if (pessoa) {
+      console.log("Initializing form data with:", pessoa);
+
       setFormData({
         nome: pessoa.nome || "",
         data_nascimento: pessoa.data_nascimento
@@ -30,12 +39,15 @@ export const ModalEditarPessoa: React.FC<ModalEditarPessoaProps> = ({
         cpf: pessoa.cpf || "",
         rg: pessoa.rg || "",
         observacoes: pessoa.observacoes || "",
+        ehCrianca: pessoa.ehCrianca || false,
       });
     }
   }, [pessoa]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type, checked } = e.target;
+    const val = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: val }));
   };
 
   const handleUpdatePessoa = async (e: React.FormEvent) => {
@@ -90,20 +102,36 @@ export const ModalEditarPessoa: React.FC<ModalEditarPessoaProps> = ({
         onChange={handleInputChange}
       />
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button
-          text="Cancelar"
-          variant="secondary"
-          onClick={() => setModalOpen(false)}
-          type="button"
-          disabled={isSubmitting}
-        />
-        <Button
-          text="Salvar"
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting}
-        />
+      <div className="flex justify-between gap-2 pt-4">
+        <div>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="ehCrianca"
+              checked={formData.ehCrianca}
+              onChange={handleInputChange}
+            />
+            <span className="text-sm font-medium text-gray-900 dark:text-white">
+              É Criança
+            </span>
+          </label>
+        </div>
+
+        <div>
+          <Button
+            text="Cancelar"
+            variant="secondary"
+            onClick={() => setModalOpen(false)}
+            type="button"
+            disabled={isSubmitting}
+          />
+          <Button
+            text="Salvar"
+            variant="primary"
+            type="submit"
+            disabled={isSubmitting}
+          />
+        </div>
       </div>
     </form>
   );
