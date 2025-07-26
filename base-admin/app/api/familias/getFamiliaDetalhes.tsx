@@ -1,6 +1,9 @@
+import type { FamiliaDetalhes } from "~/interfaces/familias";
 import { getCookie } from "~/utils/cookies";
 
-export async function getFamiliasDetalhes() {
+export async function getFamiliaDetalhes(
+  id: number
+): Promise<FamiliaDetalhes | null> {
   let response;
 
   try {
@@ -8,7 +11,7 @@ export async function getFamiliasDetalhes() {
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
 
-    response = await fetch("http://localhost:3001/familia/detalhes", {
+    response = await fetch(`http://localhost:3001/familia/detalhes/${id}`, {
       headers: { Authorization: `Bearer ${authToken}` },
     });
     if (!response.ok) {

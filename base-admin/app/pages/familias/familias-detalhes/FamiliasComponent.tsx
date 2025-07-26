@@ -6,10 +6,11 @@ import { Button } from "../../../components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
 import { ModalCriarFamilia } from "./ModalCriarFamilia";
 import { deleteFamilia } from "~/api/familias/deleteFamilia";
-import type { Familia } from "~/interfaces/familias";
+import type { Familia, FamiliaDetalhes } from "~/interfaces/familias";
 import { useToast } from "~/contexts/ToastContext";
 import { ModalEditarFamilia } from "./ModalEditarFamillia";
 import { DetalhesFamiliaModal } from "./DetalhesFamiliaModal";
+import { getFamiliaDetalhes } from "~/api/familias/getFamiliaDetalhes";
 
 export const FamiliasComponent: React.FC = () => {
   const { showToast } = useToast();
@@ -22,10 +23,20 @@ export const FamiliasComponent: React.FC = () => {
   const [detalhesModal, setDetalhesModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedFamilia, setSelectedFamilia] = useState<Familia | null>(null);
+  const [familiaDetalhes, setFamiliaDetalhes] =
+    useState<FamiliaDetalhes | null>(null);
 
   const fetchFamilias = useCallback(async () => {
     const data = await getAllFamilias();
     setFamilias(data);
+  }, []);
+
+  const fetchFamiliasDetalhes = useCallback(async (id: number) => {
+    const data = await getFamiliaDetalhes(id);
+    console.log("Fetched family details:", data);
+
+    setFamiliaDetalhes(data);
+    setDetalhesModal(true);
   }, []);
 
   useEffect(() => {
@@ -47,7 +58,7 @@ export const FamiliasComponent: React.FC = () => {
       label: "Responsável",
       render: (value: string, row: Familia) => row.responsavel?.nome || "-",
     },
-    { key: "observacoes", label: "Observações" },
+    // { key: "observacoes", label: "Observações" },
     {
       key: "data_cadastro",
       label: "Data de Cadastro",
@@ -62,7 +73,9 @@ export const FamiliasComponent: React.FC = () => {
             text="Detalhes"
             size="sm"
             variant="success"
-            onClick={() => handleOpenDetails(row)}
+            onClick={() => {
+              fetchFamiliasDetalhes(Number(row.id_familia));
+            }}
           />
           <Button
             text="Editar"
@@ -82,11 +95,6 @@ export const FamiliasComponent: React.FC = () => {
       ),
     },
   ];
-
-  const handleOpenDetails = (familia: Familia) => {
-    setDetalhesModal(true);
-    setSelectedFamilia(familia);
-  };
 
   const handleOpenEdit = (familia: Familia) => {
     setSelectedFamilia(familia);
@@ -155,17 +163,14 @@ export const FamiliasComponent: React.FC = () => {
         </Modal>
       )}
 
-      {selectedFamilia && (
+      {familiaDetalhes && (
         <Modal
+          size="xl"
           title="Detalhes da Família"
           isOpen={detalhesModal}
           onClose={() => setDetalhesModal(false)}
           showFooter={false}>
-          <DetalhesFamiliaModal
-            familia={selectedFamilia}
-            setModalOpen={setDetalhesModal}
-            // fetchFamilias={fetchFamilias}
-          />
+          <DetalhesFamiliaModal familia={familiaDetalhes} />
         </Modal>
       )}
     </>

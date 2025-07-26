@@ -1,3 +1,4 @@
+import type { Pessoa } from "./pessoa";
 import type { Responsavel } from "./responsavel";
 
 export interface Familia {
@@ -16,4 +17,8 @@ export interface UpdateFamiliaPayload {
   nome?: string;
   observacoes?: string | null;
   id_responsavel?: number | null;
+}
+
+export interface FamiliaDetalhes extends Familia {
+  pessoas: Pessoa[];
 }
