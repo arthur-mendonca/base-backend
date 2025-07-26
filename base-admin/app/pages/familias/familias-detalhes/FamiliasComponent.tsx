@@ -9,16 +9,17 @@ import { deleteFamilia } from "~/api/familias/deleteFamilia";
 import type { Familia } from "~/interfaces/familias";
 import { useToast } from "~/contexts/ToastContext";
 import { ModalEditarFamilia } from "./ModalEditarFamillia";
+import { DetalhesFamiliaModal } from "./DetalhesFamiliaModal";
 
 export const FamiliasComponent: React.FC = () => {
   const { showToast } = useToast();
   const [familias, setFamilias] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // modal states
-  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // modal criação de família
+  const [detalhesModal, setDetalhesModal] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedFamilia, setSelectedFamilia] = useState<Familia | null>(null);
 
@@ -58,6 +59,12 @@ export const FamiliasComponent: React.FC = () => {
       render: (_: any, row: Familia) => (
         <div className="flex gap-2">
           <Button
+            text="Detalhes"
+            size="sm"
+            variant="success"
+            onClick={() => handleOpenDetails(row)}
+          />
+          <Button
             text="Editar"
             size="sm"
             variant="primary"
@@ -75,6 +82,11 @@ export const FamiliasComponent: React.FC = () => {
       ),
     },
   ];
+
+  const handleOpenDetails = (familia: Familia) => {
+    setDetalhesModal(true);
+    setSelectedFamilia(familia);
+  };
 
   const handleOpenEdit = (familia: Familia) => {
     setSelectedFamilia(familia);
@@ -139,6 +151,20 @@ export const FamiliasComponent: React.FC = () => {
             familia={selectedFamilia}
             setModalOpen={setEditModalOpen}
             fetchFamilias={fetchFamilias}
+          />
+        </Modal>
+      )}
+
+      {selectedFamilia && (
+        <Modal
+          title="Detalhes da Família"
+          isOpen={detalhesModal}
+          onClose={() => setDetalhesModal(false)}
+          showFooter={false}>
+          <DetalhesFamiliaModal
+            familia={selectedFamilia}
+            setModalOpen={setDetalhesModal}
+            // fetchFamilias={fetchFamilias}
           />
         </Modal>
       )}

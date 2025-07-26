@@ -49,15 +49,16 @@ export class FamiliaController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get("detalhes")
-  @ApiOperation({ summary: "Listar todas as famílias com detalhes" })
+  @Get("detalhes/:id")
+  @ApiOperation({ summary: "Listar uma família com detalhes" })
+  @ApiParam({ name: "id", description: "ID da família" })
   @ApiResponse({
     status: 200,
-    description: "Lista de famílias com detalhes",
-    type: [FamiliaEntity],
+    description: "Família encontrada com detalhes",
+    type: FamiliaEntity,
   })
-  async getAllFamiliesDetails() {
-    return this.familiaService.getAllFamiliesDetails();
+  async getFamiliyDetails(@Param("id", ParseIntPipe) id: number) {
+    return await this.familiaService.getFamiliyDetails(BigInt(id));
   }
 
   @UseGuards(JwtAuthGuard)

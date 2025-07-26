@@ -21,8 +21,9 @@ export class FamiliaRepository {
     });
   }
 
-  async getAllFamiliesDetails() {
-    return this.prisma.familia.findMany({
+  async getFamiliyDetails(id: bigint) {
+    return await this.prisma.familia.findUnique({
+      where: { id_familia: BigInt(id) },
       include: {
         pessoas: true,
         responsavel: true,
@@ -31,7 +32,7 @@ export class FamiliaRepository {
   }
 
   async findOne(id: bigint) {
-    return this.prisma.familia.findUnique({
+    return await this.prisma.familia.findUnique({
       where: { id_familia: BigInt(id) },
     });
   }
