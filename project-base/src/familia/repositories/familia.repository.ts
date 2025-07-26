@@ -21,6 +21,15 @@ export class FamiliaRepository {
     });
   }
 
+  async getAllFamiliesDetails() {
+    return this.prisma.familia.findMany({
+      include: {
+        pessoas: true,
+        responsavel: true,
+      },
+    });
+  }
+
   async findOne(id: bigint) {
     return this.prisma.familia.findUnique({
       where: { id_familia: BigInt(id) },

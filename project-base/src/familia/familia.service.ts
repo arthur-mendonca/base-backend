@@ -38,6 +38,10 @@ export class FamiliaService {
     return this.repository.findAll();
   }
 
+  async getAllFamiliesDetails() {
+    return this.repository.getAllFamiliesDetails();
+  }
+
   async findOne(id: bigint) {
     return this.repository.findOne(id);
   }

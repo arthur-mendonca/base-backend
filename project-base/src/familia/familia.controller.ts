@@ -49,6 +49,18 @@ export class FamiliaController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get("detalhes")
+  @ApiOperation({ summary: "Listar todas as famílias com detalhes" })
+  @ApiResponse({
+    status: 200,
+    description: "Lista de famílias com detalhes",
+    type: [FamiliaEntity],
+  })
+  async getAllFamiliesDetails() {
+    return this.familiaService.getAllFamiliesDetails();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   @ApiOperation({ summary: "Buscar família por ID" })
   @ApiParam({ name: "id", description: "ID da família" })
