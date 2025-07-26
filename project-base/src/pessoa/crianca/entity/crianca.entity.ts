@@ -9,4 +9,5 @@ export class CriancaEntity implements Pessoa {
   cpf: string | null;
   foto_url: string | null;
   observacoes: string | null;
+  ehCrianca: boolean;
 }

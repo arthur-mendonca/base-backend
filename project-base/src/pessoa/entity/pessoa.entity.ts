@@ -9,4 +9,5 @@ export class PessoaEntity implements PessoaPrisma {
   cpf: string | null;
   foto_url: string | null;
   observacoes: string | null;
+  ehCrianca: boolean;
 }

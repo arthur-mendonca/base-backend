@@ -36,7 +36,8 @@ model Pessoa {
   rg              String?
   cpf             String?  @unique
   foto_url        String?
-  observacoes     String? // Para anotações gerais (ex: uso de drogas, prisão, etc)
+  observacoes     String? // Para anotações gerais
+  ehCrianca       Boolean  @default(false)
 
   familia     Familia      @relation(fields: [id_familia], references: [id_familia])
   frequencias Frequencia[] // Frequência em atividades
