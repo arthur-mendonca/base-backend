@@ -9,6 +9,10 @@ export interface Responsavel {
   ocupacao: string | null;
   endereco: string;
   foto_url: string | null;
+  familia: {
+    id_familia: string | null;
+    nome: string | null;
+  };
 }
 
 export interface CreateResponsavelDto {

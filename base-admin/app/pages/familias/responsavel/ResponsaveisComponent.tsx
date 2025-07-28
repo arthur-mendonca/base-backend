@@ -25,6 +25,7 @@ export const ResponsaveisComponent: React.FC = () => {
   const fetchResponsaveis = useCallback(async () => {
     try {
       const data = await getAllResponsaveis();
+
       setResponsaveis(data);
     } catch (error) {
       showToast("danger", "Erro ao carregar responsáveis.");

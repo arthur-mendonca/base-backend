@@ -28,7 +28,8 @@ export const ModalDetalhesResponsavel: React.FC<ModalDetalhesProps> = ({
           />
         </div>
       )}
-      <DetailItem label="Nome Completo" value={responsavel.nome} />
+      <DetailItem label="Nome Completo" value={responsavel.nome} />{" "}
+      <DetailItem label="Família" value={responsavel.familia?.nome} />
       <DetailItem label="CPF" value={responsavel.cpf} />
       <DetailItem label="RG" value={responsavel.rg} />
       <DetailItem
