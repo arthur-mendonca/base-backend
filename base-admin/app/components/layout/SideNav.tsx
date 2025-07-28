@@ -29,7 +29,7 @@ const defaultMenuItems: MenuItem[] = [
   },
   {
     label: "Cestas Básicas",
-    href: "/food-baskets",
+    href: "/cestas",
     icon: <BasketsSVG />,
   },
   {
