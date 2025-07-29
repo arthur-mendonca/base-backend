@@ -1,5 +1,4 @@
-// EditarProdutoModal.tsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { updateProduto } from "~/api/produto/updateProduto";
 import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
