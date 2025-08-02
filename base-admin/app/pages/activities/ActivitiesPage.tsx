@@ -9,9 +9,9 @@ export const ActivitiesPage: React.FC = () => {
       content: <ActivitiesComponent />,
     },
     {
-      key: "registro",
-      label: "Registro de atividades",
-      content: <div>Conteúdo do Registro de Atividades</div>,
+      key: "matriculas",
+      label: "Matrículas",
+      content: <div>Conteúdo do Registro de Matrículas</div>,
     },
   ];
   return (
