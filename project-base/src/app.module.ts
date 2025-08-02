@@ -25,6 +25,7 @@ import { ServicoPrestadoModule } from "./servico-prestado/servico-prestado.modul
 import { ProdutoModule } from "./produto/produto.module";
 import { ProdutoCestaModule } from "./produto-cesta/produto-cesta.module";
 import { MateriaModule } from "./materia/materia.module";
+import { MatriculaAtividadeModule } from "./matriculaAtividade/matriculaAtividade.module";
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MateriaModule } from "./materia/materia.module";
     MateriaModule,
     CestaBasicaModule,
     FrequenciaModule,
+    MatriculaAtividadeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

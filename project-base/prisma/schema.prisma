@@ -42,8 +42,8 @@ model Pessoa {
   matriculada_escola Boolean  @default(false)
   nome_escola        String?
 
-  familia     Familia      @relation(fields: [id_familia], references: [id_familia])
-  frequencias Frequencia[] // Frequência em atividades
+  familia    Familia              @relation(fields: [id_familia], references: [id_familia])
+  matriculas MatriculaAtividade[]
 }
 
 model Responsavel {
@@ -197,8 +197,8 @@ model Atividade {
   horario_inicio DateTime
   horario_fim    DateTime
 
-  frequencias Frequencia[]
-  materias    Materia[]
+  materias   Materia[]
+  matriculas MatriculaAtividade[]
 }
 
 model Materia {
@@ -210,16 +210,29 @@ model Materia {
   atividade Atividade @relation(fields: [id_atividade], references: [id_atividade])
 }
 
+model MatriculaAtividade {
+  id_matricula   BigInt          @id
+  id_pessoa      BigInt
+  id_atividade   BigInt
+  data_matricula DateTime        @default(now())
+  status         StatusMatricula @default(ATIVA)
+  observacoes    String?
+
+  pessoa      Pessoa       @relation(fields: [id_pessoa], references: [id_pessoa])
+  atividade   Atividade    @relation(fields: [id_atividade], references: [id_atividade])
+  frequencias Frequencia[]
+
+  @@unique([id_pessoa, id_atividade])
+}
+
 model Frequencia {
   id_frequencia BigInt   @id
-  id_pessoa     BigInt
-  id_atividade  BigInt
+  id_matricula  BigInt
   data          DateTime
   presenca      Boolean
-  justificativa String? // Justificativa em caso de falta
+  justificativa String?
 
-  pessoa    Pessoa    @relation(fields: [id_pessoa], references: [id_pessoa])
-  atividade Atividade @relation(fields: [id_atividade], references: [id_atividade])
+  matricula MatriculaAtividade @relation(fields: [id_matricula], references: [id_matricula])
 }
 
 enum TipoUsuario {
@@ -245,4 +258,10 @@ enum TipoAtividade {
   alfabetizacao_adultos
   aula_musica
   outra
+}
+
+enum StatusMatricula {
+  ATIVA
+  INATIVA
+  CONCLUIDA
 }
