@@ -51,7 +51,7 @@ export class CestaBasicaService {
     //   );
     // }
 
-    const criancas = familia.pessoas;
+    const criancas = familia.pessoas as CriancaEntity[];
 
     if (criancas.length === 0) {
       throw new ForbiddenException("Esta família não possui crianças para receber a cesta básica.");
@@ -64,15 +64,15 @@ export class CestaBasicaService {
     //   throw new ForbiddenException(`Nenhuma criança da família ${familia.nome} está matriculada em uma escola.`);
     // }
 
-    const criancasEmAtividades = await this.prisma.frequencia.findMany({
+    const criancasEmAtividades = await this.prisma.matriculaAtividade.findMany({
       where: {
-        id_pessoa: { in: criancas.map((c: CriancaEntity) => c.id_pessoa) },
+        id_pessoa: { in: criancas.map(c => c.id_pessoa) },
+        status: "ATIVA", // Apenas matrículas ativas
         atividade: {
           tipo: {
             in: Object.values(TipoAtividade),
           },
         },
-        presenca: true, // Consideramos apenas se há registros de presença
       },
       distinct: ["id_pessoa"],
     });

@@ -11,8 +11,7 @@ export class FrequenciaRepository {
   async findAll(): Promise<FrequenciaEntity[]> {
     return this.prisma.frequencia.findMany({
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
       orderBy: {
         data: "desc",
@@ -24,8 +23,7 @@ export class FrequenciaRepository {
     const frequencia = await this.prisma.frequencia.findUnique({
       where: { id_frequencia: id },
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
     });
 
@@ -40,8 +38,7 @@ export class FrequenciaRepository {
     return this.prisma.frequencia.create({
       data: frequenciaData,
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
     });
   }
@@ -54,8 +51,7 @@ export class FrequenciaRepository {
       where: { id_frequencia: id },
       data: updateFrequenciaDto,
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
     });
   }
@@ -79,10 +75,13 @@ export class FrequenciaRepository {
     }
 
     return this.prisma.frequencia.findMany({
-      where: { id_pessoa },
+      where: {
+        matricula: {
+          id_pessoa: id_pessoa,
+        },
+      },
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
       orderBy: {
         data: "desc",
@@ -100,10 +99,9 @@ export class FrequenciaRepository {
     }
 
     return this.prisma.frequencia.findMany({
-      where: { id_atividade },
+      where: { matricula: { id_atividade } },
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
       orderBy: {
         data: "desc",
@@ -120,8 +118,7 @@ export class FrequenciaRepository {
         },
       },
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
       orderBy: {
         data: "desc",
@@ -133,8 +130,7 @@ export class FrequenciaRepository {
     return this.prisma.frequencia.findMany({
       where: { presenca },
       include: {
-        pessoa: true,
-        atividade: true,
+        matricula: true,
       },
       orderBy: {
         data: "desc",

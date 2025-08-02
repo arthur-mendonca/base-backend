@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { FrequenciaRepository } from "./repositories/frequencia.repository";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
@@ -25,56 +25,78 @@ export class FrequenciaService {
   }
 
   async create(createFrequenciaDto: CreateFrequenciaDto) {
+    const { id_matricula } = createFrequenciaDto;
+
+    // 1. Encontrar a matrícula correspondente à pessoa e atividade
+    const matricula = await this.prisma.matriculaAtividade.findUnique({
+      where: {
+        id_matricula: id_matricula,
+      },
+    });
+
+    if (!matricula) {
+      throw new NotFoundException(`Nenhuma matrícula ativa encontrada para esta pessoa nesta atividade`);
+    }
+    if (matricula.status !== "ATIVA") {
+      throw new BadRequestException("A matrícula desta pessoa na atividade não está ativa nesta atividade.");
+    }
+
     const id = this.snowflakeService.generate();
 
+    // 2. Criar a frequência usando o id_matricula
     const frequenciaData: Prisma.FrequenciaCreateInput = {
       id_frequencia: id,
       data: createFrequenciaDto.data,
       presenca: createFrequenciaDto.presenca,
       justificativa: createFrequenciaDto.justificativa || null,
-      pessoa: {
+      matricula: {
         connect: {
-          id_pessoa: BigInt(createFrequenciaDto.id_pessoa),
-        },
-      },
-      atividade: {
-        connect: {
-          id_atividade: BigInt(createFrequenciaDto.id_atividade),
+          id_matricula: matricula.id_matricula,
         },
       },
     };
 
-    const novaFrequencia = this.repository.create(frequenciaData);
+    const novaFrequencia = await this.repository.create(frequenciaData);
 
+    // 3. Verificar faltas não justificadas
     if (!createFrequenciaDto.presenca && !createFrequenciaDto.justificativa) {
-      const id_pessoa = BigInt(createFrequenciaDto.id_pessoa);
-      const id_atividade = BigInt(createFrequenciaDto.id_atividade);
-
       const faltasNaoJustificadas = await this.prisma.frequencia.count({
         where: {
-          id_pessoa,
-          id_atividade,
+          id_matricula: matricula.id_matricula,
           presenca: false,
           justificativa: null,
         },
       });
 
       if (faltasNaoJustificadas > 2) {
-        const pessoa = await this.prisma.pessoa.findUnique({
-          where: { id_pessoa },
-          select: { id_familia: true },
+        // Regra de negócio: Inativar matrícula e elegibilidade da família
+        await this.prisma.matriculaAtividade.update({
+          where: { id_matricula: matricula.id_matricula },
+          data: { status: "INATIVA" },
         });
 
-        if (pessoa && pessoa.id_familia) {
+        const frequencia = await this.prisma.frequencia.findUnique({
+          where: { id_frequencia: novaFrequencia.id_frequencia },
+          include: {
+            matricula: {
+              include: {
+                pessoa: true,
+              },
+            },
+          },
+        });
+
+        const id_familia = frequencia?.matricula?.pessoa.id_familia;
+
+        if (id_familia) {
           await this.prisma.familia.update({
-            where: { id_familia: pessoa.id_familia },
+            where: { id_familia: id_familia },
             data: { elegivel_cesta_basica: false },
           });
 
           this.logger.warn(
-            `Família ID ${pessoa.id_familia} tornou-se inelegível para cestas básicas devido a faltas da pessoa ID ${id_pessoa}.`,
+            `Família ID ${id_familia} tornou-se inelegível e matrícula ID ${matricula.id_matricula} foi inativada por excesso de faltas.`,
           );
-          // Implementar outras lógicas como notificar a família ou retirar família da lista de cestas básicas, etc
         }
       }
     }

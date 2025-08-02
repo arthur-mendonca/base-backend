@@ -17,7 +17,7 @@ export class PessoaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
       orderBy: {
         nome: "asc",
@@ -34,7 +34,7 @@ export class PessoaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
     });
 
@@ -67,7 +67,7 @@ export class PessoaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
     });
   }

@@ -3,20 +3,12 @@ import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } f
 
 export class CreateFrequenciaDto {
   @ApiProperty({
-    description: "ID da pessoa associada à frequência",
+    description: "ID da matrícula associada à frequência",
     example: "1234567890",
   })
   @IsNotEmpty()
   @IsNumber()
-  id_pessoa: bigint;
-
-  @ApiProperty({
-    description: "ID da atividade associada à frequência",
-    example: "1234567890",
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  id_atividade: bigint;
+  id_matricula: bigint;
 
   @ApiProperty({
     description: "Data da frequência",

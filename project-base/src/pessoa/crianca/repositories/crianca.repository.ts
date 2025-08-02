@@ -36,7 +36,7 @@ export class CriancaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
     });
 
@@ -52,7 +52,7 @@ export class CriancaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
     });
 
@@ -89,7 +89,7 @@ export class CriancaRepository {
             responsavel: true,
           },
         },
-        frequencias: true,
+        matriculas: true,
       },
     });
   }

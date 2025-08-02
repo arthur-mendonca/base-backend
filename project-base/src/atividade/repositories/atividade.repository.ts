@@ -16,7 +16,7 @@ export class AtividadeRepository {
       },
       include: {
         materias: true,
-        frequencias: true,
+        matriculas: true,
       },
     });
   }
@@ -26,7 +26,7 @@ export class AtividadeRepository {
       where: { id_atividade: id },
       include: {
         materias: true,
-        frequencias: true,
+        matriculas: true,
       },
     });
 
@@ -55,7 +55,7 @@ export class AtividadeRepository {
       data,
       include: {
         materias: true,
-        frequencias: true,
+        matriculas: true,
       },
     });
   }
