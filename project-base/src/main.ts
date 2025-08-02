@@ -18,7 +18,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 async function bootstrap() {
   try {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { logger: ["error", "warn"] }); // Configura o logger para mostrar apenas erros e avisos
 
     app.enableCors(); // Habilita CORS para todas as rotas
     app.setGlobalPrefix(""); // Define um prefixo global para todas as rotas
