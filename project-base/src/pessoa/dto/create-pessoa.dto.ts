@@ -66,4 +66,20 @@ export class CreatePessoaDto {
   @IsBoolean()
   @IsOptional()
   ehCrianca: boolean;
+
+  @ApiPropertyOptional({
+    description: "Indica se a pessoa está matriculada em uma escola",
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  matriculada_escola?: boolean;
+
+  @ApiPropertyOptional({
+    description: "Nome da escola onde a pessoa está matriculada",
+    example: "Escola Municipal Exemplo",
+  })
+  @IsOptional()
+  @IsString()
+  nome_escola?: string;
 }

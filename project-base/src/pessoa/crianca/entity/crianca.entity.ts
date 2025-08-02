@@ -1,13 +1,6 @@
-import { Pessoa } from "@prisma/client";
+import { PessoaEntity } from "src/pessoa/entity/pessoa.entity";
 
-export class CriancaEntity implements Pessoa {
-  id_pessoa: bigint;
-  id_familia: bigint;
-  nome: string;
-  data_nascimento: Date;
-  rg: string | null;
-  cpf: string | null;
-  foto_url: string | null;
-  observacoes: string | null;
-  ehCrianca: boolean;
+export class CriancaEntity extends PessoaEntity {
+  // Herda todos os campos de PessoaEntity
+  // Pode adicionar campos específicos de criança se necessário
 }

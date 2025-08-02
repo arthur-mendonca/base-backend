@@ -29,15 +29,17 @@ model Familia {
 }
 
 model Pessoa {
-  id_pessoa       BigInt   @id
-  id_familia      BigInt
-  nome            String
-  data_nascimento DateTime
-  rg              String?
-  cpf             String?  @unique
-  foto_url        String?
-  observacoes     String? // Para anotações gerais
-  ehCrianca       Boolean  @default(false)
+  id_pessoa          BigInt   @id
+  id_familia         BigInt
+  nome               String
+  data_nascimento    DateTime
+  rg                 String?
+  cpf                String?  @unique
+  foto_url           String?
+  observacoes        String? // Para anotações gerais
+  ehCrianca          Boolean  @default(false)
+  matriculada_escola Boolean  @default(false)
+  nome_escola        String?
 
   familia     Familia      @relation(fields: [id_familia], references: [id_familia])
   frequencias Frequencia[] // Frequência em atividades

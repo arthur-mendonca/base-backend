@@ -1,12 +1,14 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { CestaBasicaRepository } from "./repositories/cestabasica.repository";
 import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
 import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
-import { Prisma } from "@prisma/client";
+import { Prisma, TipoAtividade } from "@prisma/client";
 import { SnowflakeService } from "src/snowflake/snowflake.service";
+import { CriancaEntity } from "src/pessoa/crianca/entity/crianca.entity";
 
 @Injectable()
 export class CestaBasicaService {
+  prisma: any;
   constructor(
     private readonly repository: CestaBasicaRepository,
     private readonly snowflakeService: SnowflakeService,
@@ -26,6 +28,47 @@ export class CestaBasicaService {
       throw new BadRequestException(
         "É necessário informar um responsável ou um beneficiário externo para a cesta básica",
       );
+    }
+
+    // VERIFICAR SE AS CRIANÇAS DA FAMÍLIA ESTÃO MATRICULADAS EM ESCOLA E PARTICIPANDO DE ATIVIDADES
+    const id_responsavel = createCestaBasicaDto.id_responsavel;
+
+    // Buscar a família e as crianças associadas
+    const familia = await this.prisma.familia.findUnique({
+      where: { id_responsavel },
+      include: { pessoas: { where: { ehCrianca: true } } },
+    });
+
+    if (!familia) {
+      throw new NotFoundException(`Família com responsável ID ${id_responsavel} não encontrada.`);
+    }
+
+    const criancas = familia.pessoas;
+
+    if (criancas.length === 0) {
+      throw new ForbiddenException("Esta família não possui crianças para receber a cesta básica.");
+    }
+
+    const algumaCriancaMatriculada = criancas.some((c: CriancaEntity) => c.matriculada_escola);
+    if (!algumaCriancaMatriculada) {
+      throw new ForbiddenException("Nenhuma criança da família está matriculada em uma escola.");
+    }
+
+    const criancasEmAtividades = await this.prisma.frequencia.findMany({
+      where: {
+        id_pessoa: { in: criancas.map((c: CriancaEntity) => c.id_pessoa) },
+        atividade: {
+          tipo: {
+            in: [TipoAtividade],
+          },
+        },
+        presenca: true, // Consideramos apenas se há registros de presença
+      },
+      distinct: ["id_pessoa"],
+    });
+
+    if (criancasEmAtividades.length === 0) {
+      throw new ForbiddenException("Nenhuma criança da família está participando de alguma atividade.");
     }
 
     const id = this.snowflakeService.generate();
