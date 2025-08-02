@@ -1,15 +1,19 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { FrequenciaRepository } from "./repositories/frequencia.repository";
 import { CreateFrequenciaDto } from "./dto/create-frequencia.dto";
 import { UpdateFrequenciaDto } from "./dto/update-frequencia.dto";
 import { Prisma } from "@prisma/client";
 import { SnowflakeService } from "../snowflake/snowflake.service";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class FrequenciaService {
+  private readonly logger = new Logger(FrequenciaService.name);
+
   constructor(
     private readonly repository: FrequenciaRepository,
     private readonly snowflakeService: SnowflakeService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async findAll() {
@@ -40,7 +44,42 @@ export class FrequenciaService {
       },
     };
 
-    return this.repository.create(frequenciaData);
+    const novaFrequencia = this.repository.create(frequenciaData);
+
+    if (!createFrequenciaDto.presenca && !createFrequenciaDto.justificativa) {
+      const id_pessoa = BigInt(createFrequenciaDto.id_pessoa);
+      const id_atividade = BigInt(createFrequenciaDto.id_atividade);
+
+      const faltasNaoJustificadas = await this.prisma.frequencia.count({
+        where: {
+          id_pessoa,
+          id_atividade,
+          presenca: false,
+          justificativa: null,
+        },
+      });
+
+      if (faltasNaoJustificadas > 2) {
+        const pessoa = await this.prisma.pessoa.findUnique({
+          where: { id_pessoa },
+          select: { id_familia: true },
+        });
+
+        if (pessoa && pessoa.id_familia) {
+          await this.prisma.familia.update({
+            where: { id_familia: pessoa.id_familia },
+            data: { elegivel_cesta_basica: false },
+          });
+
+          this.logger.warn(
+            `Família ID ${pessoa.id_familia} tornou-se inelegível para cestas básicas devido a faltas da pessoa ID ${id_pessoa}.`,
+          );
+          // Implementar outras lógicas como notificar a família ou retirar família da lista de cestas básicas, etc
+        }
+      }
+    }
+
+    return novaFrequencia;
   }
 
   async update(id: bigint, updateFrequenciaDto: UpdateFrequenciaDto) {

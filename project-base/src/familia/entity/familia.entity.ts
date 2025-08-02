@@ -7,4 +7,5 @@ export class FamiliaEntity implements Familia {
   id_responsavel: bigint;
   observacoes: string | null;
   data_cadastro: Date;
+  elegivel_cesta_basica: boolean;
 }

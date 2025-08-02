@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsInt, IsNotEmpty, IsOptional, IsString, IsNumber } from "class-validator";
+import { IsInt, IsNotEmpty, IsOptional, IsString, IsNumber, IsBoolean } from "class-validator";
 
 export class CreateFamiliaDto {
   @ApiProperty({ description: "Nome da família", example: "Família Silva" })
@@ -21,4 +21,8 @@ export class CreateFamiliaDto {
   @IsOptional()
   @IsString()
   observacoes?: string;
+
+  @ApiProperty({ description: "Família elegível para cesta básica", example: true })
+  @IsBoolean()
+  elegivel_cesta_basica: boolean = true;
 }

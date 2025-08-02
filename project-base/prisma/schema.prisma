@@ -17,12 +17,13 @@ model Usuario {
 }
 
 model Familia {
-  id_familia         BigInt   @id
-  nome               String // Nome da família
-  numero_dependentes Int
-  id_responsavel     BigInt?  @unique
-  observacoes        String?
-  data_cadastro      DateTime @default(now())
+  id_familia            BigInt   @id
+  nome                  String // Nome da família
+  numero_dependentes    Int
+  id_responsavel        BigInt?  @unique
+  observacoes           String?
+  data_cadastro         DateTime @default(now())
+  elegivel_cesta_basica Boolean  @default(true)
 
   responsavel Responsavel? @relation(fields: [id_responsavel], references: [id_responsavel])
   pessoas     Pessoa[]

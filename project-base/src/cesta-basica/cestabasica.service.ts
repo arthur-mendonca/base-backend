@@ -43,6 +43,13 @@ export class CestaBasicaService {
       throw new NotFoundException(`Família com responsável ID ${id_responsavel} não encontrada.`);
     }
 
+    // PROIBIR FAMÍLIA DE RECEBER CESTA BÁSICA SE HOUVER EXCESSO DE FALTAS NÃO JUSTIFICADAS
+    // if (!familia.elegivel_cesta_basica) {
+    //   throw new ForbiddenException(
+    //     "Esta família não está elegível para receber cestas básicas no momento devido a excesso de faltas em atividades.",
+    //   );
+    // }
+
     const criancas = familia.pessoas;
 
     if (criancas.length === 0) {
@@ -59,7 +66,7 @@ export class CestaBasicaService {
         id_pessoa: { in: criancas.map((c: CriancaEntity) => c.id_pessoa) },
         atividade: {
           tipo: {
-            in: [TipoAtividade],
+            in: Object.values(TipoAtividade),
           },
         },
         presenca: true, // Consideramos apenas se há registros de presença
