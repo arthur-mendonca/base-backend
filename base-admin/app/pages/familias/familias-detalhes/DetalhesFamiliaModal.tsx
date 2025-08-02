@@ -40,6 +40,21 @@ export const DetalhesFamiliaModal: React.FC<DetalhesFamiliaModalProps> = ({
         </div>
 
         <div>
+          <p>
+            <span className="font-bold"> Elegível para cesta básica? </span>{" "}
+            {familia.elegivel_cesta_basica ? (
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded">
+                Sim
+              </span>
+            ) : (
+              <span className="bg-red-100 text-red-800 px-2 py-1 rounded">
+                Não
+              </span>
+            )}
+          </p>
+        </div>
+
+        <div>
           <span className="font-bold"> Observações: </span>
           <p>{familia.observacoes}</p>
         </div>
