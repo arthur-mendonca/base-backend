@@ -1,21 +1,17 @@
+import type { CestaCreatePayload } from "~/interfaces/cesta";
 import { getCookie } from "~/utils/cookies";
 
-interface FamiliaCreatePayload {
-  nome: string;
-  numero_dependentes: number;
-  id_responsavel?: string;
-  observacoes?: string;
-}
-
-export async function createFamilia(body: FamiliaCreatePayload) {
+export async function createCesta(body: CestaCreatePayload) {
   let response;
+
+  console.log(`Creating cesta with body:`, body);
 
   try {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
 
-    response = await fetch("http://localhost:3001/familia", {
+    response = await fetch("http://localhost:3001/cesta-basica", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${authToken}`,
@@ -25,13 +21,15 @@ export async function createFamilia(body: FamiliaCreatePayload) {
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Erro ao criar família.");
+      throw new Error(errorData.message || "Erro ao criar cesta básica.");
     }
 
     return response.json();
   } catch (error) {
+    console.log("Erro ao criar cesta:", error);
+
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao criar família."
+      error instanceof Error ? error.message : "Erro ao criar cesta básica."
     );
   }
 }

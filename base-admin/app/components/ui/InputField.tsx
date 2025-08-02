@@ -26,7 +26,7 @@ export const InputField = ({
       readOnly={readOnly}
       id={id}
       className={`${
-        readOnly ? "bg-gray-400" : "bg-gray-50"
+        readOnly ? "bg-gray-400" : backgroundColor
       }  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5`}
       {...props}
     />

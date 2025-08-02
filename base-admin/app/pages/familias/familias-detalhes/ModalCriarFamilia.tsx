@@ -100,6 +100,7 @@ export const ModalCriarFamilia: React.FC<ModalCriarFamiliaProps> = ({
           value={formData.observacoes}
           onChange={handleInputChange}
         />
+
         <div className="flex justify-end gap-2 pt-4">
           <Button
             text="Cancelar"

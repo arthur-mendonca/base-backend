@@ -56,18 +56,23 @@ export class CestaBasicaRepository {
     // Criação da cesta básica
     const cestaBasica = await this.prisma.cestaBasica.create({
       data: cestaBasicaData,
-      include: {
-        responsavel: true,
-        beneficiario_externo: true,
-        doacao_origem: true,
-      },
+      // include: {
+      //   responsavel: true,
+      //   beneficiario_externo: true,
+      //   doacao_origem: true,
+      // },
     });
 
     // Se há produtos, adiciona-os à cesta
     if (produtos && produtos.length > 0) {
-      for (const produto of produtos) {
-        await this.addProduto(cestaBasica.id_cesta, produto);
-      }
+      await this.prisma.produtoCesta.createMany({
+        data: produtos.map(produto => ({
+          id_produto_cesta: BigInt(Date.now() + Math.floor(Math.random() * 1000)),
+          id_cesta: cestaBasica.id_cesta,
+          id_produto: BigInt(produto.id_produto),
+          quantidade: produto.quantidade,
+        })),
+      });
     }
 
     // Retorna a cesta com os produtos adicionados

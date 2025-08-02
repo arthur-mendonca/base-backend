@@ -3,42 +3,28 @@ import { Table } from "~/components/ui/Table";
 import { Spinner } from "~/components/ui/Spinner";
 import { useToast } from "~/contexts/ToastContext";
 import { getAllAtividades } from "~/api/atividades/getAllAtividades";
-
-interface Frequencia {
-  id_frequencia: string;
-  id_pessoa: string;
-  id_atividade: string;
-  data: string;
-  presenca: boolean;
-  justificativa: string | null;
-}
-
-interface Atividade {
-  id_atividade: string;
-  nome: string;
-  descricao: string;
-  tipo: string;
-  publico_alvo: string;
-  dias_semana: string;
-  horario_inicio: string;
-  horario_fim: string;
-}
+import { Button } from "~/components/ui/Button";
+import { Modal } from "~/components/ui/Modal";
+import { ModalDetalhesAtividade } from "./ModalDetalhesAtividade";
+import { ModalEditarAtividade } from "./ModalEditarAtividade";
+import { deleteAtividade } from "~/api/atividades/deleteAtividade";
+import type { Atividade } from "~/interfaces/atividade";
 
 export const ActivitiesComponent: React.FC = () => {
   const [atividades, setAtividades] = useState<Atividade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAtividade, setSelectedAtividade] = useState<Atividade | null>(
+    null
+  );
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const { showToast } = useToast();
 
   const fetchAtividades = useCallback(async () => {
-    const data = await getAllAtividades();
-    console.log("Atividades fetched successfully:", data);
-    setAtividades(data);
-  }, []);
-
-  useEffect(() => {
     try {
       setIsLoading(true);
-      fetchAtividades();
+      const data = await getAllAtividades();
+      setAtividades(data);
     } catch (error) {
       showToast(
         "danger",
@@ -49,11 +35,40 @@ export const ActivitiesComponent: React.FC = () => {
     }
   }, [showToast]);
 
+  useEffect(() => {
+    fetchAtividades();
+  }, [fetchAtividades]);
+
+  const handleOpenDetails = (atividade: Atividade) => {
+    setSelectedAtividade(atividade);
+    setDetailsModalOpen(true);
+  };
+
+  const handleOpenEdit = (atividade: Atividade) => {
+    setSelectedAtividade(atividade);
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir esta atividade?")) {
+      try {
+        await deleteAtividade(id);
+        fetchAtividades();
+        showToast("success", "Atividade excluída com sucesso.");
+      } catch (error) {
+        showToast(
+          "danger",
+          error instanceof Error ? error.message : "Erro ao excluir."
+        );
+      }
+    }
+  };
+
   const columns = [
     { key: "nome", label: "Nome" },
-    { key: "descricao", label: "Descrição" },
-    { key: "tipo", label: "Tipo" },
-    { key: "publico_alvo", label: "Público Alvo" },
+    // { key: "descricao", label: "Descrição" },
+    // { key: "tipo", label: "Tipo" },
+    // { key: "publico_alvo", label: "Público Alvo" },
     {
       key: "dias_semana",
       label: "Dias da Semana",
@@ -86,16 +101,68 @@ export const ActivitiesComponent: React.FC = () => {
           minute: "2-digit",
         }),
     },
+    {
+      key: "actions",
+      label: "Ações",
+      render: (_: any, row: Atividade) => (
+        <div className="flex gap-2">
+          <Button
+            text="Detalhes"
+            size="sm"
+            variant="secondary"
+            onClick={() => handleOpenDetails(row)}
+          />
+          <Button
+            text="Editar"
+            size="sm"
+            variant="primary"
+            onClick={() => handleOpenEdit(row)}
+          />
+          <Button
+            text="Excluir"
+            size="sm"
+            variant="danger"
+            onClick={() => {
+              void handleDelete(row.id_atividade);
+            }}
+          />
+        </div>
+      ),
+    },
   ];
 
   return (
-    <div>
+    <>
       <h1 className="text-2xl font-bold mb-4">Atividades</h1>
       {isLoading ? (
         <Spinner size="md" />
       ) : (
         <Table columns={columns} data={atividades} />
       )}
-    </div>
+
+      {selectedAtividade && (
+        <>
+          <Modal
+            title="Detalhes da Atividade"
+            isOpen={detailsModalOpen}
+            showFooter={false}
+            onClose={() => setDetailsModalOpen(false)}>
+            <ModalDetalhesAtividade atividade={selectedAtividade} />
+          </Modal>
+
+          <Modal
+            title="Editar Atividade"
+            isOpen={editModalOpen}
+            onClose={() => setEditModalOpen(false)}
+            showFooter={false}>
+            <ModalEditarAtividade
+              atividade={selectedAtividade}
+              setModalOpen={setEditModalOpen}
+              fetchAtividades={fetchAtividades}
+            />
+          </Modal>
+        </>
+      )}
+    </>
   );
 };
