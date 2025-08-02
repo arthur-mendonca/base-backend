@@ -9,6 +9,7 @@ export interface Familia {
   observacoes: string | null;
   data_cadastro: string;
   responsavel: Responsavel | null;
+  elegivel_cesta_basica: boolean;
 }
 
 // export type FamiliaResumo = Pick<Familia, "id_familia" | "nome">;
