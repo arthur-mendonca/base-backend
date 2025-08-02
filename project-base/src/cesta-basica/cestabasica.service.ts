@@ -5,13 +5,14 @@ import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
 import { Prisma, TipoAtividade } from "@prisma/client";
 import { SnowflakeService } from "src/snowflake/snowflake.service";
 import { CriancaEntity } from "src/pessoa/crianca/entity/crianca.entity";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class CestaBasicaService {
-  prisma: any;
   constructor(
     private readonly repository: CestaBasicaRepository,
     private readonly snowflakeService: SnowflakeService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async findAll() {
@@ -56,10 +57,12 @@ export class CestaBasicaService {
       throw new ForbiddenException("Esta família não possui crianças para receber a cesta básica.");
     }
 
-    const algumaCriancaMatriculada = criancas.some((c: CriancaEntity) => c.matriculada_escola);
-    if (!algumaCriancaMatriculada) {
-      throw new ForbiddenException("Nenhuma criança da família está matriculada em uma escola.");
-    }
+    // PROIBIR RECEBER CESTA BÁSICA SE ALGUMA CRIANÇA NÃO ESTIVER MATRICULADA NA ESCOLA
+
+    // const algumaCriancaMatriculada = criancas.some((c: CriancaEntity) => c.matriculada_escola);
+    // if (!algumaCriancaMatriculada) {
+    //   throw new ForbiddenException(`Nenhuma criança da família ${familia.nome} está matriculada em uma escola.`);
+    // }
 
     const criancasEmAtividades = await this.prisma.frequencia.findMany({
       where: {
