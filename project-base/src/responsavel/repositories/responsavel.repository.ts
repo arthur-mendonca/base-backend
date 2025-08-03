@@ -66,6 +66,10 @@ export class ResponsavelRepository {
 
     return this.prisma.responsavel.delete({
       where: { id_responsavel: id },
+      include: {
+        familia: true,
+        cestasBeneficiario: true,
+      },
     });
   }
 

@@ -1,40 +1,64 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { ResponsavelRepository } from "./repositories/responsavel.repository";
 import { CreateResponsavelDto } from "./dto/create-responsavel.dto";
 import { UpdateResponsavelDto } from "./dto/update-responsavel.dto";
-import { Prisma } from "@prisma/client";
 import { SnowflakeService } from "../snowflake/snowflake.service";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class ResponsavelService {
   constructor(
     private readonly repository: ResponsavelRepository,
     private readonly snowflakeService: SnowflakeService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(createResponsavelDto: CreateResponsavelDto) {
-    // Verificar se já existe responsável com o mesmo CPF
-    const existente = await this.repository.findByCpf(createResponsavelDto.cpf);
-    if (existente) {
-      throw new ConflictException(`Já existe um responsável cadastrado com o CPF ${createResponsavelDto.cpf}`);
+    const { id_familia, ...responsavelData } = createResponsavelDto;
+
+    // 1. Verificar se já existe um responsável com o mesmo CPF
+    const responsavelExistente = await this.repository.findByCpf(responsavelData.cpf);
+    if (responsavelExistente) {
+      throw new ConflictException(`Já existe um responsável cadastrado com o CPF ${responsavelData.cpf}`);
     }
 
-    const id = this.snowflakeService.generate();
+    // 2. Verificar se a família informada existe
+    const familia = await this.prisma.familia.findUnique({
+      where: { id_familia: BigInt(id_familia) },
+    });
 
-    const responsavelData: Prisma.ResponsavelCreateInput = {
-      id_responsavel: id,
-      nome: createResponsavelDto.nome,
-      cpf: createResponsavelDto.cpf,
-      rg: createResponsavelDto.rg,
-      data_nascimento: createResponsavelDto.data_nascimento,
-      telefone: createResponsavelDto.telefone,
-      email: createResponsavelDto.email || null,
-      ocupacao: createResponsavelDto.ocupacao || null,
-      endereco: createResponsavelDto.endereco,
-      foto_url: createResponsavelDto.foto_url || null,
-    };
+    if (!familia) {
+      throw new NotFoundException(`A família com o ID ${id_familia} não foi encontrada.`);
+    }
 
-    return this.repository.create(responsavelData);
+    // 3. Verificar se a família já possui um responsável vinculado
+    if (familia.id_responsavel) {
+      throw new ConflictException(`A família '${familia.nome}' já possui um responsável vinculado.`);
+    }
+
+    // Usar transação para garantir que ambas as operações sejam concluídas com sucesso
+    return this.prisma.$transaction(async tx => {
+      // 4. Criar o novo responsável
+      const responsavelId = this.snowflakeService.generate();
+      const novoResponsavel = await tx.responsavel.create({
+        data: {
+          ...responsavelData,
+          id_responsavel: responsavelId,
+        },
+      });
+
+      // 5. Atualizar a família com o ID do novo responsável
+      await tx.familia.update({
+        where: { id_familia: BigInt(id_familia) },
+        data: { id_responsavel: novoResponsavel.id_responsavel },
+      });
+
+      // 6. Retornar o responsável criado com os dados da família
+      return tx.responsavel.findUnique({
+        where: { id_responsavel: novoResponsavel.id_responsavel },
+        include: { familia: true },
+      });
+    });
   }
 
   async findAll() {

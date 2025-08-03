@@ -1,4 +1,4 @@
-import { Responsavel } from "@prisma/client";
+import { Familia, Responsavel } from "@prisma/client";
 
 export class ResponsavelEntity implements Responsavel {
   id_responsavel: bigint;
@@ -11,4 +11,5 @@ export class ResponsavelEntity implements Responsavel {
   ocupacao: string | null;
   endereco: string;
   foto_url: string | null;
+  familia: Familia | null;
 }

@@ -15,6 +15,8 @@ export interface CestaBasica {
 export interface CestaCreatePayload {
   id_responsavel?: number;
   data_entrega: string;
+  id_beneficiario: bigint | null;
+  id_doacao: bigint | null;
   observacoes?: string;
   produtos?: Array<{
     id_produto: number;

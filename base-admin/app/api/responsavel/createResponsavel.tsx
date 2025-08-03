@@ -1,3 +1,4 @@
+import type { r } from "node_modules/@react-router/dev/dist/routes-DHIOx0R9";
 import type { CreateResponsavelDto } from "~/interfaces/responsavel";
 import { getCookie } from "~/utils/cookies";
 

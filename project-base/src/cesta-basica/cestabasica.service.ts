@@ -35,7 +35,7 @@ export class CestaBasicaService {
     const id_responsavel = createCestaBasicaDto.id_responsavel;
 
     // Buscar a família e as crianças associadas
-    const familia = await this.prisma.familia.findUnique({
+    const familia = await this.prisma.familia.findFirst({
       where: { id_responsavel },
       include: { pessoas: { where: { ehCrianca: true } } },
     });

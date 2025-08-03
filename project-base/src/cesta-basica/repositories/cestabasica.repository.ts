@@ -54,13 +54,15 @@ export class CestaBasicaRepository {
     produtos?: CreateProdutoCestaDto[],
   ): Promise<CestaBasicaEntity> {
     // Criação da cesta básica
+    console.log("Creating Cesta Básica with data:", cestaBasicaData);
+
     const cestaBasica = await this.prisma.cestaBasica.create({
       data: cestaBasicaData,
-      // include: {
-      //   responsavel: true,
-      //   beneficiario_externo: true,
-      //   doacao_origem: true,
-      // },
+      include: {
+        responsavel: true,
+        beneficiario_externo: true,
+        doacao_origem: true,
+      },
     });
 
     // Se há produtos, adiciona-os à cesta

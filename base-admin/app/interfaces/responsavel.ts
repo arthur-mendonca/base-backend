@@ -25,6 +25,7 @@ export interface CreateResponsavelDto {
   email?: string;
   ocupacao?: string;
   foto_url?: string;
+  id_familia?: number | null;
 }
 
 export interface UpdateResponsavelDto extends Partial<CreateResponsavelDto> {}

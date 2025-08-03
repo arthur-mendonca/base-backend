@@ -1,78 +1,56 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsDateString, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsDateString, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateResponsavelDto {
   @ApiProperty({
-    description: "Nome do responsável",
-    example: "João da Silva",
+    description: "ID da família à qual o responsável será vinculado. A família já deve existir.",
+    example: "1234567890123456789",
   })
+  @IsNotEmpty({ message: "O ID da família é obrigatório." })
+  @IsNumber()
+  id_familia: bigint;
+
+  @ApiProperty({ description: "Nome do responsável" })
   @IsNotEmpty()
   @IsString()
   nome: string;
 
-  @ApiProperty({
-    description: "CPF do responsável",
-    example: "123.456.789-00",
-  })
+  @ApiProperty({ description: "CPF do responsável" })
   @IsNotEmpty()
   @IsString()
   cpf: string;
 
-  @ApiProperty({
-    description: "RG do responsável",
-    example: "12.345.678-9",
-  })
+  @ApiProperty({ description: "RG do responsável" })
   @IsNotEmpty()
   @IsString()
   rg: string;
 
-  @ApiProperty({
-    description: "Data de nascimento",
-    example: "1980-05-15",
-  })
+  @ApiProperty({ description: "Data de nascimento" })
   @IsNotEmpty()
   @IsDateString()
   data_nascimento: Date;
 
-  @ApiProperty({
-    description: "Telefone de contato",
-    example: "(11) 98765-4321",
-  })
+  @ApiProperty({ description: "Telefone de contato" })
   @IsNotEmpty()
   @IsString()
   telefone: string;
 
-  @ApiPropertyOptional({
-    description: "E-mail de contato",
-    example: "joao.silva@example.com",
-    required: false,
-  })
-  @IsOptional()
-  @IsEmail()
-  email?: string;
-
-  @ApiPropertyOptional({
-    description: "Ocupação profissional",
-    example: "Professor",
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  ocupacao?: string;
-
-  @ApiProperty({
-    description: "Endereço completo",
-    example: "Rua das Flores, 123 - Bairro Jardim - São Paulo/SP",
-  })
+  @ApiProperty({ description: "Endereço completo" })
   @IsNotEmpty()
   @IsString()
   endereco: string;
 
-  @ApiPropertyOptional({
-    description: "URL da foto do responsável",
-    example: "https://storage.example.com/fotos/joao-silva.jpg",
-    required: false,
-  })
+  @ApiPropertyOptional({ description: "E-mail de contato", required: false })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @ApiPropertyOptional({ description: "Ocupação profissional", required: false })
+  @IsOptional()
+  @IsString()
+  ocupacao?: string;
+
+  @ApiPropertyOptional({ description: "URL da foto do responsável", required: false })
   @IsOptional()
   @IsString()
   foto_url?: string;
