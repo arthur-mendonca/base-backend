@@ -6,58 +6,62 @@ import { Modal } from "~/components/ui/Modal";
 import { useToast } from "~/contexts/ToastContext";
 import { CriarCestaModal } from "./CriarCestaModal";
 import type { CestaBasica } from "~/interfaces/cesta";
-import { getAllCestas } from "~/api/cesta/getAllCestas";
+import { getAllCestasByParams } from "~/api/cesta/getAllCestas";
+import { CestaDetalhesModal } from "./CestaDetalhesModal";
+import { getAllResponsaveis } from "~/api/responsavel/getAllResponsaveis";
+import type { Responsavel } from "~/interfaces/responsavel";
 
 export const CestasComponent: React.FC = () => {
   const { showToast } = useToast();
-  const [cestas, setCestas] = useState<CestaBasica[]>([]);
+  // const [cestas, setCestas] = useState<CestaBasica[]>([]);
+  const [responsaveis, setResponsaveis] = useState<Responsavel[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [selectedCesta, setSelectedCesta] = useState<CestaBasica | null>(null);
+  const [selectedResponsavel, setSelectedResponsavel] = useState<string | null>(
+    null
+  );
 
-  const fetchCestas = useCallback(async () => {
+  const fetchResponsaveis = useCallback(async () => {
     try {
-      const data = await getAllCestas();
-      setCestas(data);
+      const data = await getAllResponsaveis();
+      console.log("Responsáveis:", data);
+
+      setResponsaveis(data);
     } catch (error) {
-      showToast("danger", "Erro ao buscar cestas.");
+      showToast("danger", "Erro ao buscar responsáveis.");
     }
   }, [showToast]);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchCestas().finally(() => setIsLoading(false));
-  }, [fetchCestas]);
+    fetchResponsaveis().finally(() => setIsLoading(false));
+  }, [fetchResponsaveis]);
 
   const columns = [
     {
       key: "beneficiario",
       label: "Beneficiário",
-      render: (_: any, row: CestaBasica) =>
-        row.responsavel?.nome || row.beneficiario_externo?.nome || "-",
+      render: (_: any, row: Responsavel) => row.nome || "-",
     },
+
     {
-      key: "data_entrega",
-      label: "Data de Entrega",
-      render: (value: string) => new Date(value).toLocaleDateString("pt-BR"),
+      key: "familia",
+      label: "Família",
+      render: (_: any, row: Responsavel) => row.familia.nome || "-",
     },
-    {
-      key: "produtos_count",
-      label: "Qtd Produtos",
-      render: (_: any, row: CestaBasica) => row.produtos?.length || 0,
-    },
+
     {
       key: "actions",
       label: "Ações",
-      render: (_: any, row: CestaBasica) => (
+      render: (_: any, row: Responsavel) => (
         <div className="flex gap-2">
           <Button
-            text="Detalhes"
+            text="Ver detalhes"
             size="sm"
             variant="success"
             onClick={() => {
-              setSelectedCesta(row);
+              setSelectedResponsavel(row.id_responsavel ?? null);
               setDetailsModalOpen(true);
             }}
           />
@@ -80,7 +84,7 @@ export const CestasComponent: React.FC = () => {
       {isLoading ? (
         <Spinner size="md" />
       ) : (
-        <Table columns={columns} data={cestas} />
+        <Table columns={columns} data={responsaveis ?? []} />
       )}
 
       <Modal
@@ -91,20 +95,20 @@ export const CestasComponent: React.FC = () => {
         size="xl">
         <CriarCestaModal
           onClose={() => setCreateModalOpen(false)}
-          fetchCestas={fetchCestas}
+          // fetchCestas={fetchCestas}
         />
       </Modal>
 
-      {/* {selectedCesta && (
+      {selectedResponsavel && (
         <Modal
           title="Detalhes da Cesta"
           isOpen={detailsModalOpen}
           onClose={() => setDetailsModalOpen(false)}
           showFooter={false}
           size="lg">
-          <DetalhesCestaModal cesta={selectedCesta} />
+          <CestaDetalhesModal responsavelId={selectedResponsavel} />
         </Modal>
-      )} */}
+      )}
     </>
   );
 };

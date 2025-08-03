@@ -13,3 +13,11 @@ export type ProdutoCreatePayload = Pick<
 >;
 
 export type ProdutoUpdatePayload = Partial<Produto>;
+
+export interface ProdutoCesta {
+  id_produto_cesta: string;
+  id_cesta: string;
+  id_produto: string;
+  quantidade: number;
+  produto: Produto;
+}

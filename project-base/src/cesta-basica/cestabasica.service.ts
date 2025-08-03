@@ -77,9 +77,9 @@ export class CestaBasicaService {
       distinct: ["id_pessoa"],
     });
 
-    if (criancasEmAtividades.length === 0) {
-      throw new ForbiddenException("Nenhuma criança da família está participando de alguma atividade.");
-    }
+    // if (criancasEmAtividades.length === 0) {
+    //   throw new ForbiddenException("Nenhuma criança da família está participando de alguma atividade.");
+    // }
 
     const id = this.snowflakeService.generate();
     const { produtos, ...cestaData } = createCestaBasicaDto;

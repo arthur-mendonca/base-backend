@@ -130,7 +130,11 @@ export class CestaBasicaRepository {
     return await this.prisma.cestaBasica.findMany({
       where: { id_responsavel },
       include: {
-        responsavel: true,
+        responsavel: {
+          include: {
+            familia: true,
+          },
+        },
         beneficiario_externo: true,
         doacao_origem: true,
         produtos: {

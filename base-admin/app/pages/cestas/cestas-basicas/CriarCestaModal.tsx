@@ -11,12 +11,12 @@ import { createCesta } from "~/api/cesta/createCesta";
 
 interface CriarCestaModalProps {
   onClose: () => void;
-  fetchCestas: () => Promise<void>;
+  // fetchCestas: () => Promise<void>;
 }
 
 export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
   onClose,
-  fetchCestas,
+  // fetchCestas,
 }) => {
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,6 +48,7 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
   const [formData, setFormData] = useState({
     id_responsavel: "",
     id_beneficiario: "",
+    id_doacao: "",
     nome: "",
     telefone: "",
     endereco: "",
@@ -61,14 +62,27 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
 
     const payload = {
       data_entrega: new Date(formData.data_entrega).toISOString(),
+
       observacoes: formData.observacoes,
+
       ...(beneficiarioTipo === "responsavel"
         ? { id_responsavel: parseInt(formData.id_responsavel) }
         : { id_beneficiario: parseInt(formData.id_beneficiario) }),
+
       produtos: produtosSelecionados.map((p) => ({
         id_produto: parseInt(p.id),
         quantidade: p.quantidade,
       })),
+
+      id_beneficiario:
+        beneficiarioTipo === "externo"
+          ? BigInt(parseInt(formData.id_beneficiario))
+          : null,
+
+      id_doacao: null,
+      ...(beneficiarioTipo === "responsavel"
+        ? { id_responsavel: parseInt(formData.id_responsavel) }
+        : {}),
     };
 
     try {
@@ -76,10 +90,16 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
         ...payload,
       });
       onClose();
-      fetchCestas();
+      // fetchCestas();
       showToast("success", "Cesta criada com sucesso.");
     } catch (error) {
-      showToast("danger", "Erro ao criar cesta.");
+      showToast(
+        "danger",
+        "Erro ao criar cesta: " +
+          (typeof error === "object" && error !== null && "message" in error
+            ? (error as { message?: string }).message
+            : String(error))
+      );
     } finally {
       setIsSubmitting(false);
     }
