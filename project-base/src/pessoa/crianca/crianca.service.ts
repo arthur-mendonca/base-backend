@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { CriancaRepository } from "./repositories/crianca.repository";
 import { CreateCriancaDto } from "./dto/create-crianca.dto";
 import { UpdateCriancaDto } from "./dto/update-crianca.dto";
@@ -13,6 +13,11 @@ export class CriancaService {
   ) {}
 
   async create(createCriancaDto: CreateCriancaDto) {
+    const idade = this.calcularIdade(new Date(createCriancaDto.data_nascimento));
+    if (idade > 18) {
+      throw new BadRequestException("Não é permitido cadastrar pessoa com idade maior que 18 anos como criança.");
+    }
+
     const id = this.snowflakeService.generate();
 
     const criancaData: Prisma.PessoaCreateInput = {
@@ -87,5 +92,15 @@ export class CriancaService {
     }
 
     return criancas;
+  }
+
+  private calcularIdade(dataNascimento: Date): number {
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - dataNascimento.getFullYear();
+    const m = hoje.getMonth() - dataNascimento.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < dataNascimento.getDate())) {
+      idade--;
+    }
+    return idade;
   }
 }

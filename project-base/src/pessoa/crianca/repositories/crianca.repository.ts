@@ -9,7 +9,7 @@ export class CriancaRepository {
   constructor(private prisma: PrismaService) {}
 
   // Idade máxima para ser considerado criança (em anos)
-  private IDADE_MAXIMA_CRIANCA = 12;
+  private IDADE_MAXIMA_CRIANCA = 18;
 
   private calcularIdade(dataNascimento: Date): number {
     const hoje = new Date();
