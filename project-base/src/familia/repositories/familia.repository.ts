@@ -27,6 +27,7 @@ export class FamiliaRepository {
       include: {
         pessoas: true,
         responsavel: true,
+        criancas: true,
       },
     });
   }
