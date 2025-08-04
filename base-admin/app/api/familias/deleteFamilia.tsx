@@ -19,6 +19,8 @@ export async function deleteFamilia(id: string) {
 
     return { success: true };
   } catch (error) {
+    console.log("Erro ao excluir família:", error);
+
     throw new Error(
       error instanceof Error ? error.message : "Erro ao excluir família."
     );

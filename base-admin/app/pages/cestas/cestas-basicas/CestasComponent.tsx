@@ -48,7 +48,7 @@ export const CestasComponent: React.FC = () => {
     {
       key: "familia",
       label: "Família",
-      render: (_: any, row: Responsavel) => row.familia.nome || "-",
+      render: (_: any, row: Responsavel) => row.familia?.nome || "-",
     },
 
     {

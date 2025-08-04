@@ -59,7 +59,6 @@ export const ModalCriarFamilia: React.FC<ModalCriarFamiliaProps> = ({
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Prepara o corpo da requisição, garantindo que os tipos de dados estão corretos
       const body = {
         nome: formData.nome,
         numero_dependentes: Number(formData.numero_dependentes),
