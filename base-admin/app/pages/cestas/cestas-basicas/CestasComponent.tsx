@@ -93,10 +93,7 @@ export const CestasComponent: React.FC = () => {
         onClose={() => setCreateModalOpen(false)}
         showFooter={false}
         size="xl">
-        <CriarCestaModal
-          onClose={() => setCreateModalOpen(false)}
-          // fetchCestas={fetchCestas}
-        />
+        <CriarCestaModal onClose={() => setCreateModalOpen(false)} />
       </Modal>
 
       {selectedResponsavel && (

@@ -1,15 +1,17 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { CreateFamiliaDto } from "./dto/create-familia.dto";
 import { FamiliaRepository } from "./repositories/familia.repository";
 import { UpdateFamiliaDto } from "./dto/update-familia.dto";
 import { Prisma } from "@prisma/client";
 import { SnowflakeService } from "src/snowflake/snowflake.service";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class FamiliaService {
   constructor(
     private readonly repository: FamiliaRepository,
     private readonly snowflakeService: SnowflakeService,
+    private readonly prisma: PrismaService,
   ) {}
 
   async create(createFamiliaDto: CreateFamiliaDto) {
@@ -51,6 +53,20 @@ export class FamiliaService {
   }
 
   async remove(id: bigint) {
-    return this.repository.remove(id);
+    try {
+      return await this.prisma.familia.delete({
+        where: { id_familia: id },
+      });
+    } catch (error) {
+      if (
+        error.code === "P2003" || // Prisma foreign key constraint error
+        error.message?.includes("Foreign key constraint")
+      ) {
+        throw new ConflictException(
+          "Não é possível excluir a família porque existem pessoas ou crianças vinculadas. Remova os dependentes antes de excluir.",
+        );
+      }
+      throw error;
+    }
   }
 }

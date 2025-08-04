@@ -11,19 +11,19 @@ import { createCesta } from "~/api/cesta/createCesta";
 
 interface CriarCestaModalProps {
   onClose: () => void;
-  // fetchCestas: () => Promise<void>;
 }
 
 export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
   onClose,
-  // fetchCestas,
 }) => {
   const { showToast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [beneficiarioTipo, setBeneficiarioTipo] = useState<
     "responsavel" | "externo"
   >("responsavel");
-  const [responsaveis, setResponsaveis] = useState([]);
+  const [responsaveis, setResponsaveis] = useState<Responsavel[]>([]);
+  const [responsavelSelecionado, setResponsavelSelecionado] =
+    useState<Responsavel | null>(null);
   const [beneficiariosExternos, setBeneficiariosExternos] = useState<any[]>([]);
   const [produtos, setProdutos] = useState([]);
   const [produtosSelecionados, setProdutosSelecionados] = useState<
@@ -38,6 +38,7 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
   const fetchResponsaveis = useCallback(async () => {
     const data = await getAllResponsaveis();
     setResponsaveis(data);
+    console.log("Responsáveis:", data);
   }, []);
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
         ...payload,
       });
       onClose();
-      // fetchCestas();
+
       showToast("success", "Cesta criada com sucesso.");
     } catch (error) {
       showToast(
@@ -103,6 +104,13 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSelectResponsavel = (respId: string) => {
+    const findResp = responsaveis.find(
+      (resp) => resp.id_responsavel === respId
+    );
+    setResponsavelSelecionado(findResp || null);
   };
 
   return (
@@ -128,12 +136,14 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
               </label>
               <select
                 value={formData.id_responsavel}
-                onChange={(e) =>
+                onChange={(e) => {
+                  handleSelectResponsavel(e.target.value);
+
                   setFormData((prev) => ({
                     ...prev,
                     id_responsavel: e.target.value,
-                  }))
-                }
+                  }));
+                }}
                 className="w-full p-2 border rounded  "
                 required>
                 <option value="" className="text-black">
@@ -148,6 +158,14 @@ export const CriarCestaModal: React.FC<CriarCestaModalProps> = ({
                   </option>
                 ))}
               </select>
+              {responsavelSelecionado && (
+                <div className="pt-2">
+                  <p className="text-sm text-gray-400">
+                    Responsável vinculado à família{" "}
+                    <strong>{responsavelSelecionado.familia.nome}</strong>
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <div>
