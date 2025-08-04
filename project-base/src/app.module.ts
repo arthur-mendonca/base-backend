@@ -12,7 +12,7 @@ import { AuthModule } from "./auth/auth.module";
 import { AuditMiddleware } from "./auth/auditMiddleware";
 import { CestaBasicaModule } from "./cesta-basica/cestabasica.module";
 import { FrequenciaModule } from "./frequencia/frequencia.module";
-import { CriancaModule } from "./pessoa/crianca/crianca.module";
+
 import { PessoaModule } from "./pessoa/pessoa.module";
 import { BeneficiarioExternoModule } from "./beneficiario-externo/beneficiario-externo.module";
 import { ParceiroModule } from "./parceiro/parceiro.module";
@@ -26,6 +26,7 @@ import { ProdutoModule } from "./produto/produto.module";
 import { ProdutoCestaModule } from "./produto-cesta/produto-cesta.module";
 import { MateriaModule } from "./materia/materia.module";
 import { MatriculaAtividadeModule } from "./matriculaAtividade/matriculaAtividade.module";
+import { CriancaModule } from "./crianca/crianca.module";
 
 @Module({
   imports: [

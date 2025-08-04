@@ -4,7 +4,6 @@ import { CreateCestaBasicaDto } from "./dto/create-cestabasica.dto";
 import { UpdateCestaBasicaDto } from "./dto/update-cestabasica.dto";
 import { Prisma, TipoAtividade } from "@prisma/client";
 import { SnowflakeService } from "src/snowflake/snowflake.service";
-import { CriancaEntity } from "src/pessoa/crianca/entity/crianca.entity";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -37,7 +36,9 @@ export class CestaBasicaService {
     // Buscar a família e as crianças associadas
     const familia = await this.prisma.familia.findFirst({
       where: { id_responsavel },
-      include: { pessoas: { where: { ehCrianca: true } } },
+      include: {
+        criancas: true,
+      },
     });
 
     if (!familia) {
@@ -51,7 +52,7 @@ export class CestaBasicaService {
     //   );
     // }
 
-    const criancas = familia.pessoas as CriancaEntity[];
+    const criancas = familia.criancas;
 
     if (criancas.length === 0) {
       throw new ForbiddenException("Esta família não possui crianças para receber a cesta básica.");
@@ -66,7 +67,7 @@ export class CestaBasicaService {
 
     const criancasEmAtividades = await this.prisma.matriculaAtividade.findMany({
       where: {
-        id_pessoa: { in: criancas.map(c => c.id_pessoa) },
+        id_crianca: { in: criancas.map(c => c.id_crianca) },
         status: "ATIVA", // Apenas matrículas ativas
         atividade: {
           tipo: {

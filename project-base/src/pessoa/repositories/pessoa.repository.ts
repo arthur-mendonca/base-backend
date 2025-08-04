@@ -10,7 +10,6 @@ export class PessoaRepository {
 
   async findAll(): Promise<PessoaEntity[]> {
     return await this.prisma.pessoa.findMany({
-      where: { ehCrianca: false },
       include: {
         familia: {
           include: {

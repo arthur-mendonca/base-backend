@@ -3,7 +3,7 @@ import { getCookie } from "~/utils/cookies";
 interface FamiliaCreatePayload {
   nome: string;
   numero_dependentes: number;
-  id_responsavel?: string;
+  id_responsavel?: number;
   observacoes?: string;
 }
 

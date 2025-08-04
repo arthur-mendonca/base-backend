@@ -86,7 +86,7 @@ export class FrequenciaService {
           },
         });
 
-        const id_familia = frequencia?.matricula?.pessoa.id_familia;
+        const id_familia = frequencia?.matricula?.pessoa?.id_familia;
 
         if (id_familia) {
           await this.prisma.familia.update({

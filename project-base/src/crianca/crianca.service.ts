@@ -14,14 +14,14 @@ export class CriancaService {
 
   async create(createCriancaDto: CreateCriancaDto) {
     const idade = this.calcularIdade(new Date(createCriancaDto.data_nascimento));
-    if (idade > 18) {
-      throw new BadRequestException("Não é permitido cadastrar pessoa com idade maior que 18 anos como criança.");
+    if (idade > 17) {
+      throw new BadRequestException("Não é permitido cadastrar criança com idade maior que 17 anos.");
     }
 
     const id = this.snowflakeService.generate();
 
-    const criancaData: Prisma.PessoaCreateInput = {
-      id_pessoa: id,
+    const criancaData: Prisma.CriancaCreateInput = {
+      id_crianca: id,
       nome: createCriancaDto.nome,
       data_nascimento: createCriancaDto.data_nascimento,
       rg: createCriancaDto.rg || null,

@@ -10,6 +10,7 @@ import { ModalEditarPessoa } from "../pessoas/ModalEditarPessoa";
 import type { Pessoa } from "~/interfaces/pessoa";
 import { deletePessoa } from "~/api/pessoa/deletePessoa";
 import { useToast } from "~/contexts/ToastContext";
+import { ModalCriarCrianca } from "./ModalCriarCrianca";
 
 export const CriancasComponent: React.FC = () => {
   const { showToast } = useToast();
@@ -132,7 +133,7 @@ export const CriancasComponent: React.FC = () => {
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
         showFooter={false}>
-        <ModalCriarPessoa
+        <ModalCriarCrianca
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
           setModalOpen={setCreateModalOpen}

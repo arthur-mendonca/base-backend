@@ -64,7 +64,7 @@ export const ModalCriarFamilia: React.FC<ModalCriarFamiliaProps> = ({
         nome: formData.nome,
         numero_dependentes: Number(formData.numero_dependentes),
         ...(formData.id_responsavel && {
-          id_responsavel: formData.id_responsavel, // O backend converterá para BigInt
+          id_responsavel: Number(formData.id_responsavel), // O backend converterá para BigInt
         }),
         ...(formData.observacoes && { observacoes: formData.observacoes }),
       };

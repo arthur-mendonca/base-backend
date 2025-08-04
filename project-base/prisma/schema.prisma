@@ -27,6 +27,7 @@ model Familia {
 
   responsavel Responsavel? @relation(fields: [id_responsavel], references: [id_responsavel])
   pessoas     Pessoa[]
+  criancas    Crianca[]
 }
 
 model Pessoa {
@@ -38,7 +39,22 @@ model Pessoa {
   cpf                String?  @unique
   foto_url           String?
   observacoes        String? // Para anotações gerais
-  ehCrianca          Boolean  @default(false)
+  matriculada_escola Boolean  @default(false)
+  nome_escola        String?
+
+  familia    Familia              @relation(fields: [id_familia], references: [id_familia])
+  matriculas MatriculaAtividade[]
+}
+
+model Crianca {
+  id_crianca         BigInt   @id
+  id_familia         BigInt
+  nome               String
+  data_nascimento    DateTime
+  rg                 String?
+  cpf                String?  @unique
+  foto_url           String?
+  observacoes        String?
   matriculada_escola Boolean  @default(false)
   nome_escola        String?
 
@@ -212,17 +228,20 @@ model Materia {
 
 model MatriculaAtividade {
   id_matricula   BigInt          @id
-  id_pessoa      BigInt
+  id_pessoa      BigInt?
+  id_crianca     BigInt?
   id_atividade   BigInt
   data_matricula DateTime        @default(now())
   status         StatusMatricula @default(ATIVA)
   observacoes    String?
 
-  pessoa      Pessoa       @relation(fields: [id_pessoa], references: [id_pessoa])
+  pessoa      Pessoa?      @relation(fields: [id_pessoa], references: [id_pessoa])
   atividade   Atividade    @relation(fields: [id_atividade], references: [id_atividade])
   frequencias Frequencia[]
+  crianca     Crianca?     @relation(fields: [id_crianca], references: [id_crianca])
 
   @@unique([id_pessoa, id_atividade])
+  @@unique([id_crianca, id_atividade])
 }
 
 model Frequencia {

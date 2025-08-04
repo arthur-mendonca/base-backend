@@ -1,7 +1,5 @@
-import { Pessoa as PessoaPrisma } from "@prisma/client";
-
-export class PessoaEntity implements PessoaPrisma {
-  id_pessoa: bigint;
+export class CriancaEntity {
+  id_crianca: bigint;
   id_familia: bigint;
   nome: string;
   data_nascimento: Date;

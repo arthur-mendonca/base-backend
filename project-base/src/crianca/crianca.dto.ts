@@ -2,16 +2,16 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsString, IsDate, IsNotEmpty, IsOptional, IsBoolean } from "class-validator";
 
-export class CreatePessoaDto {
+export class CreateCriancaDto {
   @ApiProperty({
-    description: "ID da família à qual a pessoa pertence",
+    description: "ID da família à qual a criança pertence",
     example: "1234567890",
   })
   @IsNotEmpty()
   id_familia: bigint;
 
   @ApiProperty({
-    description: "Nome completo da pessoa",
+    description: "Nome completo da criança",
     example: "João Silva",
   })
   @IsNotEmpty()
@@ -55,7 +55,7 @@ export class CreatePessoaDto {
   foto_url?: string;
 
   @ApiPropertyOptional({
-    description: "Observações sobre a pessoa",
+    description: "Observações sobre a criança",
     example: "Precisa de acompanhamento psicológico",
     required: false,
   })
@@ -64,7 +64,7 @@ export class CreatePessoaDto {
   observacoes?: string;
 
   @ApiPropertyOptional({
-    description: "Indica se a pessoa está matriculada em uma escola",
+    description: "Indica se a criança está matriculada em uma escola",
     example: true,
   })
   @IsOptional()
@@ -72,7 +72,7 @@ export class CreatePessoaDto {
   matriculada_escola?: boolean;
 
   @ApiPropertyOptional({
-    description: "Nome da escola onde a pessoa está matriculada",
+    description: "Nome da escola onde a criança está matriculada",
     example: "Escola Municipal Exemplo",
   })
   @IsOptional()

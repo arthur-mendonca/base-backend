@@ -15,14 +15,6 @@ export class PessoaService {
   async create(createPessoaDto: CreatePessoaDto) {
     const id = this.snowflakeService.generate();
 
-    const hoje = new Date();
-    const nascimento = new Date(createPessoaDto.data_nascimento);
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-    const m = hoje.getMonth() - nascimento.getMonth();
-    if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-      idade--;
-    }
-
     const pessoaData: Prisma.PessoaCreateInput = {
       id_pessoa: id,
       nome: createPessoaDto.nome,
@@ -31,7 +23,6 @@ export class PessoaService {
       cpf: createPessoaDto.cpf || null,
       foto_url: createPessoaDto.foto_url || null,
       observacoes: createPessoaDto.observacoes || null,
-      ehCrianca: idade < 18,
       familia: {
         connect: {
           id_familia: BigInt(createPessoaDto.id_familia),
