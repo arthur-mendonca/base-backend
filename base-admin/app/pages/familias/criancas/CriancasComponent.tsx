@@ -4,20 +4,21 @@ import { Spinner } from "~/components/ui/Spinner";
 import { Table } from "~/components/ui/Table";
 import { Button } from "~/components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
-import { ModalCriarPessoa } from "../pessoas/ModalCriarPessoa";
-import { ModalDetalhesPessoa } from "../pessoas/ModalDetalhePessoa";
-import { ModalEditarPessoa } from "../pessoas/ModalEditarPessoa";
 import type { Pessoa } from "~/interfaces/pessoa";
 import { deletePessoa } from "~/api/pessoa/deletePessoa";
 import { useToast } from "~/contexts/ToastContext";
 import { ModalCriarCrianca } from "./ModalCriarCrianca";
+import { ModalDetalhesCrianca } from "./ModalDetalhesCrianca";
+import type { Crianca } from "~/interfaces/crianca";
+import { ModalEditarCrianca } from "./ModalEditarCrianca";
+import { deleteCrianca } from "~/api/crianca/deleteCrianca";
 
 export const CriancasComponent: React.FC = () => {
   const { showToast } = useToast();
-  const [criancas, setCriancas] = useState<Pessoa[]>([]);
+  const [criancas, setCriancas] = useState<Crianca[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPessoa, setSelectedPessoa] = useState<Pessoa | null>(null);
+  const [selectedCrianca, setSelectedCrianca] = useState<Crianca | null>(null);
 
   // estados modal
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -57,7 +58,7 @@ export const CriancasComponent: React.FC = () => {
     {
       key: "actions",
       label: "Ações",
-      render: (_: any, row: Pessoa) => (
+      render: (_: any, row: Crianca) => (
         <div className="flex gap-2">
           <Button
             text="Detalhes"
@@ -76,7 +77,7 @@ export const CriancasComponent: React.FC = () => {
             size="sm"
             variant="danger"
             onClick={() => {
-              void handleDelete(row.id_pessoa);
+              void handleDelete(row.id_crianca);
             }}
           />
         </div>
@@ -84,23 +85,23 @@ export const CriancasComponent: React.FC = () => {
     },
   ];
 
-  const handleOpenDetails = (pessoa: Pessoa) => {
-    setSelectedPessoa(pessoa);
+  const handleOpenDetails = (crianca: Crianca) => {
+    setSelectedCrianca(crianca);
     setDetailsModalOpen(true);
   };
-  const handleOpenEdit = (pessoa: Pessoa) => {
-    setSelectedPessoa(pessoa);
+  const handleOpenEdit = (crianca: Crianca) => {
+    setSelectedCrianca(crianca);
     setEditModalOpen(true);
   };
 
-  const handleDelete = async (pessoaId: string) => {
+  const handleDelete = async (criancaId: string) => {
     if (
       window.confirm(
         "Tem certeza que deseja excluir esta criança? A ação não pode ser desfeita."
       )
     ) {
       try {
-        await deletePessoa(pessoaId);
+        await deleteCrianca(criancaId);
         showToast("success", "Criança excluída com sucesso.");
         fetchCriancas();
       } catch (error) {
@@ -146,17 +147,17 @@ export const CriancasComponent: React.FC = () => {
         isOpen={detailsModalOpen}
         showFooter={false}
         onClose={() => setDetailsModalOpen(false)}>
-        {selectedPessoa && <ModalDetalhesPessoa pessoa={selectedPessoa} />}
+        {selectedCrianca && <ModalDetalhesCrianca crianca={selectedCrianca} />}
       </Modal>
 
-      {selectedPessoa && (
+      {selectedCrianca && (
         <Modal
           title="Editar Criança"
           isOpen={editModalOpen}
           onClose={() => setEditModalOpen(false)}
           showFooter={false}>
-          <ModalEditarPessoa
-            pessoa={selectedPessoa}
+          <ModalEditarCrianca
+            crianca={selectedCrianca}
             setModalOpen={setEditModalOpen}
             fetchPessoas={fetchCriancas}
           />

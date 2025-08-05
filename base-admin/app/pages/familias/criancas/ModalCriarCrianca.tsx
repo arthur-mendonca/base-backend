@@ -31,6 +31,8 @@ export const ModalCriarCrianca: React.FC<ModalCriarCriancaProps> = ({
     cpf: "",
     foto_url: "",
     observacoes: "",
+    matriculada_escola: false,
+    nome_escola: "",
   });
 
   useEffect(() => {
@@ -55,11 +57,30 @@ export const ModalCriarCrianca: React.FC<ModalCriarCriancaProps> = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handler específico para o checkbox
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked,
+
+      ...(name === "matriculada_escola" && !checked && { nome_escola: "" }),
+    }));
+  };
+
   const handleCreateCrianca = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await createCrianca(formData);
+      // O backend espera um valor nulo se o nome da escola estiver vazio
+      const payload = {
+        ...formData,
+        nome_escola: formData.nome_escola || null,
+      };
+
+      console.log(payload);
+
+      await createCrianca(payload);
       setModalOpen(false);
       fetchPessoas();
       showToast("success", "Criança criada com sucesso.");
@@ -75,6 +96,7 @@ export const ModalCriarCrianca: React.FC<ModalCriarCriancaProps> = ({
 
   return (
     <form className="space-y-4" onSubmit={handleCreateCrianca}>
+      {/* Campos existentes */}
       <div>
         <label
           htmlFor="id_familia"
@@ -113,15 +135,47 @@ export const ModalCriarCrianca: React.FC<ModalCriarCriancaProps> = ({
         value={formData.data_nascimento}
         onChange={handleInputChange}
       />
+
+      {/* Novos campos adicionados aqui */}
+      <div className="flex items-center gap-x-3 p-2 border rounded-md">
+        <input
+          id="matriculada_escola"
+          name="matriculada_escola"
+          type="checkbox"
+          checked={formData.matriculada_escola}
+          onChange={handleCheckboxChange}
+          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+        />
+        <label
+          htmlFor="matriculada_escola"
+          className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-200">
+          Está matriculada em uma escola?
+        </label>
+      </div>
+
+      {/* Campo 'nome_escola' aparece condicionalmente */}
+      {formData.matriculada_escola && (
+        <InputField
+          label="Nome da Escola"
+          id="nome_escola"
+          name="nome_escola"
+          required={formData.matriculada_escola} // Obrigatório se matriculada
+          value={formData.nome_escola || ""}
+          onChange={handleInputChange}
+          placeholder="Digite o nome da escola"
+        />
+      )}
+
+      {/* Restante dos campos */}
       <InputField
-        label="RG"
+        label="RG (Opcional)"
         id="rg"
         name="rg"
         value={formData.rg}
         onChange={handleInputChange}
       />
       <InputField
-        label="CPF"
+        label="CPF (Opcional)"
         id="cpf"
         name="cpf"
         maxLength={11}
@@ -129,19 +183,20 @@ export const ModalCriarCrianca: React.FC<ModalCriarCriancaProps> = ({
         onChange={handleInputChange}
       />
       <InputField
-        label="Foto (URL)"
+        label="Foto (URL, Opcional)"
         id="foto_url"
         name="foto_url"
         value={formData.foto_url}
         onChange={handleInputChange}
       />
       <InputField
-        label="Observações"
+        label="Observações (Opcional)"
         id="observacoes"
         name="observacoes"
         value={formData.observacoes}
         onChange={handleInputChange}
       />
+
       <div className="flex justify-end gap-2 pt-4">
         <Button
           text="Cancelar"

@@ -28,6 +28,8 @@ export class CriancaService {
       cpf: createCriancaDto.cpf || null,
       foto_url: createCriancaDto.foto_url || null,
       observacoes: createCriancaDto.observacoes || null,
+      matriculada_escola: createCriancaDto.matriculada_escola || false,
+      nome_escola: createCriancaDto.nome_escola || null,
       familia: {
         connect: {
           id_familia: BigInt(createCriancaDto.id_familia),
