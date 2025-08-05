@@ -1,6 +1,6 @@
 import { Spinner } from "~/components/ui/Spinner";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
-import { ActivitiesPage } from "~/pages/activities/ActivitiesPage";
+import { AtividadesPage } from "~/pages/atividades/AtividadesPage";
 
 export default function ActivitiesRoute() {
   const { user, isLoading, error } = useCurrentUser();
@@ -15,5 +15,5 @@ export default function ActivitiesRoute() {
   if (!user)
     return <div>Não foi possível carregar os dados do usuário logado.</div>;
 
-  return <ActivitiesPage />;
+  return <AtividadesPage />;
 }

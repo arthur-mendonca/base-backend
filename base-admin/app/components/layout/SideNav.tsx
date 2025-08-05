@@ -34,7 +34,7 @@ const defaultMenuItems: MenuItem[] = [
   },
   {
     label: "Atividades",
-    href: "/activities",
+    href: "/atividades",
     icon: <ActivitiesSVG />,
   },
   {

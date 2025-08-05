@@ -9,8 +9,9 @@ import { ModalDetalhesAtividade } from "./ModalDetalhesAtividade";
 import { ModalEditarAtividade } from "./ModalEditarAtividade";
 import { deleteAtividade } from "~/api/atividades/deleteAtividade";
 import type { Atividade } from "~/interfaces/atividade";
+import { ModalCriarAtividade } from "./ModalCriarAtividade";
 
-export const ActivitiesComponent: React.FC = () => {
+export const AtividadesComponent: React.FC = () => {
   const [atividades, setAtividades] = useState<Atividade[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedAtividade, setSelectedAtividade] = useState<Atividade | null>(
@@ -18,6 +19,7 @@ export const ActivitiesComponent: React.FC = () => {
   );
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const { showToast } = useToast();
 
   const fetchAtividades = useCallback(async () => {
@@ -133,7 +135,13 @@ export const ActivitiesComponent: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-4">Atividades</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold mb-4">Atividades</h1>
+        <Button
+          text="Nova Atividade"
+          onClick={() => setCreateModalOpen(true)}
+        />
+      </div>
       {isLoading ? (
         <Spinner size="md" />
       ) : (
@@ -163,6 +171,18 @@ export const ActivitiesComponent: React.FC = () => {
           </Modal>
         </>
       )}
+
+      <Modal
+        title="Criar Nova Atividade"
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        showFooter={false}
+        size="xl">
+        <ModalCriarAtividade
+          setModalOpen={setCreateModalOpen}
+          fetchAtividades={fetchAtividades}
+        />
+      </Modal>
     </>
   );
 };

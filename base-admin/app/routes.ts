@@ -15,7 +15,7 @@ export default [
     route("/account", "routes/account.tsx"),
     route("/users", "routes/users.tsx"),
     route("/volunteers", "routes/volunteers.tsx"),
-    route("/activities", "routes/activities.tsx"),
+    route("/atividades", "routes/atividades.tsx"),
     route("/families", "routes/familias.tsx"),
     route("/cestas", "routes/cestas.tsx"),
   ]),
