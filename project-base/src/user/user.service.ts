@@ -1,4 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UserRepository } from "./repositories/user.repository";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -54,16 +60,32 @@ export class UserService {
   }
 
   async update(id: bigint, updateUserDto: UpdateUserDto) {
-    let userToUpdate = { ...updateUserDto };
-
-    // Se a senha estiver presente no DTO, criptografá-la
+    // 2. Lógica de validação de senha
     if (updateUserDto.senha) {
-      const saltOrRounds = 10;
-      const hashedPassword = await bcrypt.hash(updateUserDto.senha, saltOrRounds);
-      userToUpdate = { ...updateUserDto, senha: hashedPassword };
+      const { senha_atual, senha } = updateUserDto;
+
+      if (!senha_atual) {
+        throw new BadRequestException("A senha atual é obrigatória para definir uma nova senha.");
+      }
+
+      const user = await this.repository.findOne(id);
+      if (!user) {
+        throw new NotFoundException(`Usuário com ID ${id} não encontrado.`);
+      }
+
+      const isPasswordValid = await bcrypt.compare(senha_atual, user.senha);
+      if (!isPasswordValid) {
+        throw new UnauthorizedException("A senha atual está incorreta.");
+      }
+
+      // Se a validação passou, faz o hash da nova senha
+      updateUserDto.senha = await bcrypt.hash(senha, 10);
     }
 
-    return this.repository.update(id, userToUpdate);
+    // Remove a senha_atual para não salvá-la no banco
+    delete updateUserDto.senha_atual;
+
+    return this.repository.update(id, updateUserDto);
   }
 
   async remove(id: bigint) {

@@ -50,17 +50,17 @@ export const AccountPage = ({ user }: { user: User }) => {
         showToast("danger", "Usuário não autenticado.");
         return;
       }
-      // Monta o payload
+
       const payload: any = {
         nome,
         email,
       };
+
       if (nova_senha) {
-        // payload.senha_atual = senha_atual;
+        payload.senha_atual = senha_atual;
         payload.senha = nova_senha;
       }
 
-      // Requisição para atualizar dados
       await updateUser(user.id_usuario, payload);
 
       showToast("success", "Perfil atualizado com sucesso!");
