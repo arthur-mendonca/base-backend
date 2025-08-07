@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { createFamilia } from "~/api/familias/createFamilia";
 import { getAllResponsaveis } from "~/api/responsavel/getAllResponsaveis";
 import { Button } from "~/components/ui/Button";

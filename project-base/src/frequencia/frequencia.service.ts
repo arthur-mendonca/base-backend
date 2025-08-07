@@ -69,11 +69,11 @@ export class FrequenciaService {
       });
 
       if (faltasNaoJustificadas > 2) {
-        // Regra de negócio: Inativar matrícula e elegibilidade da família
-        await this.prisma.matriculaAtividade.update({
-          where: { id_matricula: matricula.id_matricula },
-          data: { status: "INATIVA" },
-        });
+        // DESATIVAR MATRÍCULA
+        // await this.prisma.matriculaAtividade.update({
+        //   where: { id_matricula: matricula.id_matricula },
+        //   data: { status: "INATIVA" },
+        // });
 
         const frequencia = await this.prisma.frequencia.findUnique({
           where: { id_frequencia: novaFrequencia.id_frequencia },
@@ -88,6 +88,7 @@ export class FrequenciaService {
 
         const id_familia = frequencia?.matricula?.pessoa?.id_familia;
 
+        // Regra de negócio: alterar elegibilidade da família
         if (id_familia) {
           await this.prisma.familia.update({
             where: { id_familia: id_familia },

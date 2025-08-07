@@ -1,16 +1,16 @@
 import { useState, useCallback, useEffect } from "react";
+import { deleteFamilia } from "~/api/familias/deleteFamilia";
 import { getAllFamilias } from "~/api/familias/getAllFamilias";
+import { getFamiliaDetalhes } from "~/api/familias/getFamiliaDetalhes";
+import { Button } from "~/components/ui/Button";
+import { Modal } from "~/components/ui/Modal";
 import { Spinner } from "~/components/ui/Spinner";
 import { Table } from "~/components/ui/Table";
-import { Button } from "../../../components/ui/Button";
-import { Modal } from "~/components/ui/Modal";
-import { ModalCriarFamilia } from "./ModalCriarFamilia";
-import { deleteFamilia } from "~/api/familias/deleteFamilia";
-import type { Familia, FamiliaDetalhes } from "~/interfaces/familias";
 import { useToast } from "~/contexts/ToastContext";
-import { ModalEditarFamilia } from "./ModalEditarFamillia";
+import type { Familia, FamiliaDetalhes } from "~/interfaces/familias";
 import { DetalhesFamiliaModal } from "./DetalhesFamiliaModal";
-import { getFamiliaDetalhes } from "~/api/familias/getFamiliaDetalhes";
+import { ModalCriarFamilia } from "./ModalCriarFamilia";
+import { ModalEditarFamilia } from "./ModalEditarFamillia";
 
 export const FamiliasComponent: React.FC = () => {
   const { showToast } = useToast();

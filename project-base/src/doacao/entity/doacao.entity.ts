@@ -11,12 +11,3 @@ export class DoacaoEntity implements Doacao {
   comprovante_url: string | null;
   is_anonima: boolean;
 }
-
-//  id_doacao        BigInt     @id
-//   id_parceiro      BigInt? // Null se for anônima
-//   tipo             TipoDoacao // Monetária ou Material
-//   valor            Decimal? // Se for monetária
-//   descricao        String
-//   data_recebimento DateTime   @default(now())
-//   comprovante_url  String? // URL do comprovante (ex: comprovante PIX)
-//   is_anonima       Boolean    @default(false)

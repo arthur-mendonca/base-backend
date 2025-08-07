@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
+import { updateFamilia } from "~/api/familias/updateFamilia";
+import { getAllResponsaveis } from "~/api/responsavel/getAllResponsaveis";
 import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
 import { useToast } from "~/contexts/ToastContext";
-import { updateFamilia } from "~/api/familias/updateFamilia";
 import type { Familia, UpdateFamiliaPayload } from "~/interfaces/familias";
 import type { Responsavel } from "~/interfaces/responsavel";
-import { getAllResponsaveis } from "~/api/responsavel/getAllResponsaveis";
 
 interface ModalEditarFamiliaProps {
   familia: Familia;

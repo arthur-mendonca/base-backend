@@ -1,5 +1,6 @@
 import { CardNavTabs } from "~/components/ui/CardNavTabs";
-import { AtividadesComponent } from "./AtividadesComponent";
+import { AtividadesComponent } from "./atividadesComponent/AtividadesComponent";
+import { MatriculasComponent } from "./matriculas/MatriculasComponent";
 
 export const AtividadesPage: React.FC = () => {
   const tabs = [
@@ -11,7 +12,7 @@ export const AtividadesPage: React.FC = () => {
     {
       key: "matriculas",
       label: "Matrículas",
-      content: <div>Conteúdo do Registro de Matrículas</div>,
+      content: <MatriculasComponent />,
     },
   ];
   return (

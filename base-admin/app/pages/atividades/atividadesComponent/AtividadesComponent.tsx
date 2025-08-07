@@ -1,15 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
-import { Table } from "~/components/ui/Table";
-import { Spinner } from "~/components/ui/Spinner";
-import { useToast } from "~/contexts/ToastContext";
+import { useState, useCallback, useEffect } from "react";
+import { deleteAtividade } from "~/api/atividades/deleteAtividade";
 import { getAllAtividades } from "~/api/atividades/getAllAtividades";
 import { Button } from "~/components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
-import { ModalDetalhesAtividade } from "./ModalDetalhesAtividade";
-import { ModalEditarAtividade } from "./ModalEditarAtividade";
-import { deleteAtividade } from "~/api/atividades/deleteAtividade";
+import { Spinner } from "~/components/ui/Spinner";
+import { Table } from "~/components/ui/Table";
+import { useToast } from "~/contexts/ToastContext";
 import type { Atividade } from "~/interfaces/atividade";
 import { ModalCriarAtividade } from "./ModalCriarAtividade";
+import { ModalDetalhesAtividade } from "./ModalDetalhesAtividade";
+import { ModalEditarAtividade } from "./ModalEditarAtividade";
 
 export const AtividadesComponent: React.FC = () => {
   const [atividades, setAtividades] = useState<Atividade[]>([]);

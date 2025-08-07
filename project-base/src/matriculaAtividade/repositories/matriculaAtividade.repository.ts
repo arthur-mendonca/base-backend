@@ -11,13 +11,13 @@ export class MatriculaAtividadeRepository {
   async create(data: Prisma.MatriculaAtividadeCreateInput): Promise<MatriculaAtividadeEntity> {
     return await this.prisma.matriculaAtividade.create({
       data,
-      include: { pessoa: true, atividade: true },
+      include: { pessoa: true, atividade: true, crianca: true },
     });
   }
 
   async findAll(): Promise<MatriculaAtividadeEntity[]> {
     return await this.prisma.matriculaAtividade.findMany({
-      include: { pessoa: true, atividade: true },
+      include: { pessoa: true, atividade: true, crianca: true },
       orderBy: { data_matricula: "desc" },
     });
   }
