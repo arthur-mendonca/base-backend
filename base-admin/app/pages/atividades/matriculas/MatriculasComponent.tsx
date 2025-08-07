@@ -1,25 +1,30 @@
-import { useCallback, useEffect, useState } from "react";
-import { deleteMatricula } from "~/api/matriculas/deleteMatriculas";
-import { getAllMatriculas } from "~/api/matriculas/getAllMatriculas";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { Button } from "~/components/ui/Button";
 import { Modal } from "~/components/ui/Modal";
 import { Spinner } from "~/components/ui/Spinner";
 import { Table } from "~/components/ui/Table";
 import { useToast } from "~/contexts/ToastContext";
-import { statusMatriculaBadge } from "~/enums/matriculas";
+import { getAllMatriculas } from "~/api/matriculas/getAllMatriculas";
 import type { Matricula } from "~/interfaces/matricula";
 import { ModalCriarMatricula } from "./ModalCriarMatricula";
-import { ModalEditarMatricula } from "./ModalEditarMatricula";
+import { ModalDetalhesMatriculasPorCrianca } from "./ModalDetalhesMatriculasPorCrianca";
+
+// Interface para os dados agrupados, usando a nomenclatura correta
+interface CriancaComMatriculas {
+  id_crianca: string;
+  nome: string;
+  cpf: string | null;
+  matriculas: Matricula[];
+}
 
 export const MatriculasComponent: React.FC = () => {
   const { showToast } = useToast();
   const [matriculas, setMatriculas] = useState<Matricula[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMatricula, setSelectedMatricula] = useState<Matricula | null>(
-    null
-  );
+  const [selectedCrianca, setSelectedCrianca] =
+    useState<CriancaComMatriculas | null>(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
   const fetchMatriculas = useCallback(async () => {
     setIsLoading(true);
@@ -37,73 +42,47 @@ export const MatriculasComponent: React.FC = () => {
     fetchMatriculas();
   }, [fetchMatriculas]);
 
-  const handleOpenEdit = (matricula: Matricula) => {
-    setSelectedMatricula(matricula);
-    setEditModalOpen(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (
-      window.confirm(
-        "Tem certeza que deseja excluir esta matrícula? Esta ação não pode ser desfeita."
-      )
-    ) {
-      try {
-        await deleteMatricula(id);
-        fetchMatriculas();
-        showToast("success", "Matrícula excluída com sucesso.");
-      } catch (error) {
-        showToast("danger", "Erro ao excluir matrícula.");
+  // Agrupa matrículas por criança
+  const criancasComMatriculas = useMemo(() => {
+    const grouped = matriculas.reduce((acc, matricula) => {
+      const { id_crianca, nome, cpf } = matricula.crianca;
+      if (!acc[id_crianca]) {
+        acc[id_crianca] = {
+          id_crianca,
+          nome,
+          cpf: cpf || null,
+          matriculas: [],
+        };
       }
-    }
+      acc[id_crianca].matriculas.push(matricula);
+      return acc;
+    }, {} as Record<string, CriancaComMatriculas>);
+
+    return Object.values(grouped);
+  }, [matriculas]);
+
+  const handleOpenDetails = (crianca: CriancaComMatriculas) => {
+    setSelectedCrianca(crianca);
+    setDetailsModalOpen(true);
   };
 
   const columns = [
+    { key: "nome", label: "Nome da Criança" },
+    { key: "cpf", label: "CPF" },
     {
-      key: "pessoa.nome",
-      label: "Criança",
-      render: (_: any, row: Matricula) => {
-        console.log("Dados da matrícula:", row);
-        return row.crianca?.nome || "—";
-      },
-    },
-    {
-      key: "atividade.nome",
-      label: "Atividade",
-      render: (_: any, row: Matricula) => row.atividade.nome,
-    },
-    {
-      key: "data_matricula",
-      label: "Data da Matrícula",
-      render: (value: string) => new Date(value).toLocaleDateString("pt-BR"),
-    },
-    {
-      key: "status",
-      label: "Status",
-      render: (value: Matricula["status"]) => (
-        <span
-          className={`px-2 py-1 text-xs font-medium rounded-full ${statusMatriculaBadge[value]}`}>
-          {value}
-        </span>
-      ),
+      key: "matriculas_count",
+      label: "Nº de Matrículas",
+      render: (_: any, row: CriancaComMatriculas) => row.matriculas.length,
     },
     {
       key: "actions",
       label: "Ações",
-      render: (_: any, row: Matricula) => (
-        <div className="flex gap-2">
-          <Button
-            text="Editar Status"
-            size="sm"
-            onClick={() => handleOpenEdit(row)}
-          />
-          <Button
-            text="Excluir"
-            size="sm"
-            variant="danger"
-            onClick={() => void handleDelete(row.id_matricula)}
-          />
-        </div>
+      render: (_: any, row: CriancaComMatriculas) => (
+        <Button
+          text="Ver Matrículas"
+          size="sm"
+          onClick={() => handleOpenDetails(row)}
+        />
       ),
     },
   ];
@@ -117,7 +96,11 @@ export const MatriculasComponent: React.FC = () => {
         />
       </div>
 
-      {isLoading ? <Spinner /> : <Table columns={columns} data={matriculas} />}
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <Table columns={columns} data={criancasComMatriculas} />
+      )}
 
       <Modal
         title="Nova Matrícula"
@@ -132,14 +115,13 @@ export const MatriculasComponent: React.FC = () => {
       </Modal>
 
       <Modal
-        title="Editar Status da Matrícula"
-        isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
+        title="Histórico de Matrículas"
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
         showFooter={false}
         size="xl">
-        <ModalEditarMatricula
-          matricula={selectedMatricula}
-          setModalOpen={setEditModalOpen}
+        <ModalDetalhesMatriculasPorCrianca
+          criancaComMatriculas={selectedCrianca}
           fetchMatriculas={fetchMatriculas}
         />
       </Modal>

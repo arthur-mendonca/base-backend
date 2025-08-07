@@ -9,7 +9,7 @@ export interface Matricula {
   data_matricula: string;
   status: StatusMatricula;
   observacoes: string | null;
-  crianca: Pick<Crianca, "nome" | "cpf">;
+  crianca: Pick<Crianca, "nome" | "cpf" | "id_crianca">;
   pessoa: Pick<Crianca, "nome" | "cpf">;
   atividade: Pick<Atividade, "nome">;
 }
