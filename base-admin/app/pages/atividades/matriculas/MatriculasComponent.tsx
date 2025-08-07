@@ -106,8 +106,7 @@ export const MatriculasComponent: React.FC = () => {
         title="Nova Matrícula"
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
-        showFooter={false}
-        size="xl">
+        showFooter={false}>
         <ModalCriarMatricula
           setModalOpen={setCreateModalOpen}
           fetchMatriculas={fetchMatriculas}
@@ -119,7 +118,7 @@ export const MatriculasComponent: React.FC = () => {
         isOpen={detailsModalOpen}
         onClose={() => setDetailsModalOpen(false)}
         showFooter={false}
-        size="xl">
+        size="fullscreen">
         <ModalDetalhesMatriculasPorCrianca
           criancaComMatriculas={selectedCrianca}
           fetchMatriculas={fetchMatriculas}

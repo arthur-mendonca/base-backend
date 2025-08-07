@@ -8,7 +8,7 @@ export interface ModalProps {
   secondaryButtonText?: string;
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "sm" | "md" | "lg" | "xl" | "fullscreen";
   backgroundColor?: string;
   textColor?: string;
 }

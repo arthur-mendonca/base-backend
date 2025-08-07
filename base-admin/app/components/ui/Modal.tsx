@@ -41,6 +41,7 @@ export const Modal = ({
     md: "max-w-2xl",
     lg: "max-w-4xl",
     xl: "max-w-6xl",
+    fullscreen: "w-full h-screen",
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -66,7 +67,9 @@ export const Modal = ({
       <div className={`relative p-4 w-full ${sizeClasses[size]}`}>
         {/* Modal content */}
         <div
-          className={`${backgroundColor} relative rounded-lg shadow-sm flex flex-col max-h-[90vh]`}>
+          className={`${backgroundColor} relative rounded-lg shadow-sm flex flex-col ${
+            size === "fullscreen" ? "h-full" : "max-h-[90vh]"
+          }`}>
           {/* Modal header */}
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200 shrink-0">
             <h3 className={`text-xl font-semibold ${textColor}`}>{title}</h3>
