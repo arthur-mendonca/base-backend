@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateProduto } from "~/api/produto/updateProduto";
+import { deleteProduto } from "~/api/produto/deleteProduto";
 import { Button } from "~/components/ui/Button";
 import { InputField } from "~/components/ui/InputField";
 import { useToast } from "~/contexts/ToastContext";
@@ -55,6 +56,27 @@ export const EditarProdutoModal: React.FC<EditarProdutoModalProps> = ({
     }
   };
 
+  const handleDeleteProduto = async () => {
+    const confirm = window.confirm(
+      "Tem certeza que deseja deletar este produto?"
+    );
+
+    if (!confirm) return;
+
+    await deleteProduto(produto.id_produto)
+      .then(() => {
+        showToast("success", "Produto deletado com sucesso.");
+        fetchProdutos();
+        onClose();
+      })
+      .catch((error) => {
+        showToast(
+          "danger",
+          error instanceof Error ? error.message : "Erro ao deletar produto."
+        );
+      });
+  };
+
   return (
     <form className="space-y-4" onSubmit={handleUpdateProduto}>
       <InputField
@@ -87,20 +109,31 @@ export const EditarProdutoModal: React.FC<EditarProdutoModalProps> = ({
         Produto básico
       </label>
 
-      <div className="flex justify-end gap-2 pt-4">
+      <div className="flex justify-between gap-2 pt-4">
         <Button
-          text="Cancelar"
-          variant="secondary"
-          onClick={() => onClose()}
+          text="Deletar"
+          variant="danger"
+          onClick={handleDeleteProduto}
           type="button"
           disabled={isSubmitting}
         />
-        <Button
-          text="Atualizar"
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting}
-        />
+
+        <div className="flex gap-2">
+          <Button
+            text="Cancelar"
+            variant="secondary"
+            onClick={() => onClose()}
+            type="button"
+            disabled={isSubmitting}
+          />
+
+          <Button
+            text="Atualizar"
+            variant="primary"
+            type="submit"
+            disabled={isSubmitting}
+          />
+        </div>
       </div>
     </form>
   );

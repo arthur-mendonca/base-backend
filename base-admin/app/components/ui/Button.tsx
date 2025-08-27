@@ -5,7 +5,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary" | "danger" | "success";
   size?: "sm" | "md" | "lg";
   disabled?: boolean;
-  onClick?: () => void | (() => Promise<void>);
+  onClick?: () => void | Promise<void>;
   type?: "button" | "submit" | "reset";
 }
 
@@ -44,7 +44,8 @@ export const Button = ({
         ${buttonVariants[variant]}
         ${buttonSizes[size]}
         ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-      `}>
+      `}
+    >
       {text}
     </button>
   );
