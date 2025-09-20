@@ -9,7 +9,11 @@ export class UserRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<UserEntity[]> {
-    return this.prisma.usuario.findMany();
+    return await this.prisma.usuario.findMany({
+      orderBy: {
+        nome: "asc",
+      },
+    });
   }
 
   async findOne(id: bigint): Promise<UserEntity> {
@@ -25,7 +29,7 @@ export class UserRepository {
   }
 
   async create(data: Prisma.UsuarioCreateInput): Promise<UserEntity> {
-    return this.prisma.usuario.create({
+    return await this.prisma.usuario.create({
       data,
     });
   }
@@ -34,17 +38,17 @@ export class UserRepository {
     // Verificar se o usuário existe
     await this.findOne(id);
 
-    return this.prisma.usuario.update({
+    return await this.prisma.usuario.update({
       where: { id_usuario: id },
       data: updateUserDto,
     });
   }
 
   async remove(id: bigint): Promise<UserEntity> {
-    // Verificar se o usuário existe
+   
     await this.findOne(id);
 
-    return this.prisma.usuario.delete({
+    return await this.prisma.usuario.delete({
       where: { id_usuario: id },
     });
   }
@@ -55,5 +59,46 @@ export class UserRepository {
     });
 
     return user;
+  }
+
+  async findByPerfil(perfil: string): Promise<UserEntity[]> {
+    return await this.prisma.usuario.findMany({
+      where: {
+        perfil: perfil as Prisma.Enumerable<any>,
+      },
+      orderBy: {
+        nome: "asc",
+      },
+    });
+  }
+
+  async findByNome(nome: string): Promise<UserEntity[]> {
+    return await this.prisma.usuario.findMany({
+      where: {
+        nome: {
+          contains: nome,
+          mode: "insensitive",
+        },
+      },
+      orderBy: {
+        nome: "asc",
+      },
+    });
+  }
+
+  async findRecentlyCreated(days: number = 30): Promise<UserEntity[]> {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+
+    return await this.prisma.usuario.findMany({
+      where: {
+        data_cadastro: {
+          gte: date,
+        },
+      },
+      orderBy: {
+        data_cadastro: "desc",
+      },
+    });
   }
 }
