@@ -20,7 +20,7 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-   
+    // Verificar se já existe usuário com o mesmo email
     const existingUser = await this.repository.findByEmail(createUserDto.email);
     if (existingUser) {
       throw new ConflictException("Este e-mail já está em uso.");
@@ -60,7 +60,7 @@ export class UserService {
   }
 
   async update(id: bigint, updateUserDto: UpdateUserDto) {
-
+    // 2. Lógica de validação de senha
     if (updateUserDto.senha) {
       const { senha_atual, senha } = updateUserDto;
 
@@ -78,11 +78,11 @@ export class UserService {
         throw new UnauthorizedException("A senha atual está incorreta.");
       }
 
-
+      // Se a validação passou, faz o hash da nova senha
       updateUserDto.senha = await bcrypt.hash(senha, 10);
     }
 
-   
+    // Remove a senha_atual para não salvá-la no banco
     delete updateUserDto.senha_atual;
 
     return this.repository.update(id, updateUserDto);

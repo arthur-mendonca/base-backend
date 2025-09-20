@@ -4,7 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PrismaModule } from "./prisma/prisma.module";
-import { UsuarioModule } from "./user/user.module";
+import { UserModule } from "./user/user.module";
 import { CriancaModule } from "./crianca/crianca.module";
 import { ResponsavelModule } from "./responsavel/responsavel.module";
 import { VoluntarioModule } from "./voluntario/voluntario.module";
@@ -21,7 +21,7 @@ import { AuditMiddleware } from "./auth/auditMiddleware";
     }),
     AuthModule,
     PrismaModule,
-    UsuarioModule,
+    UserModule,
     CriancaModule,
     ResponsavelModule,
     VoluntarioModule,

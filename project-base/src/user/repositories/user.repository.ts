@@ -45,7 +45,7 @@ export class UserRepository {
   }
 
   async remove(id: bigint): Promise<UserEntity> {
-   
+    // Verificar se o usuário existe
     await this.findOne(id);
 
     return await this.prisma.usuario.delete({
