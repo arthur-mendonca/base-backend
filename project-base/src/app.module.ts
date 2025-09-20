@@ -13,12 +13,13 @@ import { CestaBasicaModule } from "./cesta-basica/cestabasica.module";
 import { FrequenciaModule } from "./frequencia/frequencia.module";
 import { AuthModule } from "./auth/auth.module";
 import { AuditMiddleware } from "./auth/auditMiddleware";
-
+import { PessoaModule } from "./pessoa/pessoa.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    PessoaModule,
     AuthModule,
     PrismaModule,
     UserModule,
