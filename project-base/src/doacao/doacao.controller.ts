@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from "@nestjs/swagger";
 import { DoacaoService } from "./doacao.service";
@@ -17,12 +18,14 @@ import { CreateDoacaoDto } from "./dto/create-doacao.dto";
 import { UpdateDoacaoDto } from "./dto/update-doacao.dto";
 import { DoacaoEntity } from "./entity/doacao.entity";
 import { TipoDoacao } from "@prisma/client";
+import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 
 @ApiTags("Doação")
 @Controller("doacao")
 export class DoacaoController {
   constructor(private readonly doacaoService: DoacaoService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: "Criar uma nova doação" })
   @ApiResponse({
@@ -35,6 +38,7 @@ export class DoacaoController {
     return this.doacaoService.create(createDoacaoDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: "Listar todas as doações" })
   @ApiQuery({ name: "tipo", required: false, enum: TipoDoacao, description: "Filtrar por tipo" })
@@ -65,6 +69,7 @@ export class DoacaoController {
     return this.doacaoService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   @ApiOperation({ summary: "Buscar doação por ID" })
   @ApiParam({ name: "id", description: "ID da doação" })
@@ -78,6 +83,7 @@ export class DoacaoController {
     return this.doacaoService.findOne(BigInt(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   @ApiOperation({ summary: "Atualizar doação" })
   @ApiParam({ name: "id", description: "ID da doação" })
@@ -92,6 +98,7 @@ export class DoacaoController {
     return this.doacaoService.update(BigInt(id), updateDoacaoDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: "Remover doação" })

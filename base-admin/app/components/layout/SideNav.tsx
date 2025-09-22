@@ -24,7 +24,7 @@ const defaultMenuItems: MenuItem[] = [
   },
   {
     label: "Doações",
-    href: "/donations",
+    href: "/doacoes",
     icon: <DonationsSVG />,
   },
   {

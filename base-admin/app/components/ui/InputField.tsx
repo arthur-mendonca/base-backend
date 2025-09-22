@@ -20,6 +20,7 @@ export const InputField = ({
       }`}>
       {label}
     </label>
+
     <input
       maxLength={maxLength}
       required={required}

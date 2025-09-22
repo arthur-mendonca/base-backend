@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { TipoDoacao } from "@prisma/client";
-import { IsNotEmpty, IsString, IsEnum, IsOptional, IsNumber, IsBoolean, IsUrl } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsString, IsEnum, IsOptional, IsNumber, IsBoolean, IsUrl, IsDate } from "class-validator";
 
 export class CreateDoacaoDto {
   @ApiProperty({
@@ -37,6 +38,16 @@ export class CreateDoacaoDto {
   @IsNotEmpty()
   @IsString()
   descricao: string;
+
+  @ApiProperty({
+    description: "Data de recebimento da doação",
+    example: "2023-10-01T10:00:00Z",
+    default: new Date().toISOString(),
+  })
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  data_recebimento: Date;
 
   @ApiProperty({
     description: "URL do comprovante da doação",

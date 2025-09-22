@@ -18,5 +18,6 @@ export default [
     route("/atividades", "routes/atividades.tsx"),
     route("/families", "routes/familias.tsx"),
     route("/cestas", "routes/cestas.tsx"),
+    route("/doacoes", "routes/doacoes.tsx"),
   ]),
 ] satisfies RouteConfig;
