@@ -3,7 +3,7 @@ import { ResponsavelService } from "./responsavel.service";
 import { ResponsavelController } from "./responsavel.controller";
 import { ResponsavelRepository } from "./repositories/responsavel.repository";
 import { PrismaModule } from "../prisma/prisma.module";
-import { SnowflakeModule } from "src/snowflake/snowflake.module";
+import { SnowflakeModule } from "../snowflake/snowflake.module";
 
 @Module({
   imports: [PrismaModule, SnowflakeModule],
