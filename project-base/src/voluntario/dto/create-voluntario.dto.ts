@@ -1,9 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsBoolean, IsEmail, IsNotEmpty, IsNumberString, IsOptional, IsString, Length } from "class-validator";
 
 export class CreateVoluntarioDto {
   @ApiProperty({
-    description: "Nome do voluntário",
+    description: "Nome completo do voluntário",
     example: "Maria Silva",
   })
   @IsNotEmpty()
@@ -11,15 +11,34 @@ export class CreateVoluntarioDto {
   nome: string;
 
   @ApiProperty({
-    description: "CPF do voluntário",
-    example: "123.456.789-00",
+    description: "CPF do voluntário (único, somente números)",
+    example: "12345678901",
+    maxLength: 11,
+    minLength: 11,
   })
   @IsNotEmpty()
-  @IsString()
+  @IsNumberString({}, { message: "O CPF deve conter apenas números" })
+  @Length(11, 11, { message: "O CPF deve ter exatamente 11 dígitos" })
   cpf: string;
 
   @ApiProperty({
-    description: "E-mail do voluntário",
+    description: "RG do voluntário",
+    example: "12.345.678-9",
+  })
+  @IsNotEmpty()
+  @IsString()
+  rg: string;
+
+  @ApiProperty({
+    description: "Endereço completo do voluntário",
+    example: "Rua das Flores, 123 - Centro, São Paulo/SP",
+  })
+  @IsNotEmpty()
+  @IsString()
+  endereco: string;
+
+  @ApiProperty({
+    description: "E-mail de contato do voluntário",
     example: "maria.silva@example.com",
   })
   @IsEmail()
@@ -27,7 +46,7 @@ export class CreateVoluntarioDto {
   email: string;
 
   @ApiProperty({
-    description: "Telefone de contato",
+    description: "Telefone de contato do voluntário",
     example: "(11) 98765-4321",
   })
   @IsNotEmpty()
@@ -35,7 +54,7 @@ export class CreateVoluntarioDto {
   telefone: string;
 
   @ApiProperty({
-    description: "Disponibilidade de tempo",
+    description: "Disponibilidade de tempo para trabalho voluntário",
     example: "Segundas e Quartas à tarde",
   })
   @IsNotEmpty()
@@ -43,7 +62,7 @@ export class CreateVoluntarioDto {
   disponibilidade: string;
 
   @ApiProperty({
-    description: "Área de atuação",
+    description: "Área de atuação do voluntário",
     example: "Educação infantil",
   })
   @IsNotEmpty()
@@ -51,18 +70,33 @@ export class CreateVoluntarioDto {
   area_atuacao: string;
 
   @ApiProperty({
-    description: "Confirmação de resposta ao questionário",
+    description: "Indica se o voluntário possui antecedentes criminais",
+    example: false,
+    default: false,
+  })
+  @IsBoolean()
+  tem_antecedentes: boolean;
+
+  @ApiPropertyOptional({
+    description: "URL do comprovante de antecedentes criminais",
+    example: "https://exemplo.com/comprovante.pdf",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  url_comprovante?: string;
+
+  @ApiProperty({
+    description: "Confirmação de resposta ao questionário de inscrição",
     example: true,
   })
   @IsBoolean()
-  @IsNotEmpty()
   respondeu_questionario: boolean;
 
   @ApiProperty({
-    description: "Confirmação de aceitação dos termos",
+    description: "Confirmação de aceitação dos termos de voluntariado",
     example: true,
   })
   @IsBoolean()
-  @IsNotEmpty()
   aceitou_termos: boolean;
 }
