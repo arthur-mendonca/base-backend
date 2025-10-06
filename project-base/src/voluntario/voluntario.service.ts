@@ -25,10 +25,14 @@ export class VoluntarioService {
       id_voluntario: id,
       nome: createVoluntarioDto.nome,
       cpf: createVoluntarioDto.cpf,
+      rg: createVoluntarioDto.rg,
+      endereco: createVoluntarioDto.endereco,
       email: createVoluntarioDto.email,
       telefone: createVoluntarioDto.telefone,
       disponibilidade: createVoluntarioDto.disponibilidade,
       area_atuacao: createVoluntarioDto.area_atuacao,
+      tem_antecedentes: createVoluntarioDto.tem_antecedentes,
+      url_comprovante: createVoluntarioDto.url_comprovante || null,
       respondeu_questionario: createVoluntarioDto.respondeu_questionario,
       aceitou_termos: createVoluntarioDto.aceitou_termos,
     };
@@ -99,7 +103,7 @@ export class VoluntarioService {
   }
 
   async generateReport(filter: any) {
-    const { area_atuacao, disponibilidade, nome, status } = filter;
+    const { area_atuacao, disponibilidade, dataCadastroInicio, dataCadastroFim, nome, status } = filter;
 
     let voluntarios = await this.findAll();
 
@@ -113,6 +117,16 @@ export class VoluntarioService {
       voluntarios = voluntarios.filter(voluntario =>
         voluntario.disponibilidade.toLowerCase().includes(disponibilidade.toLowerCase()),
       );
+    }
+
+    if (dataCadastroInicio && dataCadastroFim) {
+      const inicio = new Date(dataCadastroInicio);
+      const fim = new Date(dataCadastroFim);
+
+      voluntarios = voluntarios.filter(voluntario => {
+        const dataCadastro = new Date(voluntario.data_cadastro);
+        return dataCadastro >= inicio && dataCadastro <= fim;
+      });
     }
 
     if (nome) {
