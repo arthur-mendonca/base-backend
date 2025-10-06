@@ -1,25 +1,81 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsString, IsInt, IsDate, IsNotEmpty } from "class-validator";
+import { IsString, IsDate, IsNotEmpty, IsOptional, IsBoolean } from "class-validator";
 
-export class CriancaDto {
+export class CreateCriancaDto {
+  @ApiProperty({
+    description: "ID da família à qual a criança pertence",
+    example: "1234567890",
+  })
   @IsNotEmpty()
-  @IsInt()
-  id_responsavel: number;
+  id_familia: bigint;
 
+  @ApiProperty({
+    description: "Nome completo da criança",
+    example: "João Silva",
+  })
   @IsNotEmpty()
   @IsString()
   nome: string;
 
+  @ApiProperty({
+    description: "Data de nascimento",
+    example: "1985-01-01",
+  })
   @IsNotEmpty()
   @Type(() => Date)
   @IsDate()
   data_nascimento: Date;
 
-  @IsNotEmpty()
+  @ApiPropertyOptional({
+    description: "Número do RG",
+    example: "12345678X",
+    required: false,
+  })
+  @IsOptional()
   @IsString()
-  rg: string;
+  rg?: string;
 
-  @IsNotEmpty()
+  @ApiPropertyOptional({
+    description: "Número do CPF",
+    example: "123.456.789-00",
+    required: false,
+  })
+  @IsOptional()
   @IsString()
-  cpf: string;
+  cpf?: string;
+
+  @ApiPropertyOptional({
+    description: "URL da foto",
+    example: "https://exemplo.com/foto.jpg",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  foto_url?: string;
+
+  @ApiPropertyOptional({
+    description: "Observações sobre a criança",
+    example: "Precisa de acompanhamento psicológico",
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  observacoes?: string;
+
+  @ApiPropertyOptional({
+    description: "Indica se a criança está matriculada em uma escola",
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  matriculada_escola?: boolean;
+
+  @ApiPropertyOptional({
+    description: "Nome da escola onde a criança está matriculada",
+    example: "Escola Municipal Exemplo",
+  })
+  @IsOptional()
+  @IsString()
+  nome_escola?: string;
 }
