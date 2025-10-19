@@ -14,6 +14,8 @@ import { FrequenciaModule } from "./frequencia/frequencia.module";
 import { AuthModule } from "./auth/auth.module";
 import { AuditMiddleware } from "./auth/auditMiddleware";
 import { PessoaModule } from "./pessoa/pessoa.module";
+import { DoacaoModule } from "./doacao/doacao.module";
+import { ItemDoadoModule } from "./item-doado/item-doado.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +31,8 @@ import { PessoaModule } from "./pessoa/pessoa.module";
     ParceiroModule,
     CestaBasicaModule,
     FrequenciaModule,
+    DoacaoModule,
+    ItemDoadoModule
   ],
   controllers: [AppController],
   providers: [AppService],
