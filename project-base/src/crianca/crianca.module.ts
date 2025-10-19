@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
-import { CriancaService } from "./crianca.service";
 import { CriancaController } from "./crianca.controller";
+import { CriancaService } from "./crianca.service";
 import { CriancaRepository } from "./repositories/crianca.repository";
-import { PrismaModule } from "../prisma/prisma.module";
+import { PrismaModule } from "src/prisma/prisma.module";
 import { SnowflakeModule } from "src/snowflake/snowflake.module";
 
 @Module({
   imports: [PrismaModule, SnowflakeModule],
-  providers: [CriancaService, CriancaRepository],
   controllers: [CriancaController],
+  providers: [CriancaService, CriancaRepository],
   exports: [CriancaService],
 })
 export class CriancaModule {}

@@ -10,6 +10,9 @@ export class VoluntarioRepository {
 
   async findAll(): Promise<VoluntarioEntity[]> {
     return await this.prisma.voluntario.findMany({
+      include: {
+        atividades_realizadas: true,
+      },
       orderBy: {
         nome: "asc",
       },
@@ -19,6 +22,9 @@ export class VoluntarioRepository {
   async findOne(id: bigint): Promise<VoluntarioEntity> {
     const voluntario = await this.prisma.voluntario.findUnique({
       where: { id_voluntario: id },
+      include: {
+        atividades_realizadas: true,
+      },
     });
 
     if (!voluntario) {
@@ -31,6 +37,9 @@ export class VoluntarioRepository {
   async create(voluntarioData: Prisma.VoluntarioCreateInput): Promise<VoluntarioEntity> {
     return await this.prisma.voluntario.create({
       data: voluntarioData,
+      include: {
+        atividades_realizadas: true,
+      },
     });
   }
 
@@ -41,6 +50,9 @@ export class VoluntarioRepository {
     return await this.prisma.voluntario.update({
       where: { id_voluntario: id },
       data: updateVoluntarioDto,
+      include: {
+        atividades_realizadas: true,
+      },
     });
   }
 
@@ -56,6 +68,9 @@ export class VoluntarioRepository {
   async findByCpf(cpf: string): Promise<VoluntarioEntity | null> {
     const voluntario = await this.prisma.voluntario.findUnique({
       where: { cpf },
+      include: {
+        atividades_realizadas: true,
+      },
     });
 
     return voluntario;
@@ -64,6 +79,9 @@ export class VoluntarioRepository {
   async findByEmail(email: string): Promise<VoluntarioEntity[]> {
     return await this.prisma.voluntario.findMany({
       where: { email },
+      include: {
+        atividades_realizadas: true,
+      },
     });
   }
 
@@ -74,6 +92,9 @@ export class VoluntarioRepository {
           contains: area,
           mode: "insensitive",
         },
+      },
+      include: {
+        atividades_realizadas: true,
       },
       orderBy: {
         nome: "asc",
@@ -89,6 +110,9 @@ export class VoluntarioRepository {
           mode: "insensitive",
         },
       },
+      include: {
+        atividades_realizadas: true,
+      },
       orderBy: {
         nome: "asc",
       },
@@ -99,12 +123,17 @@ export class VoluntarioRepository {
     const date = new Date();
     date.setDate(date.getDate() - days);
 
-    // NOTE: data_cadastro não existe no schema atual; filtrar por data de cadastro
-    // exigiria adicionar esse campo ao model `Voluntario` no schema.prisma.
-    // Aqui retornamos apenas os voluntários sem filtro por data.
     return await this.prisma.voluntario.findMany({
+      where: {
+        data_cadastro: {
+          gte: date,
+        },
+      },
+      include: {
+        atividades_realizadas: true,
+      },
       orderBy: {
-        nome: "asc",
+        data_cadastro: "desc",
       },
     });
   }
@@ -117,6 +146,9 @@ export class VoluntarioRepository {
           mode: "insensitive",
         },
       },
+      include: {
+        atividades_realizadas: true,
+      },
       orderBy: {
         nome: "asc",
       },
@@ -126,6 +158,9 @@ export class VoluntarioRepository {
   async findByStatus(status: boolean): Promise<VoluntarioEntity[]> {
     return await this.prisma.voluntario.findMany({
       where: { aceitou_termos: status },
+      include: {
+        atividades_realizadas: true,
+      },
       orderBy: {
         nome: "asc",
       },
