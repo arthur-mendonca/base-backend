@@ -16,6 +16,10 @@ import { AuditMiddleware } from "./auth/auditMiddleware";
 import { PessoaModule } from "./pessoa/pessoa.module";
 import { DoacaoModule } from "./doacao/doacao.module";
 import { ItemDoadoModule } from "./item-doado/item-doado.module";
+import { AtividadeModule } from "./atividade/atividade.module";
+import { AtividadeVoluntarioModule } from "./atividade-voluntario/atividade-voluntario.module";
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,7 +36,9 @@ import { ItemDoadoModule } from "./item-doado/item-doado.module";
     CestaBasicaModule,
     FrequenciaModule,
     DoacaoModule,
-    ItemDoadoModule
+    ItemDoadoModule,
+    AtividadeVoluntarioModule,
+    AtividadeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
