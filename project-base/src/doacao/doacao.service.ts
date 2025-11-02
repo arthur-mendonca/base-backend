@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
-import { DoacaoRepository } from "./repositories/doacao.repository";
+import { DoacaoRepository, TipoDoacao } from "./repositories/doacao.repositories";
 import { CreateDoacaoDto } from "./dto/create-doacao.dto";
 import { UpdateDoacaoDto } from "./dto/update-doacao.dto";
 import { SnowflakeService } from "../snowflake/snowflake.service";
-import { TipoDoacao } from "@prisma/client";
 
 @Injectable()
 export class DoacaoService {
@@ -71,5 +70,53 @@ export class DoacaoService {
 
   async findAnonimas() {
     return this.repository.findAnonimas();
+  }
+
+  async findByPeriodo(dataInicio: string, dataFim: string) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+
+    // Validar datas
+    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      throw new BadRequestException("Datas inválidas fornecidas");
+    }
+
+    if (inicio > fim) {
+      throw new BadRequestException("Data de início deve ser anterior à data de fim");
+    }
+
+    return this.repository.findByPeriodo(inicio, fim);
+  }
+
+  async findByPeriodoComTipo(dataInicio: string, dataFim: string, tipo?: TipoDoacao) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+
+    // Validar datas
+    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      throw new BadRequestException("Datas inválidas fornecidas");
+    }
+
+    if (inicio > fim) {
+      throw new BadRequestException("Data de início deve ser anterior à data de fim");
+    }
+
+    return this.repository.findByPeriodoComTipo(inicio, fim, tipo);
+  }
+
+  async getEstatisticasPorPeriodo(dataInicio: string, dataFim: string) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+
+    // Validar datas
+    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      throw new BadRequestException("Datas inválidas fornecidas");
+    }
+
+    if (inicio > fim) {
+      throw new BadRequestException("Data de início deve ser anterior à data de fim");
+    }
+
+    return this.repository.getEstatisticasPorPeriodo(inicio, fim);
   }
 }
