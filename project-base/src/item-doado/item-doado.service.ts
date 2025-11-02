@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { ItemDoadoRepository } from "./repositories/item-doado.repository";
+import { ItemDoadoRepository } from "./repositories/item-doado.repositories";
 import { CreateItemDoadoDto } from "./dto/create-item-doado.dto";
 import { UpdateItemDoadoDto } from "./dto/update-item-doado.dto";
 import { SnowflakeService } from "../snowflake/snowflake.service";

@@ -3,7 +3,7 @@ import { PrismaModule } from "../prisma/prisma.module";
 import { SnowflakeModule } from "../snowflake/snowflake.module";
 import { ItemDoadoController } from "./item-doado.controller";
 import { ItemDoadoService } from "./item-doado.service";
-import { ItemDoadoRepository } from "./repositories/item-doado.repository";
+import { ItemDoadoRepository } from "./repositories/item-doado.repositories";
 
 @Module({
   imports: [PrismaModule, SnowflakeModule],
