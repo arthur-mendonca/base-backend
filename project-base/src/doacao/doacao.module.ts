@@ -3,7 +3,7 @@ import { PrismaModule } from "../prisma/prisma.module";
 import { SnowflakeModule } from "../snowflake/snowflake.module";
 import { DoacaoController } from "./doacao.controller";
 import { DoacaoService } from "./doacao.service";
-import { DoacaoRepository } from "./repositories/doacao.repository";
+import { DoacaoRepository } from "./repositories/doacao.repositories";
 
 @Module({
   imports: [PrismaModule, SnowflakeModule],
