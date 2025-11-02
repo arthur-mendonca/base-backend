@@ -94,3 +94,28 @@ enum TipoUsuario {
   admin
   usuario
 }
+
+model AtividadeVoluntario {
+  id_atividade      BigInt   @id
+  id_voluntario     BigInt
+  descricao         String
+  data_realizacao   DateTime
+  horas_trabalhadas Float
+  observacoes       String?
+
+  voluntario Voluntario @relation(fields: [id_voluntario], references: [id_voluntario])
+}
+
+model Atividade {
+  id_atividade   BigInt        @id
+  nome           String
+  descricao      String?
+  tipo           TipoAtividade
+  publico_alvo   String // Crianças, adultos, familiares, etc.
+  dias_semana    String // Ex: "1,3,5" para segunda, quarta e sexta
+  horario_inicio DateTime
+  horario_fim    DateTime
+
+  materias   Materia[]
+  matriculas MatriculaAtividade[]
+}
