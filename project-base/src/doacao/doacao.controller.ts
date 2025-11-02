@@ -17,7 +17,7 @@ import { DoacaoService } from "./doacao.service";
 import { CreateDoacaoDto } from "./dto/create-doacao.dto";
 import { UpdateDoacaoDto } from "./dto/update-doacao.dto";
 import { DoacaoEntity } from "./entity/doacao.entity";
-import { TipoDoacao } from "@prisma/client";
+import { TipoDoacao } from "./repositories/doacao.repositories";
 import { JwtAuthGuard } from "src/auth/dto/jwt-auth.guard";
 
 @ApiTags("Doação")
@@ -107,5 +107,45 @@ export class DoacaoController {
   @ApiResponse({ status: 404, description: "Doação não encontrada" })
   async remove(@Param("id", ParseIntPipe) id: number) {
     await this.doacaoService.remove(BigInt(id));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio/periodo")
+  @ApiOperation({ summary: "Listar doações por período" })
+  @ApiQuery({ name: "dataInicio", required: true, description: "Data de início (YYYY-MM-DD)" })
+  @ApiQuery({ name: "dataFim", required: true, description: "Data de fim (YYYY-MM-DD)" })
+  @ApiQuery({ name: "tipo", required: false, enum: TipoDoacao, description: "Filtrar por tipo de doação" })
+  @ApiResponse({
+    status: 200,
+    description: "Lista de doações no período especificado",
+    type: [DoacaoEntity],
+  })
+  @ApiResponse({ status: 400, description: "Parâmetros de data inválidos" })
+  async findByPeriodo(
+    @Query("dataInicio") dataInicio: string,
+    @Query("dataFim") dataFim: string,
+    @Query("tipo") tipo?: TipoDoacao,
+  ) {
+    if (tipo) {
+      return this.doacaoService.findByPeriodoComTipo(dataInicio, dataFim, tipo);
+    }
+    return this.doacaoService.findByPeriodo(dataInicio, dataFim);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio/estatisticas")
+  @ApiOperation({ summary: "Obter estatísticas de doações por período" })
+  @ApiQuery({ name: "dataInicio", required: true, description: "Data de início (YYYY-MM-DD)" })
+  @ApiQuery({ name: "dataFim", required: true, description: "Data de fim (YYYY-MM-DD)" })
+  @ApiResponse({
+    status: 200,
+    description: "Estatísticas das doações no período especificado",
+  })
+  @ApiResponse({ status: 400, description: "Parâmetros de data inválidos" })
+  async getEstatisticasPorPeriodo(
+    @Query("dataInicio") dataInicio: string,
+    @Query("dataFim") dataFim: string,
+  ) {
+    return this.doacaoService.getEstatisticasPorPeriodo(dataInicio, dataFim);
   }
 }
