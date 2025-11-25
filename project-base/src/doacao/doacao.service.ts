@@ -4,6 +4,10 @@ import { CreateDoacaoDto } from "./dto/create-doacao.dto";
 import { UpdateDoacaoDto } from "./dto/update-doacao.dto";
 import { SnowflakeService } from "../snowflake/snowflake.service";
 
+/**
+ * Serviço de Doações
+ * Gerencia a lógica de negócio das doações
+ */
 @Injectable()
 export class DoacaoService {
   constructor(
@@ -11,8 +15,12 @@ export class DoacaoService {
     private readonly snowflakeService: SnowflakeService,
   ) {}
 
+  /**
+   * Cria uma nova doação no sistema
+   * Valida se doações monetárias têm valor informado
+   */
   async create(createDoacaoDto: CreateDoacaoDto) {
-    // Validar se doação monetária tem valor
+    // Doações em dinheiro precisam ter um valor
     if (createDoacaoDto.tipo === TipoDoacao.monetaria && !createDoacaoDto.valor) {
       throw new BadRequestException("Doações monetárias devem ter um valor informado");
     }
@@ -27,10 +35,12 @@ export class DoacaoService {
     return this.repository.create(doacaoData);
   }
 
+  // Busca todas as doações cadastradas
   async findAll() {
     return this.repository.findAll();
   }
 
+  // Busca uma doação específica pelo ID
   async findOne(id: bigint) {
     const doacao = await this.repository.findOne(id);
 
@@ -41,11 +51,12 @@ export class DoacaoService {
     return doacao;
   }
 
+  // Atualiza os dados de uma doação existente
   async update(id: bigint, updateDoacaoDto: UpdateDoacaoDto) {
-    // Verificar se a doação existe
+    // Primeiro verifica se a doação existe
     await this.findOne(id);
 
-    // Validar se doação monetária tem valor
+    // Valida novamente se é doação monetária
     if (updateDoacaoDto.tipo === TipoDoacao.monetaria && !updateDoacaoDto.valor) {
       throw new BadRequestException("Doações monetárias devem ter um valor informado");
     }
@@ -53,30 +64,38 @@ export class DoacaoService {
     return this.repository.update(id, updateDoacaoDto);
   }
 
+  // Remove uma doação do sistema
   async remove(id: bigint) {
-    // Verificar se a doação existe
+    // Verifica se a doação existe antes de remover
     await this.findOne(id);
 
     return this.repository.remove(id);
   }
 
+  // Busca todas as doações de um parceiro específico
   async findByParceiro(id_parceiro: bigint) {
     return this.repository.findByParceiro(id_parceiro);
   }
 
+  // Busca doações por tipo (monetária ou material)
   async findByTipo(tipo: TipoDoacao) {
     return this.repository.findByTipo(tipo);
   }
 
+  // Busca doações anônimas (sem parceiro identificado)
   async findAnonimas() {
     return this.repository.findAnonimas();
   }
 
+  /**
+   * Busca doações em um período específico
+   * Valida se as datas são válidas e se estão na ordem correta
+   */
   async findByPeriodo(dataInicio: string, dataFim: string) {
     const inicio = new Date(dataInicio);
     const fim = new Date(dataFim);
 
-    // Validar datas
+    // Verifica se as datas fornecidas são válidas
     if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
       throw new BadRequestException("Datas inválidas fornecidas");
     }
