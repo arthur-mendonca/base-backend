@@ -1,30 +1,23 @@
 import type { ProdutoCreatePayload } from "~/interfaces/produto";
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function createProduto(body: ProdutoCreatePayload) {
-  let response;
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    response = await fetch("http://localhost:3001/produto", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await AxiosConnection.api.post(`/produto`, body);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    if (response.status !== 201) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao criar produto.");
     }
 
-    return await response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao criar produto."
+      error?.response?.data?.message || "Erro ao criar produto."
     );
   }
 }

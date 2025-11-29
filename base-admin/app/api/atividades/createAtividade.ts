@@ -1,6 +1,6 @@
 import type { CreateAtividadePayload } from "~/interfaces/atividade";
 import { getCookie } from "~/utils/cookies";
-import axios from "axios";
+import AxiosConnection from "..";
 
 export async function createAtividade(body: CreateAtividadePayload) {
   try {
@@ -13,15 +13,9 @@ export async function createAtividade(body: CreateAtividadePayload) {
       horario_fim: `1970-01-01T${body.horario_fim}:00.000`,
     };
 
-    const response = await axios.post(
-      `http://localhost:3001/atividade`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const response = await AxiosConnection.api.post(
+      `/atividade`,
+      payload
     );
 
     if (response.status !== 201) {
@@ -30,12 +24,9 @@ export async function createAtividade(body: CreateAtividadePayload) {
     }
 
     return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      throw new Error(error.response.data.message || "Erro ao criar.");
-    }
-    throw new Error(
-      error instanceof Error ? error.message : "Erro desconhecido."
-    );
+  } catch (error: any) {
+    console.log(error);
+
+    throw new Error(error?.response?.data?.message || "Erro ao criar atividade.");
   }
 }

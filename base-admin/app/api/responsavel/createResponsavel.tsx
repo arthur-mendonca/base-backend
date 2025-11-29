@@ -1,29 +1,22 @@
-import type { r } from "node_modules/@react-router/dev/dist/routes-DHIOx0R9";
 import type { CreateResponsavelDto } from "~/interfaces/responsavel";
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function createResponsavel(body: CreateResponsavelDto) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch("http://localhost:3001/responsavel", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await AxiosConnection.api.post(`/responsavel`, body);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    if (response.status !== 201) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao criar responsável.");
     }
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro desconhecido."
+      error?.response?.data?.message || "Erro ao criar responsável."
     );
   }
 }

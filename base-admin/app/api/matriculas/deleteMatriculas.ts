@@ -1,19 +1,18 @@
 import { getCookie } from "~/utils/cookies";
-import axios from "axios";
+import AxiosConnection from "..";
 
 export async function deleteMatricula(id: string) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await axios.delete(
-      `http://localhost:3001/matricula-atividade/${id}`,
-      {
-        headers: { Authorization: `Bearer ${authToken}` },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    throw new Error("Erro ao excluir matrícula.");
+    const response = await AxiosConnection.api.delete(`/matricula-atividade/${id}`);
+    if (!(response.status === 200 || response.status === 204)) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao excluir matrícula.");
+    }
+    return { success: true };
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || "Erro ao excluir matrícula.");
   }
 }

@@ -1,20 +1,21 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function getAllProdutos() {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch("http://localhost:3001/produto", {
-      method: "GET",
-      headers: { Authorization: `Bearer ${authToken}` },
-    });
+    const response = await AxiosConnection.api.get(`/produto`);
 
-    if (!response.ok) throw new Error("Erro ao buscar produtos.");
-    return response.json();
-  } catch (error) {
+    if (response.status !== 200) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao buscar produtos.");
+    }
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro desconhecido."
+      error?.response?.data?.message || "Erro ao buscar produtos."
     );
   }
 }

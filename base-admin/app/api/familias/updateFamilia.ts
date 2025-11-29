@@ -1,28 +1,22 @@
 import { getCookie } from "~/utils/cookies";
 import type { UpdateFamiliaPayload } from "~/interfaces/familias";
+import AxiosConnection from "..";
 
 export async function updateFamilia(id: string, body: UpdateFamiliaPayload) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch(`http://localhost:3001/familia/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await AxiosConnection.api.patch(`/familia/${id}`, body);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    if (response.status !== 200) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao atualizar família.");
     }
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao atualizar família."
+      error?.response?.data?.message || "Erro ao atualizar família."
     );
   }
 }

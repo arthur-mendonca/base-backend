@@ -1,8 +1,7 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function getUserInfo() {
-  let response;
-
   try {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
@@ -12,15 +11,17 @@ export async function getUserInfo() {
     const userFromCookie = JSON.parse(userCookie);
     const userId = userFromCookie.id;
 
-    response = await fetch(`http://localhost:3001/usuario/${userId}`, {
-      headers: { Authorization: `Bearer ${authToken}` },
-    });
+    const response = await AxiosConnection.api.get(`/usuario/${userId}`);
 
-    return response.json();
-  } catch (error) {
-    const errorData = await response?.json().catch(() => ({}));
+    if (response.status !== 200) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao buscar informações do usuário.");
+    }
+
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      errorData.message || "Erro ao buscar informações do usuário."
+      error?.response?.data?.message || "Erro ao buscar informações do usuário."
     );
   }
 }

@@ -1,25 +1,19 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 import type { CreateVolunteerPayload } from "~/interfaces/volunteers";
 
 export async function createVolunteer(payload: CreateVolunteerPayload) {
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 
-  const response = await fetch(`http://localhost:3001/voluntario`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify(payload),
-  });
+  const response = await AxiosConnection.api.post(`/voluntario`, payload);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+  if (response.status !== 201) {
+    const errorData = response.data || {};
     throw new Error(
       errorData.message || "Ocorreu um erro ao criar o voluntário."
     );
   }
 
-  return await response.json();
+  return response.data;
 }

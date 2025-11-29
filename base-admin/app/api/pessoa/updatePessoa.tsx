@@ -1,33 +1,26 @@
 import type { UpdatePessoaPayload } from "~/interfaces/pessoa";
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function updatePessoa(id: string, body: UpdatePessoaPayload) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch(`http://localhost:3001/pessoa/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      // Filtra chaves com valores undefined ou nulos para não enviá-las
-      body: JSON.stringify(
-        Object.fromEntries(
-          Object.entries(body).filter(([, value]) => value != null)
-        )
-      ),
-    });
+    const sanitizedBody = Object.fromEntries(
+      Object.entries(body).filter(([, value]) => value != null)
+    ) as UpdatePessoaPayload;
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    const response = await AxiosConnection.api.patch(`/pessoa/${id}`, sanitizedBody);
+
+    if (response.status !== 200) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao atualizar pessoa.");
     }
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao atualizar pessoa."
+      error?.response?.data?.message || "Erro ao atualizar pessoa."
     );
   }
 }

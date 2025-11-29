@@ -1,19 +1,14 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function deleteUser(userId: string | number) {
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 
-  const response = await fetch(`http://localhost:3001/usuario/${userId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
-    },
-  });
+  const response = await AxiosConnection.api.delete(`/usuario/${userId}`);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+  if (!(response.status === 200 || response.status === 204)) {
+    const errorData = response.data || {};
     throw new Error(errorData.message || "Erro ao remover usuário.");
   }
 

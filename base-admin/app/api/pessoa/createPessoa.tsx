@@ -1,4 +1,5 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export interface PessoaCreatePayload {
   id_familia?: string;
@@ -11,33 +12,24 @@ export interface PessoaCreatePayload {
 }
 
 export async function createPessoa(body: PessoaCreatePayload) {
-  let response;
-
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    response = await fetch("http://localhost:3001/pessoa", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...body,
-        data_nascimento: new Date(body.data_nascimento).toISOString(),
-      }),
-    });
+    const payload = {
+      ...body,
+      data_nascimento: new Date(body.data_nascimento).toISOString(),
+    };
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    const response = await AxiosConnection.api.post(`/pessoa`, payload);
+    if (response.status !== 201) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao criar pessoa.");
     }
-
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao criar pessoa."
+      error?.response?.data?.message || "Erro ao criar pessoa."
     );
   }
 }

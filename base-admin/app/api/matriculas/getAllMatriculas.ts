@@ -1,4 +1,4 @@
-import axios from "axios";
+import AxiosConnection from "..";
 import { getCookie } from "~/utils/cookies";
 
 export async function getAllMatriculas() {
@@ -6,14 +6,13 @@ export async function getAllMatriculas() {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await axios.get(
-      "http://localhost:3001/matricula-atividade",
-      {
-        headers: { Authorization: `Bearer ${authToken}` },
-      }
-    );
+    const response = await AxiosConnection.api.get(`/matricula-atividade`);
+    if (response.status !== 200) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao buscar matrículas.");
+    }
     return response.data;
-  } catch (error) {
-    throw new Error("Erro ao buscar matrículas.");
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || "Erro ao buscar matrículas.");
   }
 }

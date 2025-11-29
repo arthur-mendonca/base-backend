@@ -1,28 +1,22 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function deleteFamilia(id: string) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch(`http://localhost:3001/familia/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-    });
+    const response = await AxiosConnection.api.delete(`/familia/${id}`);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    if (!(response.status === 200 || response.status === 204)) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao excluir família.");
     }
 
     return { success: true };
-  } catch (error) {
-    console.log("Erro ao excluir família:", error);
-
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao excluir família."
+      error?.response?.data?.message || "Erro ao excluir família."
     );
   }
 }

@@ -1,4 +1,5 @@
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 import type { Doacao } from "~/interfaces/doacao";
 
 export async function updateDoacao(
@@ -8,19 +9,12 @@ export async function updateDoacao(
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 
-  const response = await fetch(`http://localhost:3001/doacao/${doacaoId}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${authToken}`,
-    },
-    body: JSON.stringify(payload),
-  });
+  const response = await AxiosConnection.api.patch(`/doacao/${doacaoId}`, payload);
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+  if (response.status !== 200) {
+    const errorData = response.data || {};
     throw new Error(errorData.message || "Erro ao atualizar doação.");
   }
 
-  return await response.json();
+  return response.data;
 }

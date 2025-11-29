@@ -1,6 +1,5 @@
 import { getCookie } from "~/utils/cookies";
-
-import axios from "axios";
+import AxiosConnection from "..";
 import type { CriancaCreatePayload } from "~/interfaces/crianca";
 
 export async function createCrianca(body: CriancaCreatePayload) {
@@ -8,19 +7,17 @@ export async function createCrianca(body: CriancaCreatePayload) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await axios.post(
-      "http://localhost:3001/crianca",
-      {
-        ...body,
-        data_nascimento: new Date(body.data_nascimento).toISOString(),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const payload = {
+      ...body,
+      data_nascimento: new Date(body.data_nascimento).toISOString(),
+    };
+
+    const response = await AxiosConnection.api.post(`/crianca`, payload);
+
+    if (response.status !== 201) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao criar criança.");
+    }
 
     return response.data;
   } catch (error: any) {

@@ -1,5 +1,6 @@
 import { getCookie } from "~/utils/cookies";
 import type { UpdateResponsavelDto } from "~/interfaces/responsavel";
+import AxiosConnection from "..";
 
 export async function updateResponsavel(
   id: string,
@@ -9,23 +10,16 @@ export async function updateResponsavel(
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await fetch(`http://localhost:3001/responsavel/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await AxiosConnection.api.patch(`/responsavel/${id}`, body);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    if (response.status !== 200) {
+      const errorData = response.data || {};
       throw new Error(errorData.message || "Erro ao atualizar responsável.");
     }
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao atualizar responsável."
+      error?.response?.data?.message || "Erro ao atualizar responsável."
     );
   }
 }

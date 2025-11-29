@@ -1,32 +1,27 @@
 import type { FamiliaDetalhes } from "~/interfaces/familias";
 import { getCookie } from "~/utils/cookies";
+import AxiosConnection from "..";
 
 export async function getFamiliaDetalhes(
   id: number
 ): Promise<FamiliaDetalhes | null> {
-  let response;
-
   try {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
 
-    response = await fetch(`http://localhost:3001/familia/detalhes/${id}`, {
-      headers: { Authorization: `Bearer ${authToken}` },
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+    const response = await AxiosConnection.api.get(`/familia/detalhes/${id}`);
+    if (response.status !== 200) {
+      const errorData = response.data || {};
       throw new Error(
         errorData.message || "Erro ao buscar detalhes de famílias."
       );
     }
 
-    return response.json();
-  } catch (error) {
+    return response.data;
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error
-        ? error.message
-        : "Erro ao buscar detalhes de famílias."
+      error?.response?.data?.message || "Erro ao buscar detalhes de famílias."
     );
   }
 }

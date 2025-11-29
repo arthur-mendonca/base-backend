@@ -1,18 +1,13 @@
 import type { LoginCredentials } from "~/interfaces/user";
+import AxiosConnection from "..";
 
 export async function userLogin(credentials: LoginCredentials) {
-  const response = await fetch("http://localhost:3001/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+  const response = await AxiosConnection.api.post(`/auth/login`, credentials);
 
-  if (!response.ok) {
-    const errorData = await response.json();
+  if (response.status !== 200) {
+    const errorData = response.data || {};
     throw new Error(errorData.message || "Falha na autenticação");
   }
 
-  return await response.json();
+  return response.data;
 }

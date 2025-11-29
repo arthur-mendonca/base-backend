@@ -1,5 +1,5 @@
 import { getCookie } from "~/utils/cookies";
-import axios from "axios";
+import AxiosConnection from "..";
 
 interface ParamsProps {
   responsavel?: string;
@@ -13,15 +13,19 @@ export async function getAllCestasByParams(params: ParamsProps = {}) {
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
 
-    const response = await axios.get("http://localhost:3001/cesta-basica", {
-      headers: { Authorization: `Bearer ${authToken}` },
+    const response = await AxiosConnection.api.get(`/cesta-basica`, {
       params,
     });
 
+    if (response.status !== 200) {
+      const errorData = response.data || {};
+      throw new Error(errorData.message || "Erro ao buscar cestas básicas.");
+    }
+
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(
-      error instanceof Error ? error.message : "Erro ao buscar cestas básicas."
+      error?.response?.data?.message || "Erro ao buscar cestas básicas."
     );
   }
 }
