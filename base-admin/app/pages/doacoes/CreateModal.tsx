@@ -26,12 +26,21 @@ export const CreateModal = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    const val = type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+    const val = type === "checkbox" ?
+      (e.target as HTMLInputElement).checked :
+      type === "number" ?
+        (value === "" ? null : Number(value))
+        : value;
     setFormData((prev) => ({ ...prev, [name]: val }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFormData({
+      ...formData,
+      valor: Number(formData.valor),
+    });
+
     onCreate(formData);
   };
 
