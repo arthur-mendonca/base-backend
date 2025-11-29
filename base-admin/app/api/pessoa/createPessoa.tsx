@@ -15,21 +15,14 @@ export async function createPessoa(body: PessoaCreatePayload) {
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
-
-    const payload = {
+    const response = await AxiosConnection.api.post("/pessoa", {
       ...body,
       data_nascimento: new Date(body.data_nascimento).toISOString(),
-    };
-
-    const response = await AxiosConnection.api.post(`/pessoa`, payload);
-    if (response.status !== 201) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao criar pessoa.");
-    }
+    });
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao criar pessoa."
+      error instanceof Error ? error.message : "Erro ao criar pessoa."
     );
   }
 }

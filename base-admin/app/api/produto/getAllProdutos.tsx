@@ -6,16 +6,11 @@ export async function getAllProdutos() {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.get(`/produto`);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao buscar produtos.");
-    }
+    const response = await AxiosConnection.api.get("/produto");
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao buscar produtos."
+      error instanceof Error ? error.message : "Erro desconhecido."
     );
   }
 }

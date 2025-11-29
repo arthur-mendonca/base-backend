@@ -7,16 +7,14 @@ export async function updateFamilia(id: string, body: UpdateFamiliaPayload) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.patch(`/familia/${id}`, body);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao atualizar família.");
-    }
+    const response = await AxiosConnection.api.patch(
+      `/familia/${id}`,
+      body
+    );
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao atualizar família."
+      error instanceof Error ? error.message : "Erro ao atualizar família."
     );
   }
 }

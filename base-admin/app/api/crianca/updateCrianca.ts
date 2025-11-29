@@ -7,7 +7,10 @@ export async function updateCrianca(id: string, body: CriancaUpdatePayload) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.patch(`/crianca/${id}`, body);
+    const response = await AxiosConnection.api.patch(
+      `/crianca/${id}`,
+      body
+    );
 
     if (response.status !== 200) {
       const errorData = response.data || {};
@@ -16,8 +19,6 @@ export async function updateCrianca(id: string, body: CriancaUpdatePayload) {
 
     return response.data;
   } catch (error: any) {
-    throw new Error(
-      error?.response?.data?.message || "Erro ao atualizar criança."
-    );
+    throw new Error(error?.response?.data?.message || "Erro ao atualizar criança.");
   }
 }

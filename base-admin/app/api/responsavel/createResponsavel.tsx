@@ -7,16 +7,11 @@ export async function createResponsavel(body: CreateResponsavelDto) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.post(`/responsavel`, body);
-
-    if (response.status !== 201) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao criar responsável.");
-    }
+    const response = await AxiosConnection.api.post("/responsavel", body);
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao criar responsável."
+      error instanceof Error ? error.message : "Erro desconhecido."
     );
   }
 }

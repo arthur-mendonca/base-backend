@@ -10,18 +10,13 @@ export async function getUserInfo() {
 
     const userFromCookie = JSON.parse(userCookie);
     const userId = userFromCookie.id;
-
     const response = await AxiosConnection.api.get(`/usuario/${userId}`);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao buscar informações do usuário.");
-    }
-
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao buscar informações do usuário."
+      error instanceof Error
+        ? error.message
+        : "Erro ao buscar informações do usuário."
     );
   }
 }

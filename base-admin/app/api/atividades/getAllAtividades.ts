@@ -6,18 +6,11 @@ export async function getAllAtividades() {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
-
-    const response = await AxiosConnection.api.get(`/atividade`);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao buscar atividades.");
-    }
-
+    const response = await AxiosConnection.api.get("/atividade");
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao buscar atividades."
+      error instanceof Error ? error.message : "Erro ao buscar atividades."
     );
   }
 }

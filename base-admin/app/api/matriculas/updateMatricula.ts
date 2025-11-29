@@ -10,14 +10,14 @@ export async function updateMatricula(
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.patch(`/matricula-atividade/${id}`, body);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao atualizar matrícula.");
-    }
+    const response = await AxiosConnection.api.patch(
+      `/matricula-atividade/${id}`,
+      body
+    );
     return response.data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message || "Erro ao atualizar matrícula.");
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : "Erro ao atualizar matrícula."
+    );
   }
 }

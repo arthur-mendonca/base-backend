@@ -25,8 +25,6 @@ export async function createAtividade(body: CreateAtividadePayload) {
 
     return response.data;
   } catch (error: any) {
-    console.log(error);
-
     throw new Error(error?.response?.data?.message || "Erro ao criar atividade.");
   }
 }

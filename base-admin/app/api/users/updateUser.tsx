@@ -1,6 +1,6 @@
 import { getCookie } from "~/utils/cookies";
-import AxiosConnection from "..";
 import type { UserUpdatePayload } from "~/interfaces/user";
+import AxiosConnection from "..";
 
 export async function updateUser(
   userId: string | number,
@@ -9,12 +9,9 @@ export async function updateUser(
   const authToken = getCookie("authToken");
   if (!authToken) throw new Error("Usuário não autenticado.");
 
-  const response = await AxiosConnection.api.put(`/usuario/${userId}`, payload);
-
-  if (response.status !== 200) {
-    const errorData = response.data || {};
-    throw new Error(errorData.message || "Erro ao atualizar o perfil.");
-  }
-
+  const response = await AxiosConnection.api.put(
+    `/usuario/${userId}`,
+    payload
+  );
   return response.data;
 }

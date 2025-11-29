@@ -3,20 +3,19 @@ import type { ProdutoUpdatePayload } from "~/interfaces/produto";
 import AxiosConnection from "..";
 
 export async function updateProduto(id: string, body: ProdutoUpdatePayload) {
+  console.log(`Updating produto with ID: ${id}`, body);
+
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
     const response = await AxiosConnection.api.put(`/produto/${id}`, body);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao atualizar produto.");
-    }
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+
     throw new Error(
-      error?.response?.data?.message || "Erro ao atualizar produto."
+      error instanceof Error ? error.message : "Erro ao atualizar produto."
     );
   }
 }

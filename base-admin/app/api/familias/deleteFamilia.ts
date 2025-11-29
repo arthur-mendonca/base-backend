@@ -6,17 +6,13 @@ export async function deleteFamilia(id: string) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.delete(`/familia/${id}`);
-
-    if (!(response.status === 200 || response.status === 204)) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao excluir família.");
-    }
-
+    await AxiosConnection.api.delete(`/familia/${id}`);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
+    console.log("Erro ao excluir família:", error);
+
     throw new Error(
-      error?.response?.data?.message || "Erro ao excluir família."
+      error instanceof Error ? error.message : "Erro ao excluir família."
     );
   }
 }

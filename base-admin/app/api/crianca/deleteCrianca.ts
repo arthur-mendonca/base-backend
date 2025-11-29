@@ -6,17 +6,11 @@ export async function deleteCrianca(id: string) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.delete(`/crianca/${id}`);
-
-    if (!(response.status === 200 || response.status === 204)) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao excluir criança.");
-    }
-
+    await AxiosConnection.api.delete(`/crianca/${id}`);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao excluir criança."
+      error instanceof Error ? error.message : "Erro ao excluir criança."
     );
   }
 }

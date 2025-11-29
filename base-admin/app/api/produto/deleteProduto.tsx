@@ -2,20 +2,18 @@ import { getCookie } from "~/utils/cookies";
 import AxiosConnection from "..";
 
 export async function deleteProduto(id: string) {
+  console.log(`Deleting produto with ID: ${id}`);
+
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.delete(`/produto/${id}`);
+    await AxiosConnection.api.delete(`/produto/${id}`);
+  } catch (error) {
+    console.error("Erro ao deletar produto:", error);
 
-    if (!(response.status === 200 || response.status === 204)) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao deletar produto.");
-    }
-    return { success: true };
-  } catch (error: any) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao deletar produto."
+      error instanceof Error ? error.message : "Erro ao deletar produto."
     );
   }
 }

@@ -7,18 +7,13 @@ export async function getAllVolunteers() {
     const userCookie = getCookie("user");
 
     if (!authToken || !userCookie) throw new Error("Não autenticado");
-
     const response = await AxiosConnection.api.get(`/voluntario`);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao buscar informações de voluntários.");
-    }
-
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao buscar informações de voluntários."
+      error instanceof Error
+        ? error.message
+        : "Erro ao buscar informações de voluntários."
     );
   }
 }

@@ -13,17 +13,11 @@ export async function createFamilia(body: FamiliaCreatePayload) {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
-
-    const response = await AxiosConnection.api.post(`/familia`, body);
-    if (response.status !== 201) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao criar família.");
-    }
-
+    const response = await AxiosConnection.api.post("/familia", body);
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao criar família."
+      error instanceof Error ? error.message : "Erro ao criar família."
     );
   }
 }

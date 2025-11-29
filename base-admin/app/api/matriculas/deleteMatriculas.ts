@@ -6,13 +6,11 @@ export async function deleteMatricula(id: string) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.delete(`/matricula-atividade/${id}`);
-    if (!(response.status === 200 || response.status === 204)) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao excluir matrícula.");
-    }
-    return { success: true };
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message || "Erro ao excluir matrícula.");
+    const response = await AxiosConnection.api.delete(
+      `/matricula-atividade/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error("Erro ao excluir matrícula.");
   }
 }

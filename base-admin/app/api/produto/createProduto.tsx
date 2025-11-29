@@ -3,21 +3,16 @@ import { getCookie } from "~/utils/cookies";
 import AxiosConnection from "..";
 
 export async function createProduto(body: ProdutoCreatePayload) {
+  let response;
   try {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.post(`/produto`, body);
-
-    if (response.status !== 201) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao criar produto.");
-    }
-
+    const response = await AxiosConnection.api.post("/produto", body);
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao criar produto."
+      error instanceof Error ? error.message : "Erro ao criar produto."
     );
   }
 }

@@ -6,17 +6,11 @@ export async function getAllFamilias() {
     const authToken = getCookie("authToken");
     const userCookie = getCookie("user");
     if (!authToken || !userCookie) throw new Error("Não autenticado");
-
-    const response = await AxiosConnection.api.get(`/familia`);
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao buscar famílias.");
-    }
-
+    const response = await AxiosConnection.api.get("/familia");
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao buscar famílias."
+      error instanceof Error ? error.message : "Erro ao buscar famílias."
     );
   }
 }

@@ -7,13 +7,14 @@ export async function createMatricula(body: CreateMatriculaPayload) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.post(`/matricula-atividade`, body);
-    if (response.status !== 201) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao criar matrícula.");
-    }
+    const response = await AxiosConnection.api.post(
+      "/matricula-atividade",
+      body
+    );
     return response.data;
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message || "Erro ao criar matrícula.");
+  } catch (error) {
+    throw new Error(
+      error instanceof Error ? error.message : "Erro ao criar matrícula."
+    );
   }
 }

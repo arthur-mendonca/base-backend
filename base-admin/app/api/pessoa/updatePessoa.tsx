@@ -7,20 +7,17 @@ export async function updatePessoa(id: string, body: UpdatePessoaPayload) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const sanitizedBody = Object.fromEntries(
+    const filtered = Object.fromEntries(
       Object.entries(body).filter(([, value]) => value != null)
-    ) as UpdatePessoaPayload;
-
-    const response = await AxiosConnection.api.patch(`/pessoa/${id}`, sanitizedBody);
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao atualizar pessoa.");
-    }
+    );
+    const response = await AxiosConnection.api.patch(
+      `/pessoa/${id}`,
+      filtered
+    );
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao atualizar pessoa."
+      error instanceof Error ? error.message : "Erro ao atualizar pessoa."
     );
   }
 }

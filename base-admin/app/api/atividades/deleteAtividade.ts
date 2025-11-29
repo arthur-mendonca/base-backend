@@ -6,17 +6,11 @@ export async function deleteAtividade(id: string) {
     const authToken = getCookie("authToken");
     if (!authToken) throw new Error("Não autenticado");
 
-    const response = await AxiosConnection.api.delete(`/atividade/${id}`);
-
-    if (!(response.status === 200 || response.status === 204)) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao excluir atividade.");
-    }
-
+    await AxiosConnection.api.delete(`/atividade/${id}`);
     return { success: true };
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao excluir atividade."
+      error instanceof Error ? error.message : "Erro ao excluir atividade."
     );
   }
 }

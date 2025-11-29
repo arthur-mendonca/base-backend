@@ -14,15 +14,10 @@ export async function updateAtividade(
       `/atividade/${id}`,
       body
     );
-
-    if (response.status !== 200) {
-      const errorData = response.data || {};
-      throw new Error(errorData.message || "Erro ao atualizar atividade.");
-    }
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     throw new Error(
-      error?.response?.data?.message || "Erro ao atualizar atividade."
+      error instanceof Error ? error.message : "Erro ao atualizar atividade."
     );
   }
 }
