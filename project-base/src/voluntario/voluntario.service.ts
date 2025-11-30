@@ -25,7 +25,6 @@ export class VoluntarioService {
       id_voluntario: id,
       nome: createVoluntarioDto.nome,
       cpf: createVoluntarioDto.cpf,
-      rg: createVoluntarioDto.rg,
       endereco: createVoluntarioDto.endereco,
       email: createVoluntarioDto.email,
       telefone: createVoluntarioDto.telefone,
@@ -138,5 +137,68 @@ export class VoluntarioService {
     }
 
     return voluntarios;
+  }
+
+  async findByAtividade(nomeAtividade: string) {
+    if (!nomeAtividade || nomeAtividade.trim() === '') {
+      throw new ConflictException("Nome da atividade é obrigatório");
+    }
+
+    return this.repository.findByAtividade(nomeAtividade);
+  }
+
+  async findVoluntariosComEstatisticas() {
+    return this.repository.findVoluntariosComEstatisticas();
+  }
+
+  async findVoluntariosPorPeriodoAtividade(dataInicio: string, dataFim: string, atividade?: string) {
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
+
+    // Validar datas
+    if (isNaN(inicio.getTime()) || isNaN(fim.getTime())) {
+      throw new ConflictException("Datas inválidas fornecidas");
+    }
+
+    if (inicio > fim) {
+      throw new ConflictException("Data de início deve ser anterior à data de fim");
+    }
+
+    return this.repository.findVoluntariosPorPeriodoAtividade(inicio, fim, atividade);
+  }
+
+  async getRelatorioVoluntariosAtividades(filtros?: {
+    dataInicio?: string;
+    dataFim?: string;
+    atividade?: string;
+    areaAtuacao?: string;
+  }) {
+    let voluntarios;
+
+    if (filtros?.dataInicio && filtros?.dataFim) {
+      // Relatório por período
+      voluntarios = await this.findVoluntariosPorPeriodoAtividade(
+        filtros.dataInicio,
+        filtros.dataFim,
+        filtros.atividade
+      );
+    } else {
+      // Relatório geral com estatísticas
+      voluntarios = await this.findVoluntariosComEstatisticas();
+
+      // Aplicar filtros adicionais se necessário
+      if (filtros?.areaAtuacao) {
+        voluntarios = voluntarios.filter(v => 
+          v.area_atuacao?.toLowerCase().includes(filtros.areaAtuacao!.toLowerCase())
+        );
+      }
+    }
+
+    return {
+      filtros: filtros || {},
+      totalVoluntarios: voluntarios.length,
+      voluntarios,
+      geradoEm: new Date(),
+    };
   }
 }

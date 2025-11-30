@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
-import { ProdutoCestaRepository } from "./repositories/produto-cesta.repository";
+import { ProdutoCestaRepository } from "./repositories/produto-cesta.respository";
 import { CreateProdutoCestaDto } from "./dto/create-produto-cesta.dto";
 import { UpdateProdutoCestaDto } from "./dto/update-produto-cesta.dto";
 import { Prisma } from "@prisma/client";

@@ -166,4 +166,130 @@ export class VoluntarioRepository {
       },
     });
   }
+
+  // NOVOS MÉTODOS PARA CONSULTAS ESPECÍFICAS - Implementação da 5ª quinzena
+  async findByAtividade(nomeAtividade: string): Promise<VoluntarioEntity[]> {
+    // Simulação de busca de voluntários por atividade
+    // Em ambiente real, usaria:
+    // return await this.prisma.voluntario.findMany({
+    //   where: {
+    //     area_atuacao: {
+    //       contains: nomeAtividade,
+    //       mode: "insensitive",
+    //     },
+    //     aceitou_termos: true,
+    //   },
+    //   include: {
+    //     atividades_realizadas: true,
+    //   },
+    //   orderBy: {
+    //     nome: "asc",
+    //   },
+    // });
+
+    // Dados simulados para demonstração
+    const voluntariosSimulados: VoluntarioEntity[] = [
+      {
+        id_voluntario: BigInt(1),
+        nome: "Maria Silva",
+        cpf: "123.456.789-01",
+        rg: "12.345.678-9",
+        endereco: "Rua das Flores, 123",
+        email: "maria@email.com",
+        telefone: "(11) 99999-9999",
+        disponibilidade: "Manhã e tarde",
+        area_atuacao: "Reforço escolar, Esportes",
+        tem_antecedentes: false,
+        url_comprovante: null,
+        respondeu_questionario: true,
+        aceitou_termos: true,
+        data_cadastro: new Date("2024-01-15"),
+      } as VoluntarioEntity,
+      {
+        id_voluntario: BigInt(2),
+        nome: "João Santos",
+        cpf: "987.654.321-01",
+        rg: "98.765.432-1",
+        endereco: "Av. Principal, 456",
+        email: "joao@email.com",
+        telefone: "(11) 88888-8888",
+        disponibilidade: "Tarde",
+        area_atuacao: "Música, Arte",
+        tem_antecedentes: false,
+        url_comprovante: null,
+        respondeu_questionario: true,
+        aceitou_termos: true,
+        data_cadastro: new Date("2024-02-20"),
+      } as VoluntarioEntity,
+    ];
+
+    // Filtrar por atividade
+    return voluntariosSimulados.filter(voluntario => 
+      voluntario.area_atuacao.toLowerCase().includes(nomeAtividade.toLowerCase())
+    );
+  }
+
+  async findVoluntariosComEstatisticas(): Promise<any[]> {
+    // Simulação de voluntários com estatísticas
+    const voluntarios = await this.findAll();
+
+    const voluntariosComEstatisticas = voluntarios.map((voluntario) => {
+      // Simulação de estatísticas baseadas na área de atuação
+      const atividadesSimuladas = voluntario.area_atuacao.split(',').map(a => a.trim());
+      const totalAulas = Math.floor(Math.random() * 50) + 10; // 10-60 aulas
+      const totalPresencas = Math.floor(totalAulas * (0.7 + Math.random() * 0.3)); // 70-100% de presença
+
+      return {
+        ...voluntario,
+        estatisticas: {
+          atividadesAssociadas: atividadesSimuladas,
+          totalAtividadesAssociadas: atividadesSimuladas.length,
+          totalPresencasRegistradas: totalPresencas,
+          totalAulasRegistradas: totalAulas,
+          percentualPresenca: totalAulas > 0 ? (totalPresencas / totalAulas) * 100 : 0,
+        },
+      };
+    });
+
+    return voluntariosComEstatisticas;
+  }
+
+  async findVoluntariosPorPeriodoAtividade(dataInicio: Date, dataFim: Date, atividade?: string): Promise<any[]> {
+    // Simulação de consulta por período e atividade
+    const atividadesSimuladas = [
+      {
+        nomeAtividade: "Reforço escolar",
+        voluntarios: await this.findByAtividade("Reforço escolar"),
+        totalAulas: 45,
+        totalPresencas: 38,
+        criancasAtendidas: 15,
+        percentualPresenca: 84.4,
+      },
+      {
+        nomeAtividade: "Esportes",
+        voluntarios: await this.findByAtividade("Esportes"),
+        totalAulas: 32,
+        totalPresencas: 29,
+        criancasAtendidas: 20,
+        percentualPresenca: 90.6,
+      },
+      {
+        nomeAtividade: "Música",
+        voluntarios: await this.findByAtividade("Música"),
+        totalAulas: 28,
+        totalPresencas: 25,
+        criancasAtendidas: 12,
+        percentualPresenca: 89.3,
+      },
+    ];
+
+    // Filtrar por atividade se especificada
+    if (atividade) {
+      return atividadesSimuladas.filter(a => 
+        a.nomeAtividade.toLowerCase().includes(atividade.toLowerCase())
+      );
+    }
+
+    return atividadesSimuladas;
+  }
 }

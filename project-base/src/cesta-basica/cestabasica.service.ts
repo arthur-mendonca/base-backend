@@ -7,6 +7,10 @@ import { SnowflakeService } from "src/snowflake/snowflake.service";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CriancaEntity } from "src/crianca/entity/crianca.entity";
 
+/**
+ * Serviço de Cestas Básicas
+ * Gerencia a lógica de negócio da distribuição de cestas básicas
+ */
 @Injectable()
 export class CestaBasicaService {
   constructor(
@@ -15,73 +19,22 @@ export class CestaBasicaService {
     private readonly prisma: PrismaService,
   ) {}
 
+  // Busca todas as cestas básicas entregues
   async findAll() {
     return this.repository.findAll();
   }
 
+  // Busca uma cesta básica específica pelo ID
   async findOne(id: bigint) {
     return this.repository.findOne(id);
   }
 
+  /**
+   * Registra uma nova entrega de cesta básica
+   * Conecta a cesta ao responsável pela família
+   */
   async create(createCestaBasicaDto: CreateCestaBasicaDto) {
-    // Validação: pelo menos um dos IDs (responsável ou beneficiário) deve ser preenchido
-    if (!createCestaBasicaDto.id_responsavel && !createCestaBasicaDto.id_beneficiario) {
-      throw new BadRequestException(
-        "É necessário informar um responsável ou um beneficiário externo para a cesta básica",
-      );
-    }
-
-    // VERIFICAR SE AS CRIANÇAS DA FAMÍLIA ESTÃO MATRICULADAS EM ESCOLA E PARTICIPANDO DE ATIVIDADES
-    const id_responsavel = createCestaBasicaDto.id_responsavel;
-
-    // Buscar a família e as crianças associadas
-    const familia = await this.prisma.familia.findFirst({
-      where: { id_responsavel },
-      include: {
-        criancas: true,
-      },
-    });
-
-    if (!familia) {
-      throw new NotFoundException(`Família com responsável ID ${id_responsavel} não encontrada.`);
-    }
-
-    // PROIBIR FAMÍLIA DE RECEBER CESTA BÁSICA SE HOUVER EXCESSO DE FALTAS NÃO JUSTIFICADAS
-    // if (!familia.elegivel_cesta_basica) {
-    //   throw new ForbiddenException(
-    //     "Esta família não está elegível para receber cestas básicas no momento devido a excesso de faltas em atividades.",
-    //   );
-    // }
-
-    const criancas = familia.criancas;
-
-    if (criancas.length === 0) {
-      throw new ForbiddenException("Esta família não possui crianças para receber a cesta básica.");
-    }
-
-    // PROIBIR RECEBER CESTA BÁSICA SE ALGUMA CRIANÇA NÃO ESTIVER MATRICULADA NA ESCOLA
-    const algumaCriancaMatriculada = criancas.some((c: CriancaEntity) => c.matriculada_escola);
-    if (!algumaCriancaMatriculada) {
-      throw new ForbiddenException(`Nenhuma criança da família ${familia.nome} está matriculada em uma escola.`);
-    }
-
-    const criancasEmAtividades = await this.prisma.matriculaAtividade.findMany({
-      where: {
-        id_crianca: { in: criancas.map(c => c.id_crianca) },
-        status: "ATIVA", // Apenas matrículas ativas
-        atividade: {
-          tipo: {
-            in: Object.values(TipoAtividade),
-          },
-        },
-      },
-      distinct: ["id_pessoa"],
-    });
-
-    // if (criancasEmAtividades.length === 0) {
-    //   throw new ForbiddenException("Nenhuma criança da família está participando de alguma atividade.");
-    // }
-
+    // Gera um ID único para a cesta
     const id = this.snowflakeService.generate();
     const { produtos, ...cestaData } = createCestaBasicaDto;
 
@@ -120,31 +73,21 @@ export class CestaBasicaService {
     return this.repository.create(cestaBasicaData, produtos);
   }
 
+  // Atualiza os dados de uma entrega de cesta básica
   async update(id: bigint, updateCestaBasicaDto: UpdateCestaBasicaDto) {
     return this.repository.update(id, updateCestaBasicaDto);
   }
 
+  // Remove o registro de uma entrega de cesta básica
   async remove(id: bigint) {
     return this.repository.remove(id);
   }
 
-  async findByResponsavel(id_responsavel: bigint) {
-    return this.repository.findByResponsavel(id_responsavel);
-  }
-
-  async findByBeneficiario(id_beneficiario: bigint) {
-    return this.repository.findByBeneficiario(id_beneficiario);
-  }
-
-  async findByDoacao(id_doacao: bigint) {
-    return this.repository.findByDoacao(id_doacao);
-  }
-
-  async findByPeriodo(dataInicio: Date, dataFim: Date) {
-    return this.repository.findByPeriodo(dataInicio, dataFim);
-  }
-
-  async findByProfile(perfil: string, userId: bigint) {
+  /**
+   * Busca cestas básicas de acordo com o perfil do usuário
+   * Admin vê todas, outros perfis podem ter filtros específicos
+   */
+  async findByProfile(perfil: string) {
     if (perfil === "admin") {
       // Admin pode ver todas as cestas
       return this.findAll();
@@ -154,15 +97,20 @@ export class CestaBasicaService {
     }
   }
 
+  /**
+   * Gera relatórios de entregas de cestas básicas
+   * Pode filtrar por data de entrega e quantidade
+   */
   async generateReport(filter: any) {
-    const { dataInicio, dataFim, idResponsavel, idBeneficiario, idDoacao } = filter;
-
-    if (dataInicio && dataFim) {
-      return this.findByPeriodo(new Date(dataInicio), new Date(dataFim));
+    const { data_entrega, quantidade } = filter;
+    const whereConditions: any = {};
+    if (data_entrega) {
+      whereConditions.data_entrega = {
+        gte: new Date(data_entrega), // Busca entregas a partir desta data
+      };
     }
-
-    if (idResponsavel) {
-      return this.findByResponsavel(BigInt(idResponsavel));
+    if (quantidade) {
+      whereConditions.quantidade = quantidade; // Busca pela quantidade específica
     }
 
     if (idBeneficiario) {

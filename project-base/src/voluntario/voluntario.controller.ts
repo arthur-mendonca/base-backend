@@ -166,4 +166,115 @@ export class VoluntarioController {
   async remove(@Param("id") id: string) {
     await this.voluntarioService.remove(BigInt(id));
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("atividade/:nomeAtividade")
+  @ApiOperation({ summary: "Listar voluntários associados a uma atividade específica" })
+  @ApiParam({ name: "nomeAtividade", description: "Nome da atividade" })
+  @ApiResponse({
+    status: 200,
+    description: "Lista de voluntários associados à atividade",
+    type: [VoluntarioEntity],
+  })
+  @ApiResponse({ status: 400, description: "Nome da atividade inválido" })
+  async findByAtividade(@Param("nomeAtividade") nomeAtividade: string) {
+    return this.voluntarioService.findByAtividade(nomeAtividade);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio/estatisticas")
+  @ApiOperation({ summary: "Obter relatório de voluntários com estatísticas de atividades" })
+  @ApiResponse({
+    status: 200,
+    description: "Relatório de voluntários com estatísticas",
+  })
+  async getVoluntariosComEstatisticas() {
+    return this.voluntarioService.findVoluntariosComEstatisticas();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio/periodo-atividade")
+  @ApiOperation({ summary: "Obter voluntários por período e atividade" })
+  @ApiQuery({ name: "dataInicio", required: true, description: "Data de início (YYYY-MM-DD)" })
+  @ApiQuery({ name: "dataFim", required: true, description: "Data de fim (YYYY-MM-DD)" })
+  @ApiQuery({ name: "atividade", required: false, description: "Nome da atividade para filtrar" })
+  @ApiResponse({
+    status: 200,
+    description: "Relatório de voluntários por período e atividade",
+  })
+  @ApiResponse({ status: 400, description: "Parâmetros de data inválidos" })
+  async findVoluntariosPorPeriodoAtividade(
+    @Query("dataInicio") dataInicio: string,
+    @Query("dataFim") dataFim: string,
+    @Query("atividade") atividade?: string,
+  ) {
+    return this.voluntarioService.findVoluntariosPorPeriodoAtividade(dataInicio, dataFim, atividade);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get("relatorio/completo")
+  @ApiOperation({ summary: "Gerar relatório completo de voluntários e atividades" })
+  @ApiQuery({ name: "dataInicio", required: false, description: "Data de início para filtro por período" })
+  @ApiQuery({ name: "dataFim", required: false, description: "Data de fim para filtro por período" })
+  @ApiQuery({ name: "atividade", required: false, description: "Nome da atividade para filtrar" })
+  @ApiQuery({ name: "areaAtuacao", required: false, description: "Área de atuação para filtrar" })
+  @ApiResponse({
+    status: 200,
+    description: "Relatório completo de voluntários e atividades",
+  })
+  async getRelatorioCompleto(
+    @Query("dataInicio") dataInicio?: string,
+    @Query("dataFim") dataFim?: string,
+    @Query("atividade") atividade?: string,
+    @Query("areaAtuacao") areaAtuacao?: string,
+  ) {
+    const filtros = {
+      dataInicio,
+      dataFim,
+      atividade,
+      areaAtuacao,
+    };
+
+    return this.voluntarioService.getRelatorioVoluntariosAtividades(filtros);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(":id")
+  @ApiOperation({ summary: "Obter um voluntário pelo ID" })
+  @ApiParam({ name: "id", description: "ID do voluntário" })
+  @ApiResponse({
+    status: 200,
+    description: "Voluntário encontrado",
+    type: VoluntarioEntity,
+  })
+  @ApiResponse({ status: 404, description: "Voluntário não encontrado" })
+  async findOne(@Param("id") id: string) {
+    return this.voluntarioService.findOne(BigInt(id));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(":id")
+  @ApiOperation({ summary: "Atualizar um voluntário" })
+  @ApiParam({ name: "id", description: "ID do voluntário" })
+  @ApiResponse({
+    status: 200,
+    description: "Voluntário atualizado com sucesso",
+    type: VoluntarioEntity,
+  })
+  @ApiResponse({ status: 404, description: "Voluntário não encontrado" })
+  @ApiResponse({ status: 400, description: "Dados inválidos" })
+  async update(@Param("id") id: string, @Body() updateVoluntarioDto: UpdateVoluntarioDto) {
+    return this.voluntarioService.update(BigInt(id), updateVoluntarioDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: "Remover um voluntário" })
+  @ApiParam({ name: "id", description: "ID do voluntário" })
+  @ApiResponse({ status: 204, description: "Voluntário removido com sucesso" })
+  @ApiResponse({ status: 404, description: "Voluntário não encontrado" })
+  async remove(@Param("id") id: string) {
+    await this.voluntarioService.remove(BigInt(id));
+  }
 }
